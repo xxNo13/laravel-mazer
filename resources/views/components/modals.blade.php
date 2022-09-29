@@ -158,7 +158,8 @@
                                             <option value="">Select a suboutput</option>
                                             @foreach (Auth::user()->suboutputs as $suboutput)
                                                 @if ($suboutput->type == 'ipcr')
-                                                    <option value="{{ $suboutput->id }}">{{ $suboutput->output->code }}
+                                                    <option value="{{ $suboutput->id }}">
+                                                        {{ $suboutput->output->code }}
                                                         {{ $suboutput->output->output }} - {{ $suboutput->suboutput }}
                                                     </option>
                                                 @endif
@@ -185,7 +186,8 @@
                                             <option value="">Select a suboutput</option>
                                             @foreach (Auth::user()->suboutputs as $suboutput)
                                                 @if ($suboutput->type == 'ipcr')
-                                                    <option value="{{ $suboutput->id }}">{{ $suboutput->output->code }}
+                                                    <option value="{{ $suboutput->id }}">
+                                                        {{ $suboutput->output->code }}
                                                         {{ $suboutput->output->output }} - {{ $suboutput->suboutput }}
                                                     </option>
                                                 @endif
@@ -205,7 +207,8 @@
                                                 @forelse ($output->suboutputs as $suboutput)
                                                 @empty
                                                     @if ($output->type == 'ipcr')
-                                                        <option value="output, {{ $output->id }}">{{ $output->code }}
+                                                        <option value="output, {{ $output->id }}">
+                                                            {{ $output->code }}
                                                             {{ $output->output }}
                                                         </option>
                                                     @endif
@@ -214,7 +217,8 @@
                                             @foreach (Auth::user()->suboutputs as $suboutput)
                                                 @if ($suboutput->type == 'ipcr')
                                                     <option value="suboutput, {{ $suboutput->id }}">
-                                                        {{ $suboutput->output->code }} {{ $suboutput->output->output }} -
+                                                        {{ $suboutput->output->code }}
+                                                        {{ $suboutput->output->output }} -
                                                         {{ $suboutput->suboutput }}
                                                     </option>
                                                 @endif
@@ -242,7 +246,8 @@
                                                 @if ($target->type == 'ipcr')
                                                     <option value="{{ $target->id }}">
                                                         @if ($target->output)
-                                                            {{ $target->output->code }} {{ $target->output->output }} -
+                                                            {{ $target->output->code }} {{ $target->output->output }}
+                                                            -
                                                         @elseif ($target->suboutput)
                                                             {{ $target->suboutput->output->code }}
                                                             {{ $target->suboutput->output->output }} -
@@ -275,7 +280,8 @@
                                                 @if ($target->type == 'ipcr')
                                                     <option value="{{ $target->id }}">
                                                         @if ($target->output)
-                                                            {{ $target->output->code }} {{ $target->output->output }} -
+                                                            {{ $target->output->code }} {{ $target->output->output }}
+                                                            -
                                                         @elseif ($target->suboutput)
                                                             {{ $target->suboutput->output->code }}
                                                             {{ $target->suboutput->output->output }} -
@@ -336,22 +342,22 @@
                         <div class="modal-body">
                             <div class="form-group d-flex justify-content-between">
                                 <div class="form-check form-switch">
-                                    <input wire:change="changed" type="radio" class="form-check-input" id="add"
-                                        value="add" name="ost" wire:model="ost">
+                                    <input wire:change="changed" type="radio" class="form-check-input"
+                                        id="add" value="add" name="ost" wire:model="ost">
                                     <label class="form-check-label" for="add">
                                         Add
                                     </label>
                                 </div>
                                 <div class="form-check form-switch">
-                                    <input wire:change="changed" type="radio" class="form-check-input" id="edit"
-                                        value="edit" name="ost" wire:model="ost">
+                                    <input wire:change="changed" type="radio" class="form-check-input"
+                                        id="edit" value="edit" name="ost" wire:model="ost">
                                     <label class="form-check-label" for="edit">
                                         Edit
                                     </label>
                                 </div>
                                 <div class="form-check form-switch">
-                                    <input wire:change="changed" type="radio" class="form-check-input" id="target"
-                                        value="delete" name="ost" wire:model="ost">
+                                    <input wire:change="changed" type="radio" class="form-check-input"
+                                        id="target" value="delete" name="ost" wire:model="ost">
                                     <label class="form-check-label" for="target">
                                         Delete
                                     </label>
@@ -362,22 +368,22 @@
 
                             <div class="mt-3 form-group d-flex justify-content-between">
                                 <div class="form-check form-switch">
-                                    <input wire:change="changed" type="radio" class="form-check-input" id="output"
-                                        value="output" name="selected" wire:model="selected">
+                                    <input wire:change="changed" type="radio" class="form-check-input"
+                                        id="output" value="output" name="selected" wire:model="selected">
                                     <label class="form-check-label" for="output">
                                         Output
                                     </label>
                                 </div>
                                 <div class="form-check form-switch">
-                                    <input wire:change="changed" type="radio" class="form-check-input" id="suboutput"
-                                        value="suboutput" name="selected" wire:model="selected">
+                                    <input wire:change="changed" type="radio" class="form-check-input"
+                                        id="suboutput" value="suboutput" name="selected" wire:model="selected">
                                     <label class="form-check-label" for="suboutput">
                                         Suboutput
                                     </label>
                                 </div>
                                 <div class="form-check form-switch">
-                                    <input wire:change="changed" type="radio" class="form-check-input" id="target"
-                                        value="target" name="selected" wire:model="selected">
+                                    <input wire:change="changed" type="radio" class="form-check-input"
+                                        id="target" value="target" name="selected" wire:model="selected">
                                     <label class="form-check-label" for="target">
                                         Target
                                     </label>
@@ -393,8 +399,8 @@
                                 @if ($selected == 'output' && $ost == 'add')
                                     <label>Output: </label>
                                     <div class="form-group">
-                                        <input type="text" placeholder="Output" class="form-control" name="output"
-                                            wire:model="output">
+                                        <input type="text" placeholder="Output" class="form-control"
+                                            name="output" wire:model="output">
                                         @error('output')
                                             <p class="text-danger">{{ $message }}</p>
                                         @enderror
@@ -479,7 +485,8 @@
                                             <option value="">Select a suboutput</option>
                                             @foreach (Auth::user()->suboutputs as $suboutput)
                                                 @if ($suboutput->type == 'opcr')
-                                                    <option value="{{ $suboutput->id }}">{{ $suboutput->output->code }}
+                                                    <option value="{{ $suboutput->id }}">
+                                                        {{ $suboutput->output->code }}
                                                         {{ $suboutput->output->output }} - {{ $suboutput->suboutput }}
                                                     </option>
                                                 @endif
@@ -506,7 +513,8 @@
                                             <option value="">Select a suboutput</option>
                                             @foreach (Auth::user()->suboutputs as $suboutput)
                                                 @if ($suboutput->type == 'opcr')
-                                                    <option value="{{ $suboutput->id }}">{{ $suboutput->output->code }}
+                                                    <option value="{{ $suboutput->id }}">
+                                                        {{ $suboutput->output->code }}
                                                         {{ $suboutput->output->output }} - {{ $suboutput->suboutput }}
                                                     </option>
                                                 @endif
@@ -526,7 +534,8 @@
                                                 @forelse ($output->suboutputs as $suboutput)
                                                 @empty
                                                     @if ($output->type == 'opcr')
-                                                        <option value="output, {{ $output->id }}">{{ $output->code }}
+                                                        <option value="output, {{ $output->id }}">
+                                                            {{ $output->code }}
                                                             {{ $output->output }}
                                                         </option>
                                                     @endif
@@ -535,7 +544,8 @@
                                             @foreach (Auth::user()->suboutputs as $suboutput)
                                                 @if ($suboutput->type == 'opcr')
                                                     <option value="suboutput, {{ $suboutput->id }}">
-                                                        {{ $suboutput->output->code }} {{ $suboutput->output->output }} -
+                                                        {{ $suboutput->output->code }}
+                                                        {{ $suboutput->output->output }} -
                                                         {{ $suboutput->suboutput }}
                                                     </option>
                                                 @endif
@@ -563,7 +573,8 @@
                                                 @if ($target->type == 'opcr')
                                                     <option value="{{ $target->id }}">
                                                         @if ($target->output)
-                                                            {{ $target->output->code }} {{ $target->output->output }} -
+                                                            {{ $target->output->code }} {{ $target->output->output }}
+                                                            -
                                                         @elseif ($target->suboutput)
                                                             {{ $target->suboutput->output->code }}
                                                             {{ $target->suboutput->output->output }} -
@@ -596,7 +607,8 @@
                                                 @if ($target->type == 'opcr')
                                                     <option value="{{ $target->id }}">
                                                         @if ($target->output)
-                                                            {{ $target->output->code }} {{ $target->output->output }} -
+                                                            {{ $target->output->code }} {{ $target->output->output }}
+                                                            -
                                                         @elseif ($target->suboutput)
                                                             {{ $target->suboutput->output->code }}
                                                             {{ $target->suboutput->output->output }} -
@@ -1214,6 +1226,88 @@
                         <button type="submit" class="btn btn-primary ml-1">
                             <i class="bx bx-check d-block d-sm-none"></i>
                             <span class="d-none d-sm-block">Done</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    {{-- Add Office Modal --}}
+    <div wire:ignore.self class="modal fade text-left" id="AddOfficeModal" tabindex="-1" role="dialog"
+        aria-labelledby="myModalLabel33" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="myModalLabel33">Add Office</h4>
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                        <i data-feather="x"></i>
+                    </button>
+                </div>
+                <div wire:loading class="spinner-border spinner-border-sm" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                <form wire:submit.prevent="save">
+                    <div class="modal-body">
+                        <label>Office: </label>
+                        <div class="form-group">
+                            <input type="text" placeholder="Office" class="form-control" wire:model="office">
+                        </div>
+                        <label>Building: </label>
+                        <div class="form-group">
+                            <input type="text" placeholder="Building" class="form-control"
+                                wire:model="building">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-light-secondary" wire:click="closeModal">
+                            <i class="bx bx-x d-block d-sm-none"></i>
+                            <span class="d-none d-sm-block">Close</span>
+                        </button>
+                        <button type="submit" class="btn btn-primary ml-1">
+                            <i class="bx bx-check d-block d-sm-none"></i>
+                            <span class="d-none d-sm-block">Save</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    {{-- Edit Office Modal --}}
+    <div wire:ignore.self class="modal fade text-left" id="EditOfficeModal" tabindex="-1" role="dialog"
+        aria-labelledby="myModalLabel33" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="myModalLabel33">Edit Office</h4>
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                        <i data-feather="x"></i>
+                    </button>
+                </div>
+                <div wire:loading class="spinner-border spinner-border-sm" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                <form wire:submit.prevent="save">
+                    <div class="modal-body">
+                        <label>Office: </label>
+                        <div class="form-group">
+                            <input type="text" placeholder="Office" class="form-control" wire:model="office">
+                        </div>
+                        <label>Building: </label>
+                        <div class="form-group">
+                            <input type="text" placeholder="Building" class="form-control"
+                                wire:model="building">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-light-secondary" wire:click="closeModal">
+                            <i class="bx bx-x d-block d-sm-none"></i>
+                            <span class="d-none d-sm-block">Close</span>
+                        </button>
+                        <button type="submit" class="btn btn-success ml-1">
+                            <i class="bx bx-check d-block d-sm-none"></i>
+                            <span class="d-none d-sm-block">primary</span>
                         </button>
                     </div>
                 </form>

@@ -23,25 +23,6 @@
             </div>
     
             <div class="form-group position-relative has-icon-left mb-4">
-                <select class="form-control form-control-xl" name="office_id">
-                    <livewire:office-livewire />
-                </select>
-                <div class="form-control-icon">
-                    <i class="bi bi-building"></i>
-                </div>
-                @error('office_id') <p style="color: rgb(220 38 38);">{{ $message }}</p> @enderror
-            </div>
-    
-            <div class="form-group position-relative has-icon-left mb-4">
-                <input type="text" class="form-control form-control-xl" name="account_types" placeholder="Account Types" value="{{ old('account_types') }}">
-                <div class="form-control-icon">
-                    <i class="bi bi-envelope"></i>
-                </div>
-                <p class="text-muted">Eg. Staff, Head of Delivery Unit, Head of Office, etc.</p>
-                @error('account_types') <p style="color: rgb(220 38 38);">{{ $message }}</p> @enderror
-            </div>
-    
-            <div class="form-group position-relative has-icon-left mb-4">
                 <input type="password" class="form-control form-control-xl" name="password" placeholder="Password">
                 <div class="form-control-icon">
                     <i class="bi bi-shield-lock"></i>
@@ -55,6 +36,25 @@
                     <i class="bi bi-shield-lock"></i>
                 </div>
                 @error('password_confirmation') <p style="color: rgb(220 38 38);">{{ $message }}</p> @enderror
+            </div>
+
+            <div class="form-group position-relative has-icon-left mb-4">
+                <select class="form-control form-control-xl" name="office_id">
+                    <livewire:office-livewire />
+                </select>
+                <div class="form-control-icon">
+                    <i class="bi bi-building"></i>
+                </div>
+                @error('office_id') <p style="color: rgb(220 38 38);">{{ $message }}</p> @enderror
+            </div>
+    
+            <div class="form-group position-relative has-icon-left mb-4">
+                <input type="text" class="form-control form-control-xl" name="account_types" placeholder="Account Types" value="{{ old('account_types') }}">
+                <div class="form-control-icon">
+                    <i class="bi bi-person-badge"></i>
+                </div>
+                <p class="text-muted">Eg. Staff, Head of Delivery Unit, Head of Office, etc.</p>
+                @error('account_types') <p style="color: rgb(220 38 38);">{{ $message }}</p> @enderror
             </div>
     
             @if (Laravel\Jetstream\Jetstream::hasTermsAndPrivacyPolicyFeature())

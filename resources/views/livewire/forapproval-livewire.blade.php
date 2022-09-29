@@ -24,7 +24,7 @@
     <section class="section pt-3">
         <div class="card">
             <div class="card-header hstack">
-                <h4 class="card-title my-auto">Office Name</h4>
+                <h4 class="card-title my-auto"></h4>
                 <div class="ms-auto my-auto form-group position-relative has-icon-right">
                     <input type="text" class="form-control" placeholder="Search.." wire:model="search">
                     <div class="form-control-icon">

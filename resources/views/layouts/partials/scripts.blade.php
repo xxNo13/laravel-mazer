@@ -24,6 +24,8 @@
         $('#AddTTMAModal').modal('hide');
         $('#EditTTMAModal').modal('hide');
         $('#DoneModal').modal('hide');
+        $('#AddOfficeModal').modal('hide');
+        $('#EditOfficeModal').modal('hide');
     });
 </script>
 

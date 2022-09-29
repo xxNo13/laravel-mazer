@@ -5,8 +5,9 @@ use App\Http\Livewire\OpcrLivewire;
 use App\Http\Livewire\TtmaLivewire;
 use Illuminate\Support\Facades\Route;
 use App\Http\Livewire\StandardLivewire;
-use App\Http\Livewire\ForapprovalLivewire;
+use App\Http\Livewire\ConfigureLivewire;
 use App\Http\Livewire\OfficemateLivewire;
+use App\Http\Livewire\ForapprovalLivewire;
 
 /*
 |--------------------------------------------------------------------------
@@ -34,4 +35,5 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::get('/officemates', OfficemateLivewire::class)->name('officemates');
     Route::get('/for-approval', ForapprovalLivewire::class)->name('for-approval');
     Route::get('/ttma', TtmaLivewire::class)->name('ttma');
+    Route::get('/configure', ConfigureLivewire::class)->name('configure');
 });

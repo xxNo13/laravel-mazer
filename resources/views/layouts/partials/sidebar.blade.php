@@ -9,6 +9,7 @@
     <x-maz-sidebar-item name="IPCR" :link="route('ipcr')" icon="bi bi-clipboard2-data-fill"></x-maz-sidebar-item>
     <x-maz-sidebar-item name="OPCR" :link="route('opcr')" icon="bi bi-clipboard2-data-fill"></x-maz-sidebar-item>
     <x-maz-sidebar-item name="Standard" :link="route('standard')" icon="bi bi-clipboard-data-fill"></x-maz-sidebar-item>
+    <x-maz-sidebar-item name="Configure" :link="route('configure')" icon="bi bi-nut-fill"></x-maz-sidebar-item>
 
 
 </x-maz-sidebar>

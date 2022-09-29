@@ -9,6 +9,11 @@ class Office extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'office',
+        'building'
+    ];
+
     public function users() {
         return $this->hasMany(User::class);
     }
