@@ -12,6 +12,7 @@ use App\Models\Approval;
 use App\Models\Suboutput;
 use Livewire\WithPagination;
 use Illuminate\Support\Facades\Auth;
+use PDF;
 
 class IpcrLivewire extends Component
 {
@@ -72,7 +73,6 @@ class IpcrLivewire extends Component
             'functs' => $functs
         ]);
     }
-    
     
     public function updated($property)
     {

@@ -4,6 +4,7 @@ use App\Http\Livewire\IpcrLivewire;
 use App\Http\Livewire\OpcrLivewire;
 use App\Http\Livewire\TtmaLivewire;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\PDFController;
 use App\Http\Livewire\StandardLivewire;
 use App\Http\Livewire\ConfigureLivewire;
 use App\Http\Livewire\OfficemateLivewire;
@@ -36,4 +37,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::get('/for-approval', ForapprovalLivewire::class)->name('for-approval');
     Route::get('/ttma', TtmaLivewire::class)->name('ttma');
     Route::get('/configure', ConfigureLivewire::class)->name('configure');
+
+    Route::get('/print/{print}', [PDFController::class, 'print'])->name('print');
+    Route::get('/view', [PDFController::class, 'view'])->name('view');
 });

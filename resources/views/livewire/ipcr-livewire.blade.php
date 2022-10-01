@@ -38,10 +38,9 @@
                         Submit
                     </button>
                 @elseif ($approval && $approval->superior1_status == 1 && $approval->superior2_status == 1)
-                    <button type="button" class="ms-auto btn icon btn-primary"
-                        wire:click="print" title="Print IPCR">
+                    <a href="/print/ipcr" type="button" class="ms-auto btn icon btn-primary" title="Print IPCR">
                         <i class="bi bi-printer"></i>
-                    </button>
+                    </a>
                 @endif
             </div>
             @foreach ($funct->outputs as $output)
