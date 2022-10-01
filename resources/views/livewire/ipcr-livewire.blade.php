@@ -37,6 +37,11 @@
                         data-bs-target="#SubmitISOModal" title="Save IPCR" wire:click="submit">
                         Submit
                     </button>
+                @elseif ($approval && $approval->superior1_status == 1 && $approval->superior2_status == 1)
+                    <button type="button" class="ms-auto btn icon btn-primary"
+                        wire:click="print" title="Print IPCR">
+                        <i class="bi bi-printer"></i>
+                    </button>
                 @endif
             </div>
             @foreach ($funct->outputs as $output)
