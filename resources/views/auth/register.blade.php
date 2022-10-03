@@ -49,7 +49,7 @@
             </div>
     
             <div class="form-group position-relative has-icon-left mb-4">
-                <input type="text" class="form-control form-control-xl" name="account_types" placeholder="Account Types" value="{{ old('account_types') }}">
+                <input type="text" class="form-control form-control-xl" name="account_types" placeholder="Account Types" value="{{ old('account_types') }}" title="Eg. Staff, Head of Delivery Unit, Head of Office, etc."
                 <div class="form-control-icon">
                     <i class="bi bi-person-badge"></i>
                 </div>
