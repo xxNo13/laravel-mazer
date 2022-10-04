@@ -54,7 +54,7 @@
                                 <div class="card-body">
                                     <div class="accordion accordion-flush"
                                         id="{{ str_replace(' ', '', $suboutput->suboutput) }}{{ $suboutput->id }}">
-                                        <div class="hstack">
+                                        <div class="d-sm-flex">
                                             @foreach ($suboutput->targets as $target)
                                                 @if ($target->user_id == Auth::user()->id && $target->type == 'opcr')
                                                     <div wire:ignore.self class="accordion-button collapsed gap-2"
@@ -155,7 +155,7 @@
                             <div class="card-body">
                                 <div class="accordion accordion-flush"
                                     id="{{ str_replace(' ', '', $output->output) }}{{ $output->id }}">
-                                    <div class="hstack">
+                                    <div class="d-sm-flex">
                                         @foreach ($output->targets as $target)
                                             @if ($target->user_id == Auth::user()->id && $target->type == 'opcr')
                                                 <div wire:ignore.self class="accordion-button collapsed gap-2"

@@ -64,9 +64,6 @@
                             </div>
 
                             <hr>
-                            <div wire:loading class="spinner-border spinner-border-sm" role="status">
-                                <span class="visually-hidden">Loading...</span>
-                            </div>
 
                             <div class="mt-3">
                                 @if ($selected == 'output' && $ost == 'add')
@@ -305,17 +302,17 @@
                                 <span class="d-none d-sm-block">Close</span>
                             </button>
                             @if ($ost == 'add')
-                                <button type="submit" class="btn btn-primary ml-1">
+                                <button type="submit" wire:loading.attr="disabled" class="btn btn-primary ml-1">
                                     <i class="bx bx-check d-block d-sm-none"></i>
                                     <span class="d-none d-sm-block">Save</span>
                                 </button>
                             @elseif ($ost == 'edit')
-                                <button type="submit" class="btn btn-success ml-1">
+                                <button type="submit" wire:loading.attr="disabled" class="btn btn-success ml-1">
                                     <i class="bx bx-check d-block d-sm-none"></i>
                                     <span class="d-none d-sm-block">Update</span>
                                 </button>
                             @elseif ($ost == 'delete')
-                                <button type="button" class="btn btn-danger ml-1" data-bs-target="#DeleteModal"
+                                <button type="button" wire:loading.attr="disabled" class="btn btn-danger ml-1" data-bs-target="#DeleteModal"
                                     data-bs-toggle="modal">
                                     <i class="bx bx-check d-block d-sm-none"></i>
                                     <span class="d-none d-sm-block">Delete</span>
@@ -391,9 +388,6 @@
                             </div>
 
                             <hr>
-                            <div wire:loading class="spinner-border spinner-border-sm" role="status">
-                                <span class="visually-hidden">Loading...</span>
-                            </div>
 
                             <div class="mt-3">
                                 @if ($selected == 'output' && $ost == 'add')
@@ -632,17 +626,17 @@
                                 <span class="d-none d-sm-block">Close</span>
                             </button>
                             @if ($ost == 'add')
-                                <button type="submit" class="btn btn-primary ml-1">
+                                <button type="submit" wire:loading.attr="disabled" class="btn btn-primary ml-1">
                                     <i class="bx bx-check d-block d-sm-none"></i>
                                     <span class="d-none d-sm-block">Save</span>
                                 </button>
                             @elseif ($ost == 'edit')
-                                <button type="submit" class="btn btn-success ml-1">
+                                <button type="submit" wire:loading.attr="disabled" class="btn btn-success ml-1">
                                     <i class="bx bx-check d-block d-sm-none"></i>
                                     <span class="d-none d-sm-block">Update</span>
                                 </button>
                             @elseif ($ost == 'delete')
-                                <button type="button" class="btn btn-danger ml-1" data-bs-target="#DeleteModal"
+                                <button type="button" wire:loading.attr="disabled" class="btn btn-danger ml-1" data-bs-target="#DeleteModal"
                                     data-bs-toggle="modal">
                                     <i class="bx bx-check d-block d-sm-none"></i>
                                     <span class="d-none d-sm-block">Delete</span>
@@ -676,7 +670,7 @@
                             <i class="bx bx-x d-block d-sm-none"></i>
                             <span class="d-none d-sm-block">Close</span>
                         </button>
-                        <button type="submit" class="btn btn-danger ml-1">
+                        <button type="submit" wire:loading.attr="disabled" class="btn btn-danger ml-1">
                             <i class="bx bx-check d-block d-sm-none"></i>
                             <span class="d-none d-sm-block">Delete</span>
                         </button>
@@ -696,9 +690,6 @@
                     <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
                         <i data-feather="x"></i>
                     </button>
-                </div>
-                <div wire:loading class="spinner-border spinner-border-sm" role="status">
-                    <span class="visually-hidden">Loading...</span>
                 </div>
 
                 <form wire:submit.prevent="saveRating('{{ 'add' }}')">
@@ -740,7 +731,7 @@
                             <i class="bx bx-x d-block d-sm-none"></i>
                             <span class="d-none d-sm-block">Close</span>
                         </button>
-                        <button type="submit" class="btn btn-primary ml-1">
+                        <button type="submit" wire:loading.attr="disabled" class="btn btn-primary ml-1">
                             <i class="bx bx-check d-block d-sm-none"></i>
                             <span class="d-none d-sm-block">Save</span>
                         </button>
@@ -760,9 +751,6 @@
                     <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
                         <i data-feather="x"></i>
                     </button>
-                </div>
-                <div wire:loading class="spinner-border spinner-border-sm" role="status">
-                    <span class="visually-hidden">Loading...</span>
                 </div>
 
                 <form wire:submit.prevent="saveRating('{{ 'edit' }}')">
@@ -792,7 +780,7 @@
                             <i class="bx bx-x d-block d-sm-none"></i>
                             <span class="d-none d-sm-block">Close</span>
                         </button>
-                        <button type="submit" class="btn btn-success ml-1">
+                        <button type="submit" wire:loading.attr="disabled" class="btn btn-success ml-1">
                             <i class="bx bx-check d-block d-sm-none"></i>
                             <span class="d-none d-sm-block">Update</span>
                         </button>
@@ -823,9 +811,6 @@
                             <div class="w-100 text-center">Timeliness: </div>
                         </div>
                         <hr>
-                        <div wire:loading class="spinner-border spinner-border-sm" role="status">
-                            <span class="visually-hidden">Loading...</span>
-                        </div>
 
                         <div class="d-flex justify-content-around gap-2">
                             <div class="hstack gap-4 w-100">
@@ -913,7 +898,7 @@
                             <i class="bx bx-x d-block d-sm-none"></i>
                             <span class="d-none d-sm-block">Close</span>
                         </button>
-                        <button type="submit" class="btn btn-primary ml-1">
+                        <button type="submit" wire:loading.attr="disabled" class="btn btn-primary ml-1">
                             <i class="bx bx-check d-block d-sm-none"></i>
                             <span class="d-none d-sm-block">Save</span>
                         </button>
@@ -944,9 +929,6 @@
                             <div class="w-100 text-center">Timeliness: </div>
                         </div>
                         <hr>
-                        <div wire:loading class="spinner-border spinner-border-sm" role="status">
-                            <span class="visually-hidden">Loading...</span>
-                        </div>
 
                         <div class="d-flex justify-content-around gap-2">
                             <div class="hstack gap-4 w-100">
@@ -1034,7 +1016,7 @@
                             <i class="bx bx-x d-block d-sm-none"></i>
                             <span class="d-none d-sm-block">Close</span>
                         </button>
-                        <button type="submit" class="btn btn-success ml-1">
+                        <button type="submit" wire:loading.attr="disabled" class="btn btn-success ml-1">
                             <i class="bx bx-check d-block d-sm-none"></i>
                             <span class="d-none d-sm-block">Update</span>
                         </button>
@@ -1055,9 +1037,6 @@
                         <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
                             <i data-feather="x"></i>
                         </button>
-                    </div>
-                    <div wire:loading class="spinner-border spinner-border-sm" role="status">
-                        <span class="visually-hidden">Loading...</span>
                     </div>
 
                     <form wire:submit.prevent="submitISO">
@@ -1088,7 +1067,7 @@
                                 <i class="bx bx-x d-block d-sm-none"></i>
                                 <span class="d-none d-sm-block">Close</span>
                             </button>
-                            <button type="submit" class="btn btn-primary ml-1">
+                            <button type="submit" wire:loading.attr="disabled" class="btn btn-primary ml-1">
                                 <i class="bx bx-check d-block d-sm-none"></i>
                                 <span class="d-none d-sm-block">Submit</span>
                             </button>
@@ -1111,9 +1090,6 @@
                             <i data-feather="x"></i>
                         </button>
                     </div>
-                    <div wire:loading class="spinner-border spinner-border-sm" role="status">
-                        <span class="visually-hidden">Loading...</span>
-                    </div>
                     <form wire:submit.prevent="save">
                         <div class="modal-body">
                             <label>Subject: </label>
@@ -1141,7 +1117,7 @@
                                 <i class="bx bx-x d-block d-sm-none"></i>
                                 <span class="d-none d-sm-block">Close</span>
                             </button>
-                            <button type="submit" class="btn btn-primary ml-1">
+                            <button type="submit" wire:loading.attr="disabled" class="btn btn-primary ml-1">
                                 <i class="bx bx-check d-block d-sm-none"></i>
                                 <span class="d-none d-sm-block">Add</span>
                             </button>
@@ -1162,9 +1138,6 @@
                             <i data-feather="x"></i>
                         </button>
                     </div>
-                    <div wire:loading class="spinner-border spinner-border-sm" role="status">
-                        <span class="visually-hidden">Loading...</span>
-                    </div>
                     <form wire:submit.prevent="save">
                         <div class="modal-body">
                             <label>Subject: </label>
@@ -1192,7 +1165,7 @@
                                 <i class="bx bx-x d-block d-sm-none"></i>
                                 <span class="d-none d-sm-block">Close</span>
                             </button>
-                            <button type="submit" class="btn btn-success ml-1">
+                            <button type="submit" wire:loading.attr="disabled" class="btn btn-success ml-1">
                                 <i class="bx bx-check d-block d-sm-none"></i>
                                 <span class="d-none d-sm-block">Update</span>
                             </button>
@@ -1223,7 +1196,7 @@
                             <i class="bx bx-x d-block d-sm-none"></i>
                             <span class="d-none d-sm-block">Close</span>
                         </button>
-                        <button type="submit" class="btn btn-primary ml-1">
+                        <button type="submit" wire:loading.attr="disabled" class="btn btn-primary ml-1">
                             <i class="bx bx-check d-block d-sm-none"></i>
                             <span class="d-none d-sm-block">Done</span>
                         </button>
@@ -1244,9 +1217,6 @@
                         <i data-feather="x"></i>
                     </button>
                 </div>
-                <div wire:loading class="spinner-border spinner-border-sm" role="status">
-                    <span class="visually-hidden">Loading...</span>
-                </div>
                 <form wire:submit.prevent="save">
                     <div class="modal-body">
                         <label>Office: </label>
@@ -1264,7 +1234,7 @@
                             <i class="bx bx-x d-block d-sm-none"></i>
                             <span class="d-none d-sm-block">Close</span>
                         </button>
-                        <button type="submit" class="btn btn-primary ml-1">
+                        <button type="submit" wire:loading.attr="disabled" class="btn btn-primary ml-1">
                             <i class="bx bx-check d-block d-sm-none"></i>
                             <span class="d-none d-sm-block">Save</span>
                         </button>
@@ -1285,9 +1255,6 @@
                         <i data-feather="x"></i>
                     </button>
                 </div>
-                <div wire:loading class="spinner-border spinner-border-sm" role="status">
-                    <span class="visually-hidden">Loading...</span>
-                </div>
                 <form wire:submit.prevent="save">
                     <div class="modal-body">
                         <label>Office: </label>
@@ -1305,7 +1272,7 @@
                             <i class="bx bx-x d-block d-sm-none"></i>
                             <span class="d-none d-sm-block">Close</span>
                         </button>
-                        <button type="submit" class="btn btn-success ml-1">
+                        <button type="submit" wire:loading.attr="disabled" class="btn btn-success ml-1">
                             <i class="bx bx-check d-block d-sm-none"></i>
                             <span class="d-none d-sm-block">Update</span>
                         </button>
@@ -1326,9 +1293,6 @@
                         <i data-feather="x"></i>
                     </button>
                 </div>
-                <div wire:loading class="spinner-border spinner-border-sm" role="status">
-                    <span class="visually-hidden">Loading...</span>
-                </div>
                 <form wire:submit.prevent="save">
                     <div class="modal-body">
                         <label>Account Type: </label>
@@ -1341,7 +1305,7 @@
                             <i class="bx bx-x d-block d-sm-none"></i>
                             <span class="d-none d-sm-block">Close</span>
                         </button>
-                        <button type="submit" class="btn btn-primary ml-1">
+                        <button type="submit" wire:loading.attr="disabled" class="btn btn-primary ml-1">
                             <i class="bx bx-check d-block d-sm-none"></i>
                             <span class="d-none d-sm-block">Save</span>
                         </button>
@@ -1362,9 +1326,6 @@
                         <i data-feather="x"></i>
                     </button>
                 </div>
-                <div wire:loading class="spinner-border spinner-border-sm" role="status">
-                    <span class="visually-hidden">Loading...</span>
-                </div>
                 <form wire:submit.prevent="save">
                     <div class="modal-body">
                         <label>Account Type: </label>
@@ -1377,7 +1338,7 @@
                             <i class="bx bx-x d-block d-sm-none"></i>
                             <span class="d-none d-sm-block">Close</span>
                         </button>
-                        <button type="submit" class="btn btn-success ml-1">
+                        <button type="submit" wire:loading.attr="disabled" class="btn btn-success ml-1">
                             <i class="bx bx-check d-block d-sm-none"></i>
                             <span class="d-none d-sm-block">Update</span>
                         </button>
