@@ -47,15 +47,26 @@
                 </div>
                 @error('office_id') <p style="color: rgb(220 38 38);">{{ $message }}</p> @enderror
             </div>
-    
+
             <div class="form-group position-relative has-icon-left mb-4">
+                <label for="account_type">Account Types</label>
+                <select class="form-select" size="5" id="account_type" name="account_type[]" multiple>
+                    <livewire:account-type-livewire />
+                </select>
+                <p>Hold down the Ctrl (windows) or Command (Mac) button to select multiple options.</p>
+                @error('account_type') <p style="color: rgb(220 38 38);">{{ $message }}</p> @enderror
+            </div>
+    
+            {{-- <div class="form-group position-relative has-icon-left mb-4">
                 <input type="text" class="form-control form-control-xl" name="account_types" placeholder="Account Types" value="{{ old('account_types') }}" title="Eg. Staff, Head of Delivery Unit, Head of Office, etc."
                 <div class="form-control-icon">
                     <i class="bi bi-person-badge"></i>
                 </div>
                 <p class="text-muted">Eg. Staff, Head of Delivery Unit, Head of Office, etc.</p>
                 @error('account_types') <p style="color: rgb(220 38 38);">{{ $message }}</p> @enderror
-            </div>
+            </div> --}}
+
+
     
             @if (Laravel\Jetstream\Jetstream::hasTermsAndPrivacyPolicyFeature())
                 <div class="mt-4">

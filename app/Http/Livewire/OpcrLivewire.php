@@ -59,8 +59,12 @@ class OpcrLivewire extends Component
     ];
 
     public function mount(){
-        $this->users1 = User::where('account_types', 'like', "%head%")->where('id', '!=', Auth::user()->id)->get();
-        $this->users2 = User::where('account_types', 'like', "%head%")->where('id', '!=', Auth::user()->id)->get();
+        $this->users1 = User::whereHas('account_types', function(\Illuminate\Database\Eloquent\Builder $query) {
+            return $query->where('account_type', 'like', "%head%");
+        })->where('id', '!=', Auth::user()->id)->get();
+        $this->users2 = User::whereHas('account_types', function(\Illuminate\Database\Eloquent\Builder $query) {
+            return $query->where('account_type', 'like', "%head%");
+        })->where('id', '!=', Auth::user()->id)->get();
         $this->approval = Approval::orderBy('id', 'DESC')->where('user_id', Auth::user()->id)->where('type', 'opcr')->first();
     }
 
@@ -270,9 +274,13 @@ class OpcrLivewire extends Component
     
     public function changeUser(){
         if($this->superior1_id != ''){
-            $this->users2 = User::where('account_types', 'like', "%head%")->where('id', '!=', $this->superior1_id)->where('id', '!=', Auth::user()->id)->get();
+            $this->users2 = User::whereHas('account_types', function(\Illuminate\Database\Eloquent\Builder $query) {
+            return $query->where('account_type', 'like', "%head%");
+        })->where('id', '!=', $this->superior1_id)->where('id', '!=', Auth::user()->id)->get();
         } elseif ($this->superior2_id != ''){
-            $this->users1 = User::where('account_types', 'like', "%head%")->where('id', '!=', $this->superior2_id)->where('id', '!=', Auth::user()->id)->get();
+            $this->users1 = User::whereHas('account_types', function(\Illuminate\Database\Eloquent\Builder $query) {
+            return $query->where('account_type', 'like', "%head%");
+        })->where('id', '!=', $this->superior2_id)->where('id', '!=', Auth::user()->id)->get();
         }
     }
 

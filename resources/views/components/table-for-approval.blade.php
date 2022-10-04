@@ -16,7 +16,15 @@
                     <tr>
                         <td>{{ $approval->user->name }}</td>
                         <td>{{ $approval->user->email }}</td>
-                        <td>{{ $approval->user->account_types }}</td>
+                        <td>
+                            @foreach ($approval->user->account_types as $account_type)
+                                @if ($loop->last)
+                                    {{ $account_type->account_type }}
+                                    @break
+                                @endif
+                                {{ $account_type->account_type }}, 
+                            @endforeach
+                        </td>
                         <td>{{ $approval->user->office->office }}, {{ $approval->user->office->building }}</td>
                         <td>{{ strtoupper($approval->type) }}</td>
                         <td>

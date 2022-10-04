@@ -2,6 +2,7 @@
 
 namespace App\Http\Livewire;
 
+use App\Models\AccountType;
 use App\Models\Office;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -11,15 +12,25 @@ class ConfigureLivewire extends Component
     use WithPagination;
 
     public $searchoffice = '';
+    public $sortOffice = 'id';
+    public $ascOffice = 'asc';
+    public $pageOffice = 10;
+    public $searchacctype = '';
+    public $sortAccType = 'id';
+    public $ascAccType = 'asc';
+    public $pageAccType = 10;
     public $type;
     public $category;
     public $office_id;
     public $office;
     public $building;
+    public $account_type_id;
+    public $account_type;
 
     protected $rules = [
         'office' => ['required_if:type,office'],
-        'building' =>  ['required_if:type,office']
+        'building' =>  ['required_if:type,office'],
+        'account_type' => ['required_if:type,account_type']
     ];
 
     public function updated($property)
@@ -29,14 +40,20 @@ class ConfigureLivewire extends Component
 
     public function render()
     {
-        $query = Office::query();
+        $offices = Office::query();
         if ($this->searchoffice) {
-            $query->where('office', 'like', "%{$this->searchoffice}%")
+            $offices->where('office', 'like', "%{$this->searchoffice}%")
                 ->orwhere('building', 'like', "%{$this->searchoffice}%");
         }
 
+        $account_types = AccountType::query();
+        if ($this->searchacctype) {
+            $account_types->where('account_type', 'like', "%{$this->searchacctype}%");
+        }
+
         return view('livewire.configure-livewire',[
-            'offices' => $query->orderBy('office', 'ASC')->paginate(10)
+            'offices' => $offices->orderBy($this->sortOffice, $this->ascOffice)->paginate($this->pageOffice),
+            'account_types' => $account_types->orderBy($this->sortAccType, $this->ascAccType)->paginate($this->pageAccType)
         ]);
     }
 
@@ -50,10 +67,22 @@ class ConfigureLivewire extends Component
             ]);
 
             session()->flash('message', 'Updated Successfully!');
-        } else {
+        } elseif ($this->type == 'office') {
             Office::create([
                 'office' => $this->office, 
                 'building' => $this->building
+            ]);
+
+            session()->flash('message', 'Added Successfully!');
+        } elseif ($this->category == 'edit' && $this->type == 'account_type') {
+            AccountType::where('id', $this->account_type_id)->update([
+                'account_type' => $this->account_type
+            ]);
+
+            session()->flash('message', 'Updated Successfully!');
+        } elseif ($this->type == 'account_type') {
+            AccountType::create([
+                'account_type' => $this->account_type
             ]);
 
             session()->flash('message', 'Added Successfully!');
@@ -76,12 +105,23 @@ class ConfigureLivewire extends Component
                 $this->office = $data->office;
                 $this->building = $data->building;
             }
+        } elseif ($type == 'account_type') {
+            $this->account_type_id = $id;
+            if ($category == 'edit') {
+                $this->category = $category;
+
+                $data = AccountType::find($this->account_type_id);
+
+                $this->account_type = $data->account_type;
+            }
         }
     }
 
     public function delete(){
         if($this->type == 'office') {
             Office::where('id', $this->office_id)->delete();
+        } elseif ($this->type == 'account_type') {
+            AccountType::where('id', $this->account_type_id)->delete();
         }
 
         session()->flash('message', 'Deleted Successfully!');
@@ -95,6 +135,14 @@ class ConfigureLivewire extends Component
         $this->building = '';
         $this->type = '';
         $this->category = '';
+        $this->account_type_id = '';
+        $this->account_type = '';
+        $this->sortOffice = 'id';
+        $this->ascOffice = 'asc';
+        $this->pageOffice = 10;
+        $this->sortAccType = 'id';
+        $this->ascAccType = 'asc';
+        $this->pageAccType = 10;
     }
 
     public function closeModal(){

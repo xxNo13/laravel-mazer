@@ -44,8 +44,12 @@ class StandardLivewire extends Component
     ];
 
     public function mount(){
-        $this->users1 = User::where('account_types', 'like', "%head%")->where('id', '!=', Auth::user()->id)->get();
-        $this->users2 = User::where('account_types', 'like', "%head%")->where('id', '!=', Auth::user()->id)->get();
+        $this->users1 = User::whereHas('account_types', function(\Illuminate\Database\Eloquent\Builder $query) {
+            return $query->where('account_type', 'like', "%head%");
+        })->where('id', '!=', Auth::user()->id)->get();
+        $this->users2 = User::whereHas('account_types', function(\Illuminate\Database\Eloquent\Builder $query) {
+            return $query->where('account_type', 'like', "%head%");
+        })->where('id', '!=', Auth::user()->id)->get();
         $this->approval = Approval::orderBy('id', 'DESC')->where('user_id', Auth::user()->id)->where('type', 'standard')->first();
     }
 
@@ -150,9 +154,13 @@ class StandardLivewire extends Component
     
     public function changeUser(){
         if($this->superior1_id != ''){
-            $this->users2 = User::where('account_types', 'like', "%head%")->where('id', '!=', $this->superior1_id)->get();
+            $this->users2 = User::whereHas('account_types', function(\Illuminate\Database\Eloquent\Builder $query) {
+            return $query->where('account_type', 'like', "%head%");
+        })->where('id', '!=', $this->superior1_id)->get();
         } elseif ($this->superior2_id != ''){
-            $this->users1 = User::where('account_types', 'like', "%head%")->where('id', '!=', $this->superior2_id)->get();
+            $this->users1 = User::whereHas('account_types', function(\Illuminate\Database\Eloquent\Builder $query) {
+            return $query->where('account_type', 'like', "%head%");
+        })->where('id', '!=', $this->superior2_id)->get();
         }
     }
 

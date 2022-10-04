@@ -32,14 +32,32 @@
                     </select>
                     <x-maz-input-error for="account_types" />
                 </div>
+
+                <!-- User Account Type -->
+                <div class="form-group">
+                    <label for="account_type">Account Type</label>
+                    <span class="form-control">
+                        @foreach (Auth::user()->account_types as $account_type)
+                            @if ($loop->last)
+                                {{ $account_type->account_type }}
+                                @break
+                            @endif
+                            {{ $account_type->account_type }}, 
+                        @endforeach
+                    </span>
+                    <x-maz-input-error for="account_types" />
+                </div>
                 
                 <!-- Account Types -->
                 <div class="form-group">
-                    <label for="account_types">Account Types</label>
-                    <input id="account_types" type="text" class="form-control {{ $errors->has('account_types') ? 'is-invalid' : '' }}" wire:model.defer="state.account_types" autocomplete="account_types" title="Eg. Staff, Head of Delivery Unit, Head of Office, etc.">
-                    <p class="text-muted">Eg. Staff, Head of Delivery Unit, Head of Office, etc.</p>
+                    <label for="account_type">Choose to update account type/s</label>
+                    <select id="account_type" class="form-select {{ $errors->has('account_type') ? 'is-invalid' : '' }}" size="5" wire:model.defer="state.account_type" autocomplete="account_type" multiple>
+                        <livewire:account-type-livewire />
+                    </select>
+                    <p>Hold down the Ctrl (windows) or Command (Mac) button to select multiple options.</p>
                     <x-maz-input-error for="account_types" />
                 </div>
+
 
                 <button class="btn btn-primary float-end mt-2"  wire:loading.attr="disabled" wire:target="photo">Save</button>
             </form>

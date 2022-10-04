@@ -26,6 +26,8 @@
         $('#DoneModal').modal('hide');
         $('#AddOfficeModal').modal('hide');
         $('#EditOfficeModal').modal('hide');
+        $('#AddAccountTypeModal').modal('hide');
+        $('#EditAccountTypeModal').modal('hide');
     });
 </script>
 

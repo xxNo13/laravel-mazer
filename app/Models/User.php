@@ -76,4 +76,7 @@ class User extends Authenticatable
     public function ttmas(){
         return $this->hasMany(Ttma::class);
     }
+    public function account_types(){
+        return $this->belongsToMany(AccountType::class, 'account_type_user');
+    }
 }

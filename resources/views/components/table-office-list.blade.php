@@ -14,7 +14,15 @@
                     <tr>
                         <td>{{ $user->name }}</td>
                         <td>{{ $user->email }}</td>
-                        <td>{{ $user->account_types }}</td>
+                        <td>
+                            @foreach ($user->account_types as $account_type)
+                                @if ($loop->last)
+                                    {{ $account_type->account_type }}
+                                    @break
+                                @endif
+                                {{ $account_type->account_type }}, 
+                            @endforeach
+                        </td>
                         <td>
                             <button type="button" class="btn icon btn-secondary" wire:click="viewed({{ $user->id }}, '{{ 'officemates' }}')">
                                 <i class="bi bi-eye"></i>
