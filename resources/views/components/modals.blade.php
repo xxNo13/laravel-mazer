@@ -1407,14 +1407,19 @@
 
                         <label>Start Date: </label>
                         <div class="form-group">
-                            <input type="date" placeholder="Start Date" class="form-control"
+                            <input type="date" placeholder="Start Date" class="form-control" wire:change="startChanged"
                                 wire:model="start_date" min="{{ date('Y-m-d') }}">
                         </div>
 
                         <label>End Date: </label>
                         <div class="form-group">
                             <input type="date" placeholder="End Date" class="form-control"
-                                wire:model="end_date" min="{{ date('Y-m-d') }}">
+                                wire:model="end_date"
+                                @if (isset($startDate))
+                                    min="{{ $startDate }}"
+                                @else
+                                    min="{{ date('Y-m-d') }}"
+                                @endif>
                         </div>
                     </div>
                     <div class="modal-footer">

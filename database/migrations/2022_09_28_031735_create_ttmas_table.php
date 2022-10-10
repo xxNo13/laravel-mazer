@@ -20,7 +20,7 @@ return new class extends Migration
             $table->string('output');
             $table->string('remarks')->nullable();
             $table->integer('head_id');
-            $table->foreignId('duration_id')->constrained();
+            $table->foreignId('duration_id')->onDelete('cascade');
             $table->timestamps();
         });
     }

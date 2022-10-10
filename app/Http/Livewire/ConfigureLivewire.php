@@ -63,8 +63,15 @@ class ConfigureLivewire extends Component
         return view('livewire.configure-livewire',[
             'offices' => $offices->orderBy($this->sortOffice, $this->ascOffice)->paginate($this->pageOffice),
             'account_types' => $account_types->orderBy($this->sortAccType, $this->ascAccType)->paginate($this->pageAccType),
-            'durations' => Duration::orderBy('id', 'desc')->paginate(10)
+            'durations' => Duration::orderBy('id', 'desc')->paginate(10),
+            'startDate' => $this->start_date
         ]);
+    }
+
+    public function startChanged(){
+        if($this->end_date <= $this->start_date){
+            $this->end_date = $this->start_date;
+        }
     }
 
     public function save(){
@@ -110,6 +117,7 @@ class ConfigureLivewire extends Component
             ]);
 
             session()->flash('message', 'Added Successfully!');
+            return redirect(request()->header('Referer'));
         }
 
         $this->resetInput();

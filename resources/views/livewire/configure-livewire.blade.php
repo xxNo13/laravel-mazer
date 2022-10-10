@@ -299,5 +299,5 @@
         </div>
     </section>
 
-    <x-modals />
+    <x-modals :startDate="$startDate" />
 </div>
