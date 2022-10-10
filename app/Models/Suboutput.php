@@ -13,7 +13,8 @@ class Suboutput extends Model
         'suboutput',
         'output_id',
         'user_id',
-        'type'
+        'type',
+        'duration_id'
     ];
 
     public function targets(){

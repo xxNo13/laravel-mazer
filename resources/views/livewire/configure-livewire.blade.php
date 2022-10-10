@@ -26,6 +26,80 @@
 
     <section class="section pt-3">
         <div class="card">
+            <div class="accordion accordion-flush card-header" id="durationAccordion">
+                <div class="accordion-item">
+                    <div class="accordion-header hstack gap-2" id="flush-headingOne" wire:ignore.self>
+                        <div class="accordion-button" data-bs-toggle="collapse" data-bs-target="#duration"
+                            wire:ignore.self aria-expanded="false" aria-controls="duration" role="button">
+                            <h4>Semester Duration</h4>
+                        </div>
+                    </div>
+                    <div id="duration" class="accordion-collapse collapse show" aria-labelledby="flush-headingOne"
+                        wire:ignore.self data-bs-parent="#durationAccordion">
+                        <div class="acordion-header mt-2 row">    
+                            <div class="hstack justify-content-center gap-2 mt-2 col-12">
+                                @if ($duration->end_date >= date('Y-m-d'))
+                                @else
+                                    <button type="button" class="ms-md-auto btn icon btn-primary" data-bs-toggle="modal"
+                                        wire:click="select('{{ 'duration' }}')" data-bs-target="#AddDurationModal"
+                                        title="Add Duration">
+                                        <i class="bi bi-plus"></i>
+                                    </button>
+                                @endif
+                            </div>
+                        </div>
+                        <div class="accordion-body">
+                            <div class="table-responsive">
+                                <table class="table table-lg text-center">
+                                    <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Start Date</th>
+                                            <th>End Date</th>
+                                            <th>ACTION</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @forelse ($durations as $duration)
+                                            <tr>
+                                                <td>{{ $duration->id }}</td>
+                                                <td>{{ date('M d, Y', strtotime($duration->start_date)) }}</td>
+                                                <td>{{ date('M d, Y', strtotime($duration->end_date)) }}</td>
+                                                <td>
+                                                    @if (!($duration->start_date <= date('Y-m-d')))
+                                                        <button type="button" class="btn icon btn-success"
+                                                            wire:click="select('{{ 'duration' }}', {{ $duration->id }}, '{{ 'edit' }}')"
+                                                            data-bs-toggle="modal" data-bs-target="#EditDurationModal">
+                                                            <i class="bi bi-pencil-square"></i>
+                                                        </button>
+                                                        <button type="button" class="btn icon btn-danger"
+                                                            wire:click="select('{{ 'duration' }}', {{ $duration->id }})"
+                                                            data-bs-toggle="modal" data-bs-target="#DeleteModal">
+                                                            <i class="bi bi-trash"></i>
+                                                        </button>
+                                                    @else
+                                                        You can't Add, Edit or Delete the Semester's Duration since it already started/finished.
+                                                    @endif
+                                                </td>
+                                            </tr>
+                                        @empty
+                                            <tr>
+                                                <td colspan="3">No record available!</td>
+                                            </tr>
+                                        @endforelse
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer">
+                {{ $durations->links('components.pagination') }}
+            </div>
+        </div>
+
+        <div class="card">
             <div class="accordion accordion-flush card-header" id="officeAccordion">
                 <div class="accordion-item">
                     <div class="accordion-header hstack gap-2" id="flush-headingOne" wire:ignore.self>

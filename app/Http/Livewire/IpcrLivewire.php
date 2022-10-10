@@ -2,6 +2,7 @@
 
 namespace App\Http\Livewire;
 
+use PDF;
 use App\Models\User;
 use App\Models\Funct;
 use App\Models\Output;
@@ -9,10 +10,10 @@ use App\Models\Rating;
 use App\Models\Target;
 use Livewire\Component;
 use App\Models\Approval;
+use App\Models\Duration;
 use App\Models\Suboutput;
 use Livewire\WithPagination;
 use Illuminate\Support\Facades\Auth;
-use PDF;
 
 class IpcrLivewire extends Component
 {
@@ -45,6 +46,8 @@ class IpcrLivewire extends Component
     public $users1;
     public $users2;
     public $approval;
+    public $type = 'IPCR';
+    public $duration;
 
     // protected $paginationTheme = 'bootstrap';
     protected $rules = [
@@ -66,7 +69,8 @@ class IpcrLivewire extends Component
         $this->users2 = User::whereHas('account_types', function(\Illuminate\Database\Eloquent\Builder $query) {
             return $query->where('account_type', 'like', "%head%");
         })->where('id', '!=', Auth::user()->id)->get();
-        $this->approval = Approval::orderBy('id', 'DESC')->where('user_id', Auth::user()->id)->where('type', 'ipcr')->first();
+        $this->duration = Duration::orderBy('id', 'DESC')->where('start_date', '<=', date('Y-m-d'))->first();
+        $this->approval = Approval::orderBy('id', 'DESC')->where('user_id', Auth::user()->id)->where('type', 'ipcr')->where('duration_id', $this->duration->id)->first();
     }
 
     public function render()
@@ -114,14 +118,16 @@ class IpcrLivewire extends Component
                     'output' => $this->output,
                     'funct_id' => $this->funct_id,
                     'user_id' => Auth::user()->id,
-                    'type' => 'ipcr'
+                    'type' => 'ipcr',
+                    'duration_id' => $this->duration->id
                 ]);
             } elseif ($this->selected == 'suboutput') {
                 Suboutput::create([
                     'suboutput' => $this->suboutput,
                     'output_id' => $this->output_id,
                     'user_id' => Auth::user()->id,
-                    'type' => 'ipcr'
+                    'type' => 'ipcr',
+                    'duration_id' => $this->duration->id
                 ]);
             } elseif ($this->selected == 'target') {
                 $subputArr = explode(',', $this->subput);
@@ -131,14 +137,16 @@ class IpcrLivewire extends Component
                         'target' => $this->target,
                         'output_id' =>  $subputArr[1],
                         'user_id' => Auth::user()->id,
-                        'type' => 'ipcr'
+                        'type' => 'ipcr',
+                        'duration_id' => $this->duration->id
                     ]);
                 } elseif ($subputArr[0] == 'suboutput'){
                     Target::create([
                         'target' => $this->target,
                         'suboutput_id' =>  $subputArr[1],
                         'user_id' => Auth::user()->id,
-                        'type' => 'ipcr'
+                        'type' => 'ipcr',
+                        'duration_id' => $this->duration->id
                     ]);
                 }
     
@@ -293,6 +301,7 @@ class IpcrLivewire extends Component
             'superior1_id' => $this->superior1_id,
             'superior2_id' => $this->superior2_id,
             'type' => 'ipcr',
+            'duration_id' => $this->duration->id
         ]);
 
         session()->flash('message', 'Submitted Successfully!');

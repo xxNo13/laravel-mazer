@@ -1,5 +1,5 @@
 <div>
-    @if (isset($selected) && isset($ost))
+    @if (isset($selected) && isset($ost) && isset($duration))
         {{-- Configure Output/Suboutput/Target Modal --}}
         <div wire:ignore.self class="modal fade text-left" id="ConfigureIPCROSTModal" tabindex="-1" role="dialog"
             aria-labelledby="myModalLabel33" aria-hidden="true">
@@ -79,10 +79,10 @@
                                     <label>Output: </label>
                                     <div class="form-group">
                                         <select placeholder="Output" class="form-control" wire:model="output_id"
-                                            wire:change="editChanged">
+                                            wire:change="editChanged" required>
                                             <option value="">Select an output</option>
                                             @foreach (Auth::user()->outputs as $output)
-                                                @if ($output->type == 'ipcr')
+                                                @if ($output->type == 'ipcr' && $output->duration_id == $duration->id)
                                                     <option value="{{ $output->id }}">{{ $output->code }}
                                                         {{ $output->output }}
                                                     </option>
@@ -96,8 +96,8 @@
 
                                     <label>Output: </label>
                                     <div class="form-group">
-                                        <input type="text" placeholder="Output" class="form-control"
-                                            name="output" wire:model="output">
+                                        <input type="text" placeholder="Output" class="form-control" name="output"
+                                            wire:model="output">
                                         @error('output')
                                             <p class="text-danger">{{ $message }}</p>
                                         @enderror
@@ -105,10 +105,10 @@
                                 @elseif ($selected == 'output' && $ost == 'delete')
                                     <label>Output: </label>
                                     <div class="form-group">
-                                        <select placeholder="Output" class="form-control" wire:model="output_id">
+                                        <select placeholder="Output" class="form-control" wire:model="output_id" required>
                                             <option value="">Select an output</option>
                                             @foreach (Auth::user()->outputs as $output)
-                                                @if ($output->type == 'ipcr')
+                                                @if ($output->type == 'ipcr' && $output->duration_id == $duration->id)
                                                     <option value="{{ $output->id }}">{{ $output->code }}
                                                         {{ $output->output }}
                                                     </option>
@@ -122,12 +122,12 @@
                                 @elseif ($selected == 'suboutput' && $ost == 'add')
                                     <label>Output: </label>
                                     <div class="form-group">
-                                        <select placeholder="Output" class="form-control" wire:model="output_id">
+                                        <select placeholder="Output" class="form-control" wire:model="output_id" required>
                                             <option value="">Select an output</option>
                                             @foreach (Auth::user()->outputs as $output)
                                                 @forelse ($output->targets as $target)
                                                 @empty
-                                                    @if ($output->type == 'ipcr')
+                                                    @if ($output->type == 'ipcr' && $output->duration_id == $duration->id)
                                                         <option value="{{ $output->id }}">{{ $output->code }}
                                                             {{ $output->output }}
                                                         </option>
@@ -135,7 +135,7 @@
                                                 @endforelse
                                             @endforeach
                                         </select>
-                                        @error('output')
+                                        @error('output_id')
                                             <p class="text-danger">{{ $message }}</p>
                                         @enderror
                                     </div>
@@ -151,10 +151,10 @@
                                     <label>Suboutput: </label>
                                     <div class="form-group">
                                         <select placeholder="Suboutput" class="form-control"
-                                            wire:model="suboutput_id" wire:change="editChanged">
+                                            wire:model="suboutput_id" wire:change="editChanged" required>
                                             <option value="">Select a suboutput</option>
                                             @foreach (Auth::user()->suboutputs as $suboutput)
-                                                @if ($suboutput->type == 'ipcr')
+                                                @if ($suboutput->type == 'ipcr' && $suboutput->duration_id == $duration->id)
                                                     <option value="{{ $suboutput->id }}">
                                                         {{ $suboutput->output->code }}
                                                         {{ $suboutput->output->output }} - {{ $suboutput->suboutput }}
@@ -178,11 +178,11 @@
                                 @elseif ($selected == 'suboutput' && $ost == 'delete')
                                     <label>Suboutput: </label>
                                     <div class="form-group">
-                                        <select placeholder="Suboutput" class="form-control"
+                                        <select placeholder="Suboutput" class="form-control" required
                                             wire:model="suboutput_id">
                                             <option value="">Select a suboutput</option>
                                             @foreach (Auth::user()->suboutputs as $suboutput)
-                                                @if ($suboutput->type == 'ipcr')
+                                                @if ($suboutput->type == 'ipcr' && $suboutput->duration_id == $duration->id)
                                                     <option value="{{ $suboutput->id }}">
                                                         {{ $suboutput->output->code }}
                                                         {{ $suboutput->output->output }} - {{ $suboutput->suboutput }}
@@ -197,13 +197,12 @@
                                 @elseif ($selected == 'target' && $ost == 'add')
                                     <label>Output/Suboutput: </label>
                                     <div class="form-group">
-                                        <select placeholder="Output/Suboutput" class="form-control"
-                                            wire:model="subput">
+                                        <select placeholder="Output/Suboutput" class="form-control" wire:model="subput" required>
                                             <option value="">Select an/a output/suboutput</option>
                                             @foreach (Auth::user()->outputs as $output)
                                                 @forelse ($output->suboutputs as $suboutput)
                                                 @empty
-                                                    @if ($output->type == 'ipcr')
+                                                    @if ($output->type == 'ipcr' && $output->duration_id == $duration->id)
                                                         <option value="output, {{ $output->id }}">
                                                             {{ $output->code }}
                                                             {{ $output->output }}
@@ -212,7 +211,7 @@
                                                 @endforelse
                                             @endforeach
                                             @foreach (Auth::user()->suboutputs as $suboutput)
-                                                @if ($suboutput->type == 'ipcr')
+                                                @if ($suboutput->type == 'ipcr' && $suboutput->duration_id == $duration->id)
                                                     <option value="suboutput, {{ $suboutput->id }}">
                                                         {{ $suboutput->output->code }}
                                                         {{ $suboutput->output->output }} -
@@ -236,11 +235,11 @@
                                 @elseif ($selected == 'target' && $ost == 'edit')
                                     <label>Target: </label>
                                     <div class="form-group">
-                                        <select placeholder="Target" class="form-control" wire:model="target_id"
+                                        <select placeholder="Target" class="form-control" wire:model="target_id" required
                                             wire:change="editChanged">
                                             <option value="">Select a Target</option>
                                             @foreach (Auth::user()->targets as $target)
-                                                @if ($target->type == 'ipcr')
+                                                @if ($target->type == 'ipcr' && $target->duration_id == $duration->id)
                                                     <option value="{{ $target->id }}">
                                                         @if ($target->output)
                                                             {{ $target->output->code }} {{ $target->output->output }}
@@ -271,10 +270,10 @@
                                 @elseif ($selected == 'target' && $ost == 'delete')
                                     <label>Target: </label>
                                     <div class="form-group">
-                                        <select placeholder="Target" class="form-control" wire:model="target_id">
+                                        <select placeholder="Target" class="form-control" wire:model="target_id" required>
                                             <option value="">Select a target</option>
                                             @foreach (Auth::user()->targets as $target)
-                                                @if ($target->type == 'ipcr')
+                                                @if ($target->type == 'ipcr' && $target->duration_id == $duration->id)
                                                     <option value="{{ $target->id }}">
                                                         @if ($target->output)
                                                             {{ $target->output->code }} {{ $target->output->output }}
@@ -312,8 +311,8 @@
                                     <span class="d-none d-sm-block">Update</span>
                                 </button>
                             @elseif ($ost == 'delete')
-                                <button type="button" wire:loading.attr="disabled" class="btn btn-danger ml-1" data-bs-target="#DeleteModal"
-                                    data-bs-toggle="modal">
+                                <button type="submit" wire:loading.attr="disabled" class="btn btn-danger ml-1"
+                                    data-bs-target="#DeleteModal" data-bs-toggle="modal">
                                     <i class="bx bx-check d-block d-sm-none"></i>
                                     <span class="d-none d-sm-block">Delete</span>
                                 </button>
@@ -402,11 +401,11 @@
                                 @elseif ($selected == 'output' && $ost == 'edit')
                                     <label>Output: </label>
                                     <div class="form-group">
-                                        <select placeholder="Output" class="form-control" wire:model="output_id"
+                                        <select placeholder="Output" class="form-control" wire:model="output_id" required
                                             wire:change="editChanged">
                                             <option value="">Select an output</option>
                                             @foreach (Auth::user()->outputs as $output)
-                                                @if ($output->type == 'opcr')
+                                                @if ($output->type == 'opcr' && $output->duration_id == $duration->id)
                                                     <option value="{{ $output->id }}">{{ $output->code }}
                                                         {{ $output->output }}
                                                     </option>
@@ -429,10 +428,10 @@
                                 @elseif ($selected == 'output' && $ost == 'delete')
                                     <label>Output: </label>
                                     <div class="form-group">
-                                        <select placeholder="Output" class="form-control" wire:model="output_id">
+                                        <select placeholder="Output" class="form-control" wire:model="output_id" required>
                                             <option value="">Select an output</option>
                                             @foreach (Auth::user()->outputs as $output)
-                                                @if ($output->type == 'opcr')
+                                                @if ($output->type == 'opcr' && $output->duration_id == $duration->id)
                                                     <option value="{{ $output->id }}">{{ $output->code }}
                                                         {{ $output->output }}
                                                     </option>
@@ -446,12 +445,12 @@
                                 @elseif ($selected == 'suboutput' && $ost == 'add')
                                     <label>Output: </label>
                                     <div class="form-group">
-                                        <select placeholder="Output" class="form-control" wire:model="output_id">
+                                        <select placeholder="Output" class="form-control" wire:model="output_id" required>
                                             <option value="">Select an output</option>
                                             @foreach (Auth::user()->outputs as $output)
                                                 @forelse ($output->targets as $target)
                                                 @empty
-                                                    @if ($output->type == 'opcr')
+                                                    @if ($output->type == 'opcr' && $output->duration_id == $duration->id)
                                                         <option value="{{ $output->id }}">{{ $output->code }}
                                                             {{ $output->output }}
                                                         </option>
@@ -474,11 +473,11 @@
                                 @elseif ($selected == 'suboutput' && $ost == 'edit')
                                     <label>Suboutput: </label>
                                     <div class="form-group">
-                                        <select placeholder="Suboutput" class="form-control"
+                                        <select placeholder="Suboutput" class="form-control" required
                                             wire:model="suboutput_id" wire:change="editChanged">
                                             <option value="">Select a suboutput</option>
                                             @foreach (Auth::user()->suboutputs as $suboutput)
-                                                @if ($suboutput->type == 'opcr')
+                                                @if ($suboutput->type == 'opcr' && $suboutput->duration_id == $duration->id)
                                                     <option value="{{ $suboutput->id }}">
                                                         {{ $suboutput->output->code }}
                                                         {{ $suboutput->output->output }} - {{ $suboutput->suboutput }}
@@ -502,11 +501,11 @@
                                 @elseif ($selected == 'suboutput' && $ost == 'delete')
                                     <label>Suboutput: </label>
                                     <div class="form-group">
-                                        <select placeholder="Suboutput" class="form-control"
+                                        <select placeholder="Suboutput" class="form-control" required
                                             wire:model="suboutput_id">
                                             <option value="">Select a suboutput</option>
                                             @foreach (Auth::user()->suboutputs as $suboutput)
-                                                @if ($suboutput->type == 'opcr')
+                                                @if ($suboutput->type == 'opcr' && $suboutput->duration_id == $duration->id)
                                                     <option value="{{ $suboutput->id }}">
                                                         {{ $suboutput->output->code }}
                                                         {{ $suboutput->output->output }} - {{ $suboutput->suboutput }}
@@ -521,13 +520,13 @@
                                 @elseif ($selected == 'target' && $ost == 'add')
                                     <label>Output/Suboutput: </label>
                                     <div class="form-group">
-                                        <select placeholder="Output/Suboutput" class="form-control"
+                                        <select placeholder="Output/Suboutput" class="form-control" required
                                             wire:model="subput">
                                             <option value="">Select an/a output/suboutput</option>
                                             @foreach (Auth::user()->outputs as $output)
                                                 @forelse ($output->suboutputs as $suboutput)
                                                 @empty
-                                                    @if ($output->type == 'opcr')
+                                                    @if ($output->type == 'opcr' && $output->duration_id == $duration->id)
                                                         <option value="output, {{ $output->id }}">
                                                             {{ $output->code }}
                                                             {{ $output->output }}
@@ -536,7 +535,7 @@
                                                 @endforelse
                                             @endforeach
                                             @foreach (Auth::user()->suboutputs as $suboutput)
-                                                @if ($suboutput->type == 'opcr')
+                                                @if ($suboutput->type == 'opcr' && $suboutput->duration_id == $duration->id)
                                                     <option value="suboutput, {{ $suboutput->id }}">
                                                         {{ $suboutput->output->code }}
                                                         {{ $suboutput->output->output }} -
@@ -560,11 +559,11 @@
                                 @elseif ($selected == 'target' && $ost == 'edit')
                                     <label>Target: </label>
                                     <div class="form-group">
-                                        <select placeholder="Target" class="form-control" wire:model="target_id"
+                                        <select placeholder="Target" class="form-control" wire:model="target_id" required
                                             wire:change="editChanged">
                                             <option value="">Select a Target</option>
                                             @foreach (Auth::user()->targets as $target)
-                                                @if ($target->type == 'opcr')
+                                                @if ($target->type == 'opcr' && $target->duration_id == $duration->id)
                                                     <option value="{{ $target->id }}">
                                                         @if ($target->output)
                                                             {{ $target->output->code }} {{ $target->output->output }}
@@ -579,7 +578,7 @@
                                                 @endif
                                             @endforeach
                                         </select>
-                                        @error('target')
+                                        @error('target_id')
                                             <p class="text-danger">{{ $message }}</p>
                                         @enderror
                                     </div>
@@ -595,10 +594,10 @@
                                 @elseif ($selected == 'target' && $ost == 'delete')
                                     <label>Target: </label>
                                     <div class="form-group">
-                                        <select placeholder="Target" class="form-control" wire:model="target_id">
+                                        <select placeholder="Target" class="form-control" wire:model="target_id" required>
                                             <option value="">Select a target</option>
                                             @foreach (Auth::user()->targets as $target)
-                                                @if ($target->type == 'opcr')
+                                                @if ($target->type == 'opcr' && $target->duration_id == $duration->id)
                                                     <option value="{{ $target->id }}">
                                                         @if ($target->output)
                                                             {{ $target->output->code }} {{ $target->output->output }}
@@ -636,8 +635,8 @@
                                     <span class="d-none d-sm-block">Update</span>
                                 </button>
                             @elseif ($ost == 'delete')
-                                <button type="button" wire:loading.attr="disabled" class="btn btn-danger ml-1" data-bs-target="#DeleteModal"
-                                    data-bs-toggle="modal">
+                                <button type="submit" wire:loading.attr="disabled" class="btn btn-danger ml-1"
+                                    data-bs-target="#DeleteModal" data-bs-toggle="modal">
                                     <i class="bx bx-check d-block d-sm-none"></i>
                                     <span class="d-none d-sm-block">Delete</span>
                                 </button>
@@ -680,115 +679,155 @@
         </div>
     </div>
 
-    {{-- Add Rating Modal --}}
-    <div wire:ignore.self class="modal fade text-left" id="AddRatingModal" tabindex="-1" role="dialog"
-        aria-labelledby="myModalLabel33" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h4 class="modal-title" id="myModalLabel33">Add Rating</h4>
-                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                        <i data-feather="x"></i>
-                    </button>
-                </div>
+    @if (isset($type))
+        {{-- Add Rating Modal --}}
+        <div wire:ignore.self class="modal fade text-left" id="AddRatingModal" tabindex="-1" role="dialog"
+            aria-labelledby="myModalLabel33" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title" id="myModalLabel33">Add Rating</h4>
+                        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                            <i data-feather="x"></i>
+                        </button>
+                    </div>
 
-                <form wire:submit.prevent="saveRating('{{ 'add' }}')">
-                    <div class="modal-body">
-                        <label>Actual Accomplishment: </label>
-                        <div class="form-group">
-                            <input type="text" placeholder="Actual Accomplishment" class="form-control"
-                                wire:model="accomplishment">
-                            @error('accomplishment')
-                                <p class="text-danger">{{ $message }}</p>
-                            @enderror
+                    <form wire:submit.prevent="saveRating('{{ 'add' }}')">
+                        <div class="modal-body">
+                            @if ($type == 'OPCR')
+                                <label>Alloted Budget: </label>
+                                <div class="form-group">
+                                    <input type="text" placeholder="Alloted Budget" class="form-control"
+                                        wire:model="alloted_budget">
+                                    @error('alloted_budget')
+                                        <p class="text-danger">{{ $message }}</p>
+                                    @enderror
+                                </div>
+                                <label>Responsible Office/Person: </label>
+                                <div class="form-group">
+                                    <input type="text" placeholder="Responsible Office/Person"
+                                        class="form-control" wire:model="responsible">
+                                    @error('responsible')
+                                        <p class="text-danger">{{ $message }}</p>
+                                    @enderror
+                                </div>
+                            @endif
+                            <label>Actual Accomplishment: </label>
+                            <div class="form-group">
+                                <input type="text" placeholder="Actual Accomplishment" class="form-control"
+                                    wire:model="accomplishment">
+                                @error('accomplishment')
+                                    <p class="text-danger">{{ $message }}</p>
+                                @enderror
+                            </div>
+                            <label>Efficiency: </label>
+                            <div class="form-group">
+                                <input type="text" placeholder="Efficiency" class="form-control"
+                                    wire:model="efficiency">
+                                @error('efficiency')
+                                    <p class="text-danger">{{ $message }}</p>
+                                @enderror
+                            </div>
+                            <label>Quality: </label>
+                            <div class="form-group">
+                                <input type="text" placeholder="Quality" class="form-control"
+                                    wire:model="quality">
+                                @error('quality')
+                                    <p class="text-danger">{{ $message }}</p>
+                                @enderror
+                            </div>
+                            <label>Timeliness: </label>
+                            <div class="form-group">
+                                <input type="text" placeholder="Timeliness" class="form-control"
+                                    wire:model="timeliness">
+                                @error('timeliness')
+                                    <p class="text-danger">{{ $message }}</p>
+                                @enderror
+                            </div>
                         </div>
-                        <label>Efficiency: </label>
-                        <div class="form-group">
-                            <input type="text" placeholder="Efficiency" class="form-control"
-                                wire:model="efficiency">
-                            @error('efficiency')
-                                <p class="text-danger">{{ $message }}</p>
-                            @enderror
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-light-secondary" wire:click="closeModal">
+                                <i class="bx bx-x d-block d-sm-none"></i>
+                                <span class="d-none d-sm-block">Close</span>
+                            </button>
+                            <button type="submit" wire:loading.attr="disabled" class="btn btn-primary ml-1">
+                                <i class="bx bx-check d-block d-sm-none"></i>
+                                <span class="d-none d-sm-block">Save</span>
+                            </button>
                         </div>
-                        <label>Quality: </label>
-                        <div class="form-group">
-                            <input type="text" placeholder="Quality" class="form-control" wire:model="quality">
-                            @error('quality')
-                                <p class="text-danger">{{ $message }}</p>
-                            @enderror
-                        </div>
-                        <label>Timeliness: </label>
-                        <div class="form-group">
-                            <input type="text" placeholder="Timeliness" class="form-control"
-                                wire:model="timeliness">
-                            @error('timeliness')
-                                <p class="text-danger">{{ $message }}</p>
-                            @enderror
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-light-secondary" wire:click="closeModal">
-                            <i class="bx bx-x d-block d-sm-none"></i>
-                            <span class="d-none d-sm-block">Close</span>
-                        </button>
-                        <button type="submit" wire:loading.attr="disabled" class="btn btn-primary ml-1">
-                            <i class="bx bx-check d-block d-sm-none"></i>
-                            <span class="d-none d-sm-block">Save</span>
-                        </button>
-                    </div>
-                </form>
+                    </form>
+                </div>
             </div>
         </div>
-    </div>
 
-    {{-- Edit Rating Modal --}}
-    <div wire:ignore.self class="modal fade text-left" id="EditRatingModal" tabindex="-1" role="dialog"
-        aria-labelledby="myModalLabel33" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h4 class="modal-title" id="myModalLabel33">Edit Rating</h4>
-                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                        <i data-feather="x"></i>
-                    </button>
+        {{-- Edit Rating Modal --}}
+        <div wire:ignore.self class="modal fade text-left" id="EditRatingModal" tabindex="-1" role="dialog"
+            aria-labelledby="myModalLabel33" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title" id="myModalLabel33">Edit Rating</h4>
+                        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                            <i data-feather="x"></i>
+                        </button>
+                    </div>
+
+                    <form wire:submit.prevent="saveRating('{{ 'edit' }}')">
+                        <div class="modal-body">
+                            @if ($type == 'OPCR')
+                                <label>Alloted Budget: </label>
+                                <div class="form-group">
+                                    <input type="text" placeholder="Alloted Budget" class="form-control"
+                                        wire:model="alloted_budget">
+                                    @error('alloted_budget')
+                                        <p class="text-danger">{{ $message }}</p>
+                                    @enderror
+                                </div>
+                                <label>Responsible Office/Person: </label>
+                                <div class="form-group">
+                                    <input type="text" placeholder="Responsible Office/Person"
+                                        class="form-control" wire:model="responsible">
+                                    @error('responsible')
+                                        <p class="text-danger">{{ $message }}</p>
+                                    @enderror
+                                </div>
+                            @endif
+                            <label>Actual Accomplishment: </label>
+                            <div class="form-group">
+                                <input type="text" placeholder="Actual Accomplishment" class="form-control"
+                                    wire:model="accomplishment">
+                            </div>
+                            <label>Efficiency: </label>
+                            <div class="form-group">
+                                <input type="text" placeholder="Efficiency" class="form-control"
+                                    wire:model="efficiency">
+                            </div>
+                            <label>Quality: </label>
+                            <div class="form-group">
+                                <input type="text" placeholder="Quality" class="form-control"
+                                    wire:model="quality">
+                            </div>
+                            <label>Timeliness: </label>
+                            <div class="form-group">
+                                <input type="text" placeholder="Timeliness" class="form-control"
+                                    wire:model="timeliness">
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-light-secondary" wire:click="closeModal">
+                                <i class="bx bx-x d-block d-sm-none"></i>
+                                <span class="d-none d-sm-block">Close</span>
+                            </button>
+                            <button type="submit" wire:loading.attr="disabled" class="btn btn-success ml-1">
+                                <i class="bx bx-check d-block d-sm-none"></i>
+                                <span class="d-none d-sm-block">Update</span>
+                            </button>
+                        </div>
+                    </form>
                 </div>
-
-                <form wire:submit.prevent="saveRating('{{ 'edit' }}')">
-                    <div class="modal-body">
-                        <label>Actual Accomplishment: </label>
-                        <div class="form-group">
-                            <input type="text" placeholder="Actual Accomplishment" class="form-control"
-                                wire:model="accomplishment">
-                        </div>
-                        <label>Efficiency: </label>
-                        <div class="form-group">
-                            <input type="text" placeholder="Efficiency" class="form-control"
-                                wire:model="efficiency">
-                        </div>
-                        <label>Quality: </label>
-                        <div class="form-group">
-                            <input type="text" placeholder="Quality" class="form-control" wire:model="quality">
-                        </div>
-                        <label>Timeliness: </label>
-                        <div class="form-group">
-                            <input type="text" placeholder="Timeliness" class="form-control"
-                                wire:model="timeliness">
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-light-secondary" wire:click="closeModal">
-                            <i class="bx bx-x d-block d-sm-none"></i>
-                            <span class="d-none d-sm-block">Close</span>
-                        </button>
-                        <button type="submit" wire:loading.attr="disabled" class="btn btn-success ml-1">
-                            <i class="bx bx-check d-block d-sm-none"></i>
-                            <span class="d-none d-sm-block">Update</span>
-                        </button>
-                    </div>
-                </form>
             </div>
         </div>
-    </div>
+    @endif
 
     {{-- Add Standard Modal --}}
     <div wire:ignore.self class="modal fade text-left" id="AddStandardModal" tabindex="-1" role="dialog"
@@ -1297,7 +1336,8 @@
                     <div class="modal-body">
                         <label>Account Type: </label>
                         <div class="form-group">
-                            <input type="text" placeholder="Account Type" class="form-control" wire:model="account_type">
+                            <input type="text" placeholder="Account Type" class="form-control"
+                                wire:model="account_type">
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -1330,7 +1370,94 @@
                     <div class="modal-body">
                         <label>Account Type: </label>
                         <div class="form-group">
-                            <input type="text" placeholder="Account Type" class="form-control" wire:model="account_type">
+                            <input type="text" placeholder="Account Type" class="form-control"
+                                wire:model="account_type">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-light-secondary" wire:click="closeModal">
+                            <i class="bx bx-x d-block d-sm-none"></i>
+                            <span class="d-none d-sm-block">Close</span>
+                        </button>
+                        <button type="submit" wire:loading.attr="disabled" class="btn btn-success ml-1">
+                            <i class="bx bx-check d-block d-sm-none"></i>
+                            <span class="d-none d-sm-block">Update</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    {{-- Add Duration Modal --}}
+    <div wire:ignore.self class="modal fade text-left" id="AddDurationModal" tabindex="-1" role="dialog"
+        aria-labelledby="myModalLabel33" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="myModalLabel33">Add Duration</h4>
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                        <i data-feather="x"></i>
+                    </button>
+                </div>
+                <form wire:submit.prevent="save">
+                    <div class="modal-body">
+                        <h5>IMPORT NOTICE!<br />You can't add, edit or delete semester duration if already started.</h5>
+
+
+                        <label>Start Date: </label>
+                        <div class="form-group">
+                            <input type="date" placeholder="Start Date" class="form-control"
+                                wire:model="start_date" min="{{ date('Y-m-d') }}">
+                        </div>
+
+                        <label>End Date: </label>
+                        <div class="form-group">
+                            <input type="date" placeholder="End Date" class="form-control"
+                                wire:model="end_date" min="{{ date('Y-m-d') }}">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-light-secondary" wire:click="closeModal">
+                            <i class="bx bx-x d-block d-sm-none"></i>
+                            <span class="d-none d-sm-block">Close</span>
+                        </button>
+                        <button type="submit" wire:loading.attr="disabled" class="btn btn-primary ml-1">
+                            <i class="bx bx-check d-block d-sm-none"></i>
+                            <span class="d-none d-sm-block">Save</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    {{-- Edit Duration Modal --}}
+    <div wire:ignore.self class="modal fade text-left" id="EditDurationModal" tabindex="-1" role="dialog"
+        aria-labelledby="myModalLabel33" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="myModalLabel33">Edit Duration</h4>
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                        <i data-feather="x"></i>
+                    </button>
+                </div>
+                <form wire:submit.prevent="save">
+                    <div class="modal-body">
+                        <h5>IMPORT NOTICE!<br />You can't add, edit or delete semester duration if already started.</h5>
+
+
+                        <label>Start Date: </label>
+                        <div class="form-group">
+                            <input type="date" placeholder="Start Date" class="form-control"
+                                wire:model="start_date" min="{{ date('Y-m-d') }}">
+                        </div>
+
+                        <label>End Date: </label>
+                        <div class="form-group">
+                            <input type="date" placeholder="End Date" class="form-control"
+                                wire:model="end_date" min="{{ date('Y-m-d') }}">
                         </div>
                     </div>
                     <div class="modal-footer">

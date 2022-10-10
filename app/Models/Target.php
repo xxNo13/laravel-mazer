@@ -14,7 +14,8 @@ class Target extends Model
         'output_id',
         'suboutput_id',
         'user_id',
-        'type'
+        'type',
+        'duration_id'
     ];
 
     public function rating(){

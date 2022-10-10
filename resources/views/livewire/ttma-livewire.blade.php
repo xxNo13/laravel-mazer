@@ -45,7 +45,7 @@
                         </thead>
                         <tbody>
                             @forelse (Auth::user()->ttmas as $ttma)
-                                @if (!$ttma->remarks)
+                                @if (!$ttma->remarks && $duration && $ttma->duration_id == $duration->id)
                                     <tr>
                                         <td>{{ sprintf('%03u', $ttma->id) }}</td>
                                         <td>{{ $ttma->subject }}</td>
@@ -101,54 +101,62 @@
                             </thead>
                             <tbody>
                                 @forelse ($ttmas as $ttma)
-                                    <tr>
-                                        <td>{{ sprintf('%03u', $ttma->id) }}</td>
-                                        <td>{{ $ttma->subject }}</td>
-                                        <td>{{ $ttma->user->name }}</td>
-                                        <td>{{ $ttma->output }}</td>
-                                        <td>{{ date('M d, Y', strtotime($ttma->created_at)) }}</td>
-                                        <td>
-                                            @if ($ttma->remarks)
-                                                {{ date('M d, Y', strtotime($ttma->updated_at)) }}
-                                            @endif
-                                        </td>
-                                        <td>{{ $ttma->remarks }}</td>
-                                        <td>
-                                            @if (!$ttma->remarks)
-                                                <div class="hstack gap-2">
-                                                    <button type="button" class="btn icon btn-info"
-                                                        data-bs-toggle="modal" data-bs-target="#DoneModal"
-                                                        wire:click="select({{ $ttma->id }})">
-                                                        <i class="bi bi-check"></i>
-                                                    </button>
-                                                    <button type="button" class="btn icon btn-success"
-                                                        data-bs-toggle="modal" data-bs-target="#EditTTMAModal"
-                                                        wire:click="select({{ $ttma->id }}, '{{ 'edit' }}')">
-                                                        <i class="bi bi-pencil-square"></i>
-                                                    </button>
-                                                    <button type="button" class="btn icon btn-danger"
-                                                        data-bs-toggle="modal" data-bs-target="#DeleteModal"
-                                                        wire:click="select({{ $ttma->id }})">
-                                                        <i class="bi bi-trash"></i>
-                                                    </button>
-                                                </div>
-                                            @endif
-                                        </td>
-                                    </tr>
+                                    @if ($duration && $ttma->duration_id == $duration->id)
+                                        <tr>
+                                            <td>{{ sprintf('%03u', $ttma->id) }}</td>
+                                            <td>{{ $ttma->subject }}</td>
+                                            <td>{{ $ttma->user->name }}</td>
+                                            <td>{{ $ttma->output }}</td>
+                                            <td>{{ date('M d, Y', strtotime($ttma->created_at)) }}</td>
+                                            <td>
+                                                @if ($ttma->remarks)
+                                                    {{ date('M d, Y', strtotime($ttma->updated_at)) }}
+                                                @endif
+                                            </td>
+                                            <td>{{ $ttma->remarks }}</td>
+                                            <td>
+                                                @if ((!$ttma->remarks && ($ttma->duration_id == $duration->id)) && ($duration && $duration->start_date <= date('Y-m-d') && $duration->end_date >= date('Y-m-d')))
+                                                    <div class="hstack gap-2">
+                                                        <button type="button" class="btn icon btn-info"
+                                                            data-bs-toggle="modal" data-bs-target="#DoneModal"
+                                                            wire:click="select({{ $ttma->id }})">
+                                                            <i class="bi bi-check"></i>
+                                                        </button>
+                                                        <button type="button" class="btn icon btn-success"
+                                                            data-bs-toggle="modal" data-bs-target="#EditTTMAModal"
+                                                            wire:click="select({{ $ttma->id }}, '{{ 'edit' }}')">
+                                                            <i class="bi bi-pencil-square"></i>
+                                                        </button>
+                                                        <button type="button" class="btn icon btn-danger"
+                                                            data-bs-toggle="modal" data-bs-target="#DeleteModal"
+                                                            wire:click="select({{ $ttma->id }})">
+                                                            <i class="bi bi-trash"></i>
+                                                        </button>
+                                                    </div>
+                                                @endif
+                                            </td>
+                                        </tr>
+                                    @elseif($loop->last)
+                                        <tr>
+                                            <td colspan="8">No record available!</td>
+                                        </tr>
+                                    @endif
                                 @empty
                                     <tr>
                                         <td colspan="8">No record available!</td>
                                     </tr>
                                 @endforelse
-                                <tr>
-                                    <td colspan="7"></td>
-                                    <td>
-                                        <button type="button" class="btn icon btn-primary" data-bs-toggle="modal"
-                                            data-bs-target="#AddTTMAModal">
-                                            <i class="bi bi-plus"></i>
-                                        </button>
-                                    </td>
-                                </tr>
+                                @if ($duration && $duration->start_date <= date('Y-m-d') && $duration->end_date >= date('Y-m-d'))
+                                    <tr>
+                                        <td colspan="7"></td>
+                                        <td>
+                                            <button type="button" class="btn icon btn-primary" data-bs-toggle="modal"
+                                                data-bs-target="#AddTTMAModal">
+                                                <i class="bi bi-plus"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                @endif
                             </tbody>
                         </table>
                     </div>

@@ -2,9 +2,10 @@
 
 namespace App\Http\Livewire;
 
-use App\Models\AccountType;
 use App\Models\Office;
 use Livewire\Component;
+use App\Models\Duration;
+use App\Models\AccountType;
 use Livewire\WithPagination;
 
 class ConfigureLivewire extends Component
@@ -26,6 +27,10 @@ class ConfigureLivewire extends Component
     public $building;
     public $account_type_id;
     public $account_type;
+    public $duration_id;
+    public $start_date;
+    public $end_date;
+    public $duration;
 
     protected $rules = [
         'office' => ['required_if:type,office'],
@@ -36,6 +41,10 @@ class ConfigureLivewire extends Component
     public function updated($property)
     {
         $this->validateOnly($property);
+    }
+
+    public function mount(){
+        $this->duration = Duration::orderBy('id', 'DESC')->first();
     }
 
     public function render()
@@ -53,7 +62,8 @@ class ConfigureLivewire extends Component
 
         return view('livewire.configure-livewire',[
             'offices' => $offices->orderBy($this->sortOffice, $this->ascOffice)->paginate($this->pageOffice),
-            'account_types' => $account_types->orderBy($this->sortAccType, $this->ascAccType)->paginate($this->pageAccType)
+            'account_types' => $account_types->orderBy($this->sortAccType, $this->ascAccType)->paginate($this->pageAccType),
+            'durations' => Duration::orderBy('id', 'desc')->paginate(10)
         ]);
     }
 
@@ -86,6 +96,20 @@ class ConfigureLivewire extends Component
             ]);
 
             session()->flash('message', 'Added Successfully!');
+        } elseif ($this->category == 'edit' && $this->type == 'duration') {
+            Duration::where('id', $this->duration_id)->update([
+                'start_date' => $this->start_date,
+                'end_date' => $this->end_date,
+            ]);
+
+            session()->flash('message', 'Updated Successfully!');
+        } elseif ($this->type == 'duration') {
+            Duration::create([
+                'start_date' => $this->start_date,
+                'end_date' => $this->end_date,
+            ]);
+
+            session()->flash('message', 'Added Successfully!');
         }
 
         $this->resetInput();
@@ -114,6 +138,16 @@ class ConfigureLivewire extends Component
 
                 $this->account_type = $data->account_type;
             }
+        } elseif ($type == 'duration') {
+            $this->duration_id = $id;
+            if ($category == 'edit') {
+                $this->category = $category;
+
+                $data = Duration::find($this->duration_id);
+
+                $this->start_date = $data->start_date;
+                $this->end_date = $data->end_date;
+            }
         }
     }
 
@@ -122,6 +156,8 @@ class ConfigureLivewire extends Component
             Office::where('id', $this->office_id)->delete();
         } elseif ($this->type == 'account_type') {
             AccountType::where('id', $this->account_type_id)->delete();
+        } elseif ($this->type == 'duration') {
+            Duration::where('id', $this->duration_id)->delete();
         }
 
         session()->flash('message', 'Deleted Successfully!');
@@ -143,6 +179,9 @@ class ConfigureLivewire extends Component
         $this->sortAccType = 'id';
         $this->ascAccType = 'asc';
         $this->pageAccType = 10;
+        $this->duration_id = '';
+        $this->start_date = '';
+        $this->end_date = '';
     }
 
     public function closeModal(){

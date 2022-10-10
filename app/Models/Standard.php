@@ -26,6 +26,7 @@ class Standard extends Model
         'time_2',
         'time_1',
         'target_id',
-        'user_id'
+        'user_id',
+        'duration_id'
     ];
 }

@@ -21,6 +21,7 @@ return new class extends Migration
             $table->integer('superior2_id');
             $table->smallInteger('superior2_status')->nullable();
             $table->string('type');
+            $table->foreignId('duration_id')->constrained();
             $table->timestamps();
         });
     }

@@ -28,6 +28,8 @@
         $('#EditOfficeModal').modal('hide');
         $('#AddAccountTypeModal').modal('hide');
         $('#EditAccountTypeModal').modal('hide');
+        $('#AddDurationModal').modal('hide');
+        $('#EditDurationModal').modal('hide');
     });
 </script>
 

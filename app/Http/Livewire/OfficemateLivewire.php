@@ -5,6 +5,7 @@ namespace App\Http\Livewire;
 use App\Models\User;
 use App\Models\Funct;
 use Livewire\Component;
+use App\Models\Duration;
 use Livewire\WithPagination;
 
 class OfficemateLivewire extends Component
@@ -15,6 +16,7 @@ class OfficemateLivewire extends Component
     public $user_id = '';
     public $url = '';
     public $search = '';
+    public $duration;
     
     protected  $queryString = ['search'];
 
@@ -22,6 +24,10 @@ class OfficemateLivewire extends Component
         $this->user_id = $user_id;
         $this->url = $url;
         $this->view = true;
+    }
+
+    public function mount(){
+        $this->duration = Duration::orderBy('id', 'DESC')->where('start_date', '<=', date('Y-m-d'))->first();
     }
 
     public function updated($property)
@@ -39,7 +45,8 @@ class OfficemateLivewire extends Component
             return view('components.individual-ipcr',[
                 'functs' => $functs,
                 'user' => $user,
-                'url' => $this->url
+                'url' => $this->url,
+                'duration' => $this->duration
             ]);
         } else {
             $query = User::query();

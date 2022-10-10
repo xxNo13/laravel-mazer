@@ -33,7 +33,7 @@
                 </div>
             </div>
             <div class="card-body">
-                <x-table-for-approval :approvals="$approvals" />
+                <x-table-for-approval :approvals="$approvals" :duration="$duration" />
             </div>
         </div>
     </section>

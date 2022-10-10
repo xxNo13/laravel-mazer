@@ -32,6 +32,7 @@ return new class extends Migration
             $table->string('time_1')->nullable();
             $table->foreignId('target_id')->onDelete('cascade');
             $table->foreignId('user_id')->constrained();
+            $table->foreignId('duration_id')->constrained();
             $table->timestamps();
         });
     }

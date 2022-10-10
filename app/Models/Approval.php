@@ -15,7 +15,8 @@ class Approval extends Model
         'superior1_status',
         'superior2_id',
         'superior2_status',
-        'type'
+        'type',
+        'duration_id'
     ];
 
     public function user(){

@@ -5,8 +5,9 @@ namespace App\Http\Livewire;
 use App\Models\Ttma;
 use App\Models\User;
 use Livewire\Component;
-use Illuminate\Support\Facades\Auth;
+use App\Models\Duration;
 use Livewire\WithPagination;
+use Illuminate\Support\Facades\Auth;
 
 class TtmaLivewire extends Component
 {
@@ -18,6 +19,7 @@ class TtmaLivewire extends Component
     public $output;
     public $ttma_id;
     public $search;
+    public $duration;
 
     protected $rules = [
         'subject' => ['required', 'min:5'],
@@ -29,6 +31,7 @@ class TtmaLivewire extends Component
 
     public function mount(){
         $this->users = User::where('id', '!=', Auth::user()->id)->get();
+        $this->duration = Duration::orderBy('id', 'DESC')->where('start_date', '<=', date('Y-m-d'))->first();
     }
 
     public function render()
@@ -42,6 +45,7 @@ class TtmaLivewire extends Component
             })
             ->orWhere('subject','LIKE','%'.$search.'%')
             ->orWhere('output','LIKE','%'.$search.'%')
+            ->where('duration_id', $this->duration->id)
             ->get();
         }
         
@@ -72,6 +76,7 @@ class TtmaLivewire extends Component
                 'user_id' => $this->user_id,
                 'output' => $this->output,
                 'head_id' => Auth::user()->id,
+                'duration_id' => $this->duration->id
             ]);
             
             session()->flash('message', 'Added Successfully!');

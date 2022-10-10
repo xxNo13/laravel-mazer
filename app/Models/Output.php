@@ -14,7 +14,8 @@ class Output extends Model
         'output',
         'funct_id',
         'user_id',
-        'type'
+        'type',
+        'duration_id'
     ];
 
     public function suboutputs(){

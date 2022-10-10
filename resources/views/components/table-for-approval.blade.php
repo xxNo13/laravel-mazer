@@ -12,7 +12,7 @@
         </thead>
         <tbody>
             @forelse ($approvals as $approval)
-                @if ((Auth::user()->id == $approval->superior1_id && !$approval->superior1_status) || (Auth::user()->id == $approval->superior2_id && !$approval->superior2_status))
+                @if (((Auth::user()->id == $approval->superior1_id && !$approval->superior1_status) || (Auth::user()->id == $approval->superior2_id && !$approval->superior2_status)) && ($duration &&$approval->duration_id == $duration->id))
                     <tr>
                         <td>{{ $approval->user->name }}</td>
                         <td>{{ $approval->user->email }}</td>
@@ -28,18 +28,24 @@
                         <td>{{ $approval->user->office->office }}, {{ $approval->user->office->building }}</td>
                         <td>{{ strtoupper($approval->type) }}</td>
                         <td>
-                            <div class="hstack gap-2 justify-content-center">
-                                <button type="button" class="btn icon btn-info" wire:click="approved({{ $approval->id }})">
-                                    <i class="bi bi-check"></i>
-                                </button>
-                                <button type="button" class="btn icon btn-danger" wire:click="disapproved({{ $approval->id }})">
-                                    <i class="bi bi-x"></i>
-                                </button>
-                                <button type="button" class="btn icon btn-secondary" wire:click="viewed({{ $approval->user_id }}, '{{ $approval->type }}', '{{ 'for-approval' }}')">
-                                    <i class="bi bi-eye"></i>
-                                </button>
-                            </div>
+                            @if ($duration && $duration->start_date <= date('Y-m-d') && $duration->end_date >= date('Y-m-d'))
+                                <div class="hstack gap-2 justify-content-center">
+                                    <button type="button" class="btn icon btn-info" wire:click="approved({{ $approval->id }})">
+                                        <i class="bi bi-check"></i>
+                                    </button>
+                                    <button type="button" class="btn icon btn-danger" wire:click="disapproved({{ $approval->id }})">
+                                        <i class="bi bi-x"></i>
+                                    </button>
+                                    <button type="button" class="btn icon btn-secondary" wire:click="viewed({{ $approval->user_id }}, '{{ $approval->type }}', '{{ 'for-approval' }}')">
+                                        <i class="bi bi-eye"></i>
+                                    </button>
+                                </div>
+                            @endif
                         </td>
+                    </tr>
+                @elseif($loop->last)
+                    <tr>
+                        <td colspan="6">No record available!</td>
                     </tr>
                 @endif
             @empty

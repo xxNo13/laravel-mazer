@@ -15,6 +15,8 @@ return new class extends Migration
     {
         Schema::create('ratings', function (Blueprint $table) {
             $table->id();
+            $table->string('alloted_budget')->nullable();
+            $table->string('responsible')->nullable();
             $table->string('accomplishment');
             $table->string('efficiency');
             $table->string('quality');

@@ -6,8 +6,9 @@ use App\Models\User;
 use App\Models\Funct;
 use Livewire\Component;
 use App\Models\Approval;
-use Illuminate\Support\Facades\Auth;
+use App\Models\Duration;
 use Livewire\WithPagination;
+use Illuminate\Support\Facades\Auth;
 
 class ForapprovalLivewire extends Component
 {
@@ -19,6 +20,7 @@ class ForapprovalLivewire extends Component
     public $url = '';
     public $approval;
     public $search;
+    public $duration;
 
     protected  $queryString = ['search'];
 
@@ -27,7 +29,11 @@ class ForapprovalLivewire extends Component
         $this->category = $category;
         $this->url = $url;
         $this->view = true;
-        $this->approval = Approval::orderBy('id', 'DESC')->where('user_id', $user_id)->where('type', $category)->first();
+        $this->approval = Approval::orderBy('id', 'DESC')->where('user_id', $user_id)->where('type', $category)->where('duration_id', $this->duration->id)->first();
+    }
+
+    public function mount(){
+        $this->duration = Duration::orderBy('id', 'DESC')->where('start_date', '<=', date('Y-m-d'))->first();
     }
 
     public function render()
@@ -40,6 +46,7 @@ class ForapprovalLivewire extends Component
                 'user' => $user,
                 'url' => $this->url,
                 'approval' => $this->approval,
+                'duration' => $this->duration
             ]);
         } elseif ($this->view && $this->category == 'opcr'){
             $functs = Funct::all();
@@ -49,6 +56,7 @@ class ForapprovalLivewire extends Component
                 'user' => $user,
                 'url' => $this->url,
                 'approval' => $this->approval,
+                'duration' => $this->duration
             ]);
         } elseif ($this->view && $this->category == 'standard'){
             $functs = Funct::all();
@@ -58,6 +66,7 @@ class ForapprovalLivewire extends Component
                 'user' => $user,
                 'url' => $this->url,
                 'approval' => $this->approval,
+                'duration' => $this->duration
             ]);
         } else {
             $search = $this->search;

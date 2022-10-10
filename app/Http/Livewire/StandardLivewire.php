@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Models\Funct;
 use Livewire\Component;
 use App\Models\Approval;
+use App\Models\Duration;
 use App\Models\Standard;
 use Livewire\WithPagination;
 use Illuminate\Support\Facades\Auth;
@@ -37,6 +38,7 @@ class StandardLivewire extends Component
     public $users1;
     public $users2;
     public $approval;
+    public $duration;
 
     protected $rules = [
         'superior1_id' => ['required_if:selected,submit'],
@@ -50,7 +52,8 @@ class StandardLivewire extends Component
         $this->users2 = User::whereHas('account_types', function(\Illuminate\Database\Eloquent\Builder $query) {
             return $query->where('account_type', 'like', "%head%");
         })->where('id', '!=', Auth::user()->id)->get();
-        $this->approval = Approval::orderBy('id', 'DESC')->where('user_id', Auth::user()->id)->where('type', 'standard')->first();
+        $this->duration = Duration::orderBy('id', 'DESC')->where('start_date', '<=', date('Y-m-d'))->first();
+        $this->approval = Approval::orderBy('id', 'DESC')->where('user_id', Auth::user()->id)->where('type', 'standard')->where('duration_id', $this->duration->id)->first();
     }
 
     public function render()
@@ -85,7 +88,8 @@ class StandardLivewire extends Component
                 'time_2' => $this->time_2,
                 'time_1' => $this->time_1,
                 'target_id' => $this->target_id,
-                'user_id' => Auth::user()->id
+                'user_id' => Auth::user()->id,
+                'duration_id' => $this->duration->id
             ]);
         } elseif ($category == 'edit'){
             Standard::where('id', $this->standard_id)->update([
@@ -173,6 +177,7 @@ class StandardLivewire extends Component
             'superior1_id' => $this->superior1_id,
             'superior2_id' => $this->superior2_id,
             'type' => 'standard',
+            'duration_id' => $this->duration->id
         ]);
 
         session()->flash('message', 'Submitted Successfully!');

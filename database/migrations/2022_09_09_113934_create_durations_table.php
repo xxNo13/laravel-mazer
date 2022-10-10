@@ -13,14 +13,10 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('ttmas', function (Blueprint $table) {
+        Schema::create('durations', function (Blueprint $table) {
             $table->id();
-            $table->string('subject');
-            $table->foreignId('user_id')->constrained();
-            $table->string('output');
-            $table->string('remarks')->nullable();
-            $table->integer('head_id');
-            $table->foreignId('duration_id')->constrained();
+            $table->date('start_date');
+            $table->date('end_date');
             $table->timestamps();
         });
     }
@@ -32,6 +28,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('ttmas');
+        Schema::dropIfExists('durations');
     }
 };

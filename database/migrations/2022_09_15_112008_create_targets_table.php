@@ -20,6 +20,7 @@ return new class extends Migration
             $table->foreignId('output_id')->onDelete('cascade')->nullable();
             $table->foreignId('suboutput_id')->onDelete('cascade')->nullable();
             $table->foreignId('user_id')->constrained();
+            $table->foreignId('duration_id')->constrained();
             $table->timestamps();
         });
     }
