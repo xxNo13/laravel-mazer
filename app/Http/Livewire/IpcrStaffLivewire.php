@@ -2,6 +2,7 @@
 
 namespace App\Http\Livewire;
 
+use PDF;
 use App\Models\User;
 use App\Models\Funct;
 use App\Models\Output;
@@ -14,7 +15,7 @@ use App\Models\Suboutput;
 use Livewire\WithPagination;
 use Illuminate\Support\Facades\Auth;
 
-class OpcrLivewire extends Component
+class IpcrStaffLivewire extends Component
 {
     use WithPagination;
 
@@ -45,9 +46,7 @@ class OpcrLivewire extends Component
     public $users1;
     public $users2;
     public $approval;
-    public $type = "OPCR";
-    public $alloted_budget;
-    public $responsible;
+    public $type = 'IPCR';
     public $duration;
 
     // protected $paginationTheme = 'bootstrap';
@@ -55,8 +54,6 @@ class OpcrLivewire extends Component
         'output' => ['required_if:selected,output'],
         'suboutput' => ['required_if:selected,suboutput'],
         'target' => ['required_if:selected,target'],
-        'alloted_budget' => ['required_if:selected,rating'],
-        'responsible' => ['required_if:selected,rating'],
         'accomplishment' => ['required_if:selected,rating'],
         'quality' => ['required_if:selected,rating'],
         'efficiency' => ['required_if:selected,rating'],
@@ -74,7 +71,12 @@ class OpcrLivewire extends Component
         })->where('id', '!=', Auth::user()->id)->get();
         $this->duration = Duration::orderBy('id', 'DESC')->where('start_date', '<=', date('Y-m-d'))->first();
         if ($this->duration) {
-            $this->approval = Approval::orderBy('id', 'DESC')->where('user_id', Auth::user()->id)->where('type', 'opcr')->where('duration_id', $this->duration->id)->first();
+            $this->approval = Approval::orderBy('id', 'DESC')
+                    ->where('user_id', Auth::user()->id)
+                    ->where('type', 'ipcr')
+                    ->where('duration_id', $this->duration->id)
+                    ->where('user_type', 'staff')
+                    ->first();
         }
     }
 
@@ -82,12 +84,11 @@ class OpcrLivewire extends Component
     {
         $functs = Funct::paginate(1);
 
-        return view('livewire.opcr-livewire', [
+        return view('livewire.ipcr-staff-livewire', [
             'functs' => $functs,
-            'userType' => 'office'
+            'userType' => 'staff'
         ]);
     }
-    
     
     public function updated($property)
     {
@@ -103,15 +104,15 @@ class OpcrLivewire extends Component
         if ($this->ost == 'add'){
             if ($this->selected == 'output'){
                 switch (str_replace(url('/'), '', url()->previous())) {
-                    case '/opcr':
+                    case '/ipcr/staff':
                         $this->code = 'CF ';
                         $this->funct_id = 1;
                         break;
-                    case '/opcr?page=2':
+                    case '/ipcr/staff?page=2':
                         $this->code = 'STF ';
                         $this->funct_id = 2;
                         break;
-                    case '/opcr?page=3':
+                    case '/ipcr/staff?page=3':
                         $this->code = 'SF ';
                         $this->funct_id = 3;
                         break;
@@ -125,8 +126,8 @@ class OpcrLivewire extends Component
                     'output' => $this->output,
                     'funct_id' => $this->funct_id,
                     'user_id' => Auth::user()->id,
-                    'type' => 'opcr',
-                    'user_type' => 'office',
+                    'type' => 'ipcr',
+                    'user_type' => 'staff',
                     'duration_id' => $this->duration->id
                 ]);
             } elseif ($this->selected == 'suboutput') {
@@ -134,8 +135,8 @@ class OpcrLivewire extends Component
                     'suboutput' => $this->suboutput,
                     'output_id' => $this->output_id,
                     'user_id' => Auth::user()->id,
-                    'type' => 'opcr',
-                    'user_type' => 'office',
+                    'type' => 'ipcr',
+                    'user_type' => 'staff',
                     'duration_id' => $this->duration->id
                 ]);
             } elseif ($this->selected == 'target') {
@@ -146,8 +147,8 @@ class OpcrLivewire extends Component
                         'target' => $this->target,
                         'output_id' =>  $subputArr[1],
                         'user_id' => Auth::user()->id,
-                        'type' => 'opcr',
-                        'user_type' => 'office',
+                        'type' => 'ipcr',
+                        'user_type' => 'staff',
                         'duration_id' => $this->duration->id
                     ]);
                 } elseif ($subputArr[0] == 'suboutput'){
@@ -155,8 +156,8 @@ class OpcrLivewire extends Component
                         'target' => $this->target,
                         'suboutput_id' =>  $subputArr[1],
                         'user_id' => Auth::user()->id,
-                        'type' => 'opcr',
-                        'user_type' => 'office',
+                        'type' => 'ipcr',
+                        'user_type' => 'staff',
                         'duration_id' => $this->duration->id
                     ]);
                 }
@@ -221,8 +222,6 @@ class OpcrLivewire extends Component
 
         $rating = Rating::find($rating_id);
 
-        $this->alloted_budget = $rating->alloted_budget;
-        $this->responsible = $rating->responsible;
         $this->accomplishment = $rating->accomplishment;
         $this->efficiency = $rating->efficiency;
         $this->quality = $rating->quality;
@@ -238,8 +237,6 @@ class OpcrLivewire extends Component
             $average = number_format((float)$number, 2, '.', '');
 
             Rating::create([
-                'alloted_budget' => $this->alloted_budget,
-                'responsible' => $this->responsible,
                 'accomplishment' => $this->accomplishment,
                 'efficiency' => $this->efficiency,
                 'quality' => $this->quality,
@@ -248,7 +245,7 @@ class OpcrLivewire extends Component
                 'remarks' => 'Done',
                 'target_id' => $this->target_id,
                 'user_id' => Auth::user()->id,
-                'type' => 'opcr'
+                'type' => 'ipcr'
             ]);
 
             session()->flash('message', 'Added Successfully!');
@@ -257,8 +254,6 @@ class OpcrLivewire extends Component
             $average = number_format((float)$number, 2, '.', '');
 
             Rating::where('id', $this->rating_id)->update([
-                'alloted_budget' => $this->alloted_budget,
-                'responsible' => $this->responsible,
                 'accomplishment' => $this->accomplishment,
                 'efficiency' => $this->efficiency,
                 'quality' => $this->quality,
@@ -292,7 +287,7 @@ class OpcrLivewire extends Component
         $this->dispatchBrowserEvent('close-modal'); 
     }
 
-    // SUBMITING OF OPCR START ------------>
+    // SUBMITING OF IPCR START ------------>
     public function submit(){
         $this->selected = 'submit';
     }
@@ -300,12 +295,12 @@ class OpcrLivewire extends Component
     public function changeUser(){
         if($this->superior1_id != ''){
             $this->users2 = User::whereHas('account_types', function(\Illuminate\Database\Eloquent\Builder $query) {
-            return $query->where('account_type', 'like', "%head%");
-        })->where('id', '!=', $this->superior1_id)->where('id', '!=', Auth::user()->id)->get();
+                return $query->where('account_type', 'like', "%head%");
+            })->where('id', '!=', $this->superior1_id)->where('id', '!=', Auth::user()->id)->get();
         } elseif ($this->superior2_id != ''){
             $this->users1 = User::whereHas('account_types', function(\Illuminate\Database\Eloquent\Builder $query) {
-            return $query->where('account_type', 'like', "%head%");
-        })->where('id', '!=', $this->superior2_id)->where('id', '!=', Auth::user()->id)->get();
+                return $query->where('account_type', 'like', "%head%");
+            })->where('id', '!=', $this->superior2_id)->where('id', '!=', Auth::user()->id)->get();
         }
     }
 
@@ -317,8 +312,8 @@ class OpcrLivewire extends Component
             'user_id' => Auth::user()->id,
             'superior1_id' => $this->superior1_id,
             'superior2_id' => $this->superior2_id,
-            'type' => 'opcr',
-            'user_type' => 'office',
+            'type' => 'ipcr',
+            'user_type' => 'staff',
             'duration_id' => $this->duration->id
         ]);
 
@@ -327,7 +322,7 @@ class OpcrLivewire extends Component
         $this->dispatchBrowserEvent('close-modal'); 
         return redirect(request()->header('Referer'));
     }
-    // <---------------- SUBMITING OF oPCR END
+    // <---------------- SUBMITING OF IPCR END
 
     public function resetInput(){
         $this->funct = '';
@@ -351,8 +346,6 @@ class OpcrLivewire extends Component
         $this->rating_id = '';
         $this->superior1_id = '';
         $this->superior2_id = '';
-        $this->alloted_budget = '';
-        $this->responsible = '';
     }
 
     public function closeModal(){

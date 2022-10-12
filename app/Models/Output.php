@@ -15,6 +15,7 @@ class Output extends Model
         'funct_id',
         'user_id',
         'type',
+        'user_type',
         'duration_id'
     ];
 

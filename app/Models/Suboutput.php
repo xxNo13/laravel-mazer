@@ -14,6 +14,7 @@ class Suboutput extends Model
         'output_id',
         'user_id',
         'type',
+        'user_type',
         'duration_id'
     ];
 

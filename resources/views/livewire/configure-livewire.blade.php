@@ -38,7 +38,7 @@
                         wire:ignore.self data-bs-parent="#durationAccordion">
                         <div class="acordion-header mt-2 row">    
                             <div class="hstack justify-content-center gap-2 mt-2 col-12">
-                                @if ($duration->end_date >= date('Y-m-d'))
+                                @if ($duration && $duration->end_date >= date('Y-m-d'))
                                 @else
                                     <button type="button" class="ms-md-auto btn icon btn-primary" data-bs-toggle="modal"
                                         wire:click="select('{{ 'duration' }}')" data-bs-target="#AddDurationModal"
@@ -84,7 +84,7 @@
                                             </tr>
                                         @empty
                                             <tr>
-                                                <td colspan="3">No record available!</td>
+                                                <td colspan="4">No record available!</td>
                                             </tr>
                                         @endforelse
                                     </tbody>

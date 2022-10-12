@@ -26,7 +26,11 @@
                             @endforeach
                         </td>
                         <td>{{ $approval->user->office->office }}, {{ $approval->user->office->building }}</td>
-                        <td>{{ strtoupper($approval->type) }}</td>
+                        <td>{{ strtoupper($approval->type) }} 
+                            @if ($approval->type != 'opcr')
+                                - {{ strtoupper($approval->user_type) }}
+                            @endif
+                        </td>
                         <td>
                             @if ($duration && $duration->start_date <= date('Y-m-d') && $duration->end_date >= date('Y-m-d'))
                                 <div class="hstack gap-2 justify-content-center">
@@ -36,7 +40,7 @@
                                     <button type="button" class="btn icon btn-danger" wire:click="disapproved({{ $approval->id }})">
                                         <i class="bi bi-x"></i>
                                     </button>
-                                    <button type="button" class="btn icon btn-secondary" wire:click="viewed({{ $approval->user_id }}, '{{ $approval->type }}', '{{ 'for-approval' }}')">
+                                    <button type="button" class="btn icon btn-secondary" wire:click="viewed({{ $approval->user_id }}, '{{ $approval->type }}', '{{ 'for-approval' }}', '{{ $approval->user_type }}')">
                                         <i class="bi bi-eye"></i>
                                     </button>
                                 </div>

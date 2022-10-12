@@ -1,11 +1,13 @@
 <?php
 
-use App\Http\Livewire\IpcrLivewire;
+use App\Http\Livewire\IpcrStaffLivewire;
+use App\Http\Livewire\IpcrFacultyLivewire;
 use App\Http\Livewire\OpcrLivewire;
 use App\Http\Livewire\TtmaLivewire;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PDFController;
-use App\Http\Livewire\StandardLivewire;
+use App\Http\Livewire\StandardStaffLivewire;
+use App\Http\Livewire\StandardFacultyLivewire;
 use App\Http\Livewire\ConfigureLivewire;
 use App\Http\Livewire\OfficemateLivewire;
 use App\Http\Livewire\ForapprovalLivewire;
@@ -30,9 +32,11 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
         return view('dashboard');
     })->name('dashboard');
 
-    Route::get('/ipcr', IpcrLivewire::class)->name('ipcr');
+    Route::get('/ipcr/staff', IpcrStaffLivewire::class)->name('ipcr.staff');
+    Route::get('/ipcr/faculty', IpcrFacultyLivewire::class)->name('ipcr.faculty');
     Route::get('/opcr', OpcrLivewire::class)->name('opcr');
-    Route::get('/standard', StandardLivewire::class)->name('standard');
+    Route::get('/standard/staff', StandardStaffLivewire::class)->name('standard.staff');
+    Route::get('/standard/faculty', StandardFacultyLivewire::class)->name('standard.faculty');
     Route::get('/officemates', OfficemateLivewire::class)->name('officemates');
     Route::get('/for-approval', ForapprovalLivewire::class)->name('for-approval');
     Route::get('/ttma', TtmaLivewire::class)->name('ttma');

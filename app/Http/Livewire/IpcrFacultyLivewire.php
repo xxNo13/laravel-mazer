@@ -15,7 +15,7 @@ use App\Models\Suboutput;
 use Livewire\WithPagination;
 use Illuminate\Support\Facades\Auth;
 
-class IpcrLivewire extends Component
+class IpcrFacultyLivewire extends Component
 {
     use WithPagination;
 
@@ -70,15 +70,23 @@ class IpcrLivewire extends Component
             return $query->where('account_type', 'like', "%head%");
         })->where('id', '!=', Auth::user()->id)->get();
         $this->duration = Duration::orderBy('id', 'DESC')->where('start_date', '<=', date('Y-m-d'))->first();
-        $this->approval = Approval::orderBy('id', 'DESC')->where('user_id', Auth::user()->id)->where('type', 'ipcr')->where('duration_id', $this->duration->id)->first();
+        if ($this->duration) {
+            $this->approval = Approval::orderBy('id', 'DESC')
+                    ->where('user_id', Auth::user()->id)
+                    ->where('type', 'ipcr')
+                    ->where('duration_id', $this->duration->id)
+                    ->where('user_type', 'faculty')
+                    ->first();
+        }
     }
 
     public function render()
     {
         $functs = Funct::paginate(1);
 
-        return view('livewire.ipcr-livewire', [
-            'functs' => $functs
+        return view('livewire.ipcr-faculty-livewire', [
+            'functs' => $functs,
+            'userType' => 'faculty'
         ]);
     }
     
@@ -96,15 +104,15 @@ class IpcrLivewire extends Component
         if ($this->ost == 'add'){
             if ($this->selected == 'output'){
                 switch (str_replace(url('/'), '', url()->previous())) {
-                    case '/ipcr':
+                    case '/ipcr/faculty':
                         $this->code = 'CF ';
                         $this->funct_id = 1;
                         break;
-                    case '/ipcr?page=2':
+                    case '/ipcr/faculty?page=2':
                         $this->code = 'STF ';
                         $this->funct_id = 2;
                         break;
-                    case '/ipcr?page=3':
+                    case '/ipcr/faculty?page=3':
                         $this->code = 'SF ';
                         $this->funct_id = 3;
                         break;
@@ -119,6 +127,7 @@ class IpcrLivewire extends Component
                     'funct_id' => $this->funct_id,
                     'user_id' => Auth::user()->id,
                     'type' => 'ipcr',
+                    'user_type' => 'faculty',
                     'duration_id' => $this->duration->id
                 ]);
             } elseif ($this->selected == 'suboutput') {
@@ -127,6 +136,7 @@ class IpcrLivewire extends Component
                     'output_id' => $this->output_id,
                     'user_id' => Auth::user()->id,
                     'type' => 'ipcr',
+                    'user_type' => 'faculty',
                     'duration_id' => $this->duration->id
                 ]);
             } elseif ($this->selected == 'target') {
@@ -138,6 +148,7 @@ class IpcrLivewire extends Component
                         'output_id' =>  $subputArr[1],
                         'user_id' => Auth::user()->id,
                         'type' => 'ipcr',
+                        'user_type' => 'faculty',
                         'duration_id' => $this->duration->id
                     ]);
                 } elseif ($subputArr[0] == 'suboutput'){
@@ -146,6 +157,7 @@ class IpcrLivewire extends Component
                         'suboutput_id' =>  $subputArr[1],
                         'user_id' => Auth::user()->id,
                         'type' => 'ipcr',
+                        'user_type' => 'faculty',
                         'duration_id' => $this->duration->id
                     ]);
                 }
@@ -301,6 +313,7 @@ class IpcrLivewire extends Component
             'superior1_id' => $this->superior1_id,
             'superior2_id' => $this->superior2_id,
             'type' => 'ipcr',
+            'user_type' => 'faculty',
             'duration_id' => $this->duration->id
         ]);
 

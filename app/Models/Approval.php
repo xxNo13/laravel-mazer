@@ -16,6 +16,7 @@ class Approval extends Model
         'superior2_id',
         'superior2_status',
         'type',
+        'user_type',
         'duration_id'
     ];
 

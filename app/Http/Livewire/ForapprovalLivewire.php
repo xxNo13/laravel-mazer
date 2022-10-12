@@ -18,17 +18,19 @@ class ForapprovalLivewire extends Component
     public $category = '';
     public $user_id = '';
     public $url = '';
+    public $user_type = '';
     public $approval;
     public $search;
     public $duration;
 
     protected  $queryString = ['search'];
 
-    public function viewed($user_id, $category, $url){
+    public function viewed($user_id, $category, $url, $user_type){
         $this->user_id = $user_id;
         $this->category = $category;
         $this->url = $url;
         $this->view = true;
+        $this->user_type = $user_type;
         $this->approval = Approval::orderBy('id', 'DESC')->where('user_id', $user_id)->where('type', $category)->where('duration_id', $this->duration->id)->first();
     }
 
@@ -46,7 +48,8 @@ class ForapprovalLivewire extends Component
                 'user' => $user,
                 'url' => $this->url,
                 'approval' => $this->approval,
-                'duration' => $this->duration
+                'duration' => $this->duration,
+                'user_type' => $this->user_type
             ]);
         } elseif ($this->view && $this->category == 'opcr'){
             $functs = Funct::all();
@@ -56,7 +59,8 @@ class ForapprovalLivewire extends Component
                 'user' => $user,
                 'url' => $this->url,
                 'approval' => $this->approval,
-                'duration' => $this->duration
+                'duration' => $this->duration,
+                'user_type' => $this->user_type
             ]);
         } elseif ($this->view && $this->category == 'standard'){
             $functs = Funct::all();
@@ -66,7 +70,8 @@ class ForapprovalLivewire extends Component
                 'user' => $user,
                 'url' => $this->url,
                 'approval' => $this->approval,
-                'duration' => $this->duration
+                'duration' => $this->duration,
+                'user_type' => $this->user_type
             ]);
         } else {
             $search = $this->search;
@@ -142,6 +147,7 @@ class ForapprovalLivewire extends Component
         $this->user_id = '';
         $this->url = '';
         $this->approval = '';
+        $this->user_type = '';
     }
 
     public function closeModal(){

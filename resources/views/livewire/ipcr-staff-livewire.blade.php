@@ -2,14 +2,14 @@
     <div class="page-title">
         <div class="row">
             <div class="col-12 col-md-6 order-md-1 order-last">
-                <h3>Standard</h3>
+                <h3>Individual Performance Commitment and Review</h3>
             </div>
             <div class="col-12 col-md-6 order-md-2 order-first">
                 <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item active" aria-current="page"><a
                                 href="{{ route('dashboard') }}">Dashboard</a></li>
-                        <li class="breadcrumb-item active" aria-current="page">Standard</li>
+                        <li class="breadcrumb-item active" aria-current="page">IPCR - Staff</li>
                     </ol>
                 </nav>
             </div>
@@ -26,24 +26,35 @@
 
     <section class="section pt-3">
         @foreach ($functs as $funct)
-            <div class="hstack mb-3">
+            <div class="hstack mb-3 gap-2">
                 <h4>{{ $funct->funct }}</h4>
-                @if ((!$approval || ($approval->superior1_status == 2 || $approval->superior2_status == 2)) && ($duration && $duration->start_date <= date('Y-m-d') && $duration->end_date >= date('Y-m-d')))
-                    <button type="button" class="ms-auto btn btn-outline-info" data-bs-toggle="modal"
-                        data-bs-target="#SubmitISOModal" title="Submit Standard" wire:click="submit">
+                @if ((!$approval || ($approval->superior1_status == 2 || $approval->superior2_status == 2)) &&
+                    ($duration && $duration->start_date <= date('Y-m-d') && $duration->end_date >= date('Y-m-d')))
+                    <button type="button" class="ms-auto btn btn-outline-secondary" data-bs-toggle="modal"
+                        data-bs-target="#ConfigureIPCROSTModal" title="Confugure Output/Suboutput/Target">
+                        Configure OST
+                    </button>
+                    <button type="button" class="btn btn-outline-info" data-bs-toggle="modal"
+                        data-bs-target="#SubmitISOModal" title="Save IPCR" wire:click="submit">
                         Submit
                     </button>
+                @elseif ($approval && $approval->superior1_status == 1 && $approval->superior2_status == 1)
+                    <a href="/print/ipcr" type="button" class="ms-auto btn icon btn-primary" title="Print IPCR">
+                        <i class="bi bi-printer"></i>
+                    </a>
                 @endif
             </div>
             @foreach ($funct->outputs as $output)
-                @if ($output->user_id == Auth::user()->id && $output->type == 'ipcr' && $output->duration_id == $duration->id)
+                @if ($output->user_id == Auth::user()->id && $output->type == 'ipcr' && $output->duration_id == $duration->id && $output->user_type == 'staff')
                     <div class="card">
                         <div class="card-header">
-                            <h4 class="card-title">{{ $output->code }} {{ $output->output }}</h4>
+                            <h4 class="card-title">{{ $output->code }} {{ $number++ }} {{ $output->output }}</h4>
                             <p class="text-subtitle text-muted"></p>
                         </div>
                         @forelse ($output->suboutputs as $suboutput)
-                            @if ($suboutput->user_id == Auth::user()->id && $suboutput->type == 'ipcr' && $suboutput->duration_id == $duration->id)
+                            @if ($suboutput->user_id == Auth::user()->id &&
+                                $suboutput->type == 'ipcr' &&
+                                $suboutput->duration_id == $duration->id && $output->user_type == 'staff')
                                 <div class="card-body">
                                     <h6>{{ $suboutput->suboutput }}</h6>
                                 </div>
@@ -52,14 +63,14 @@
                                         id="{{ str_replace(' ', '', $suboutput->suboutput) }}{{ $suboutput->id }}">
                                         <div class="d-sm-flex">
                                             @foreach ($suboutput->targets as $target)
-                                                @if ($target->user_id == Auth::user()->id && $target->type == 'ipcr' && $target->duration_id == $duration->id)
+                                                @if ($target->user_id == Auth::user()->id && $target->type == 'ipcr' && $target->duration_id == $duration->id && $output->user_type == 'staff')
                                                     <div wire:ignore.self class="accordion-button collapsed gap-2"
                                                         type="button" data-bs-toggle="collapse"
                                                         data-bs-target="#{{ str_replace(' ', '', $target->target) }}{{ $target->id }}"
                                                         aria-expanded="true"
                                                         aria-controls="{{ str_replace(' ', '', $target->target) }}{{ $target->id }}"
                                                         role="button">
-                                                        @if ($target->standard)
+                                                        @if ($target->rating)
                                                             <span class="my-auto">
                                                                 <i class="bi bi-check2"></i>
                                                             </span>
@@ -71,7 +82,7 @@
                                         </div>
 
                                         @foreach ($suboutput->targets as $target)
-                                            @if ($target->user_id == Auth::user()->id && $target->type == 'ipcr' && $target->duration_id == $duration->id)
+                                            @if ($target->user_id == Auth::user()->id && $target->type == 'ipcr' && $target->duration_id == $duration->id && $output->user_type == 'staff')
                                                 <div wire:ignore.self
                                                     id="{{ str_replace(' ', '', $target->target) }}{{ $target->id }}"
                                                     class="accordion-collapse collapse"
@@ -81,88 +92,62 @@
                                                         <table class="table table-lg text-center">
                                                             <thead>
                                                                 <tr>
-                                                                    <td colspan="6">Rating</td>
+                                                                    <td rowspan="2">Actual Accomplishment</td>
+                                                                    <td colspan="4">Rating</td>
+                                                                    <td rowspan="2">Remarks</td>
                                                                     <td rowspan="2">Actions</td>
                                                                 </tr>
                                                                 <tr>
-                                                                    <td colspan="2">E</td>
-                                                                    <td colspan="2">Q</td>
-                                                                    <td colspan="2">T</td>
+                                                                    <td>E</td>
+                                                                    <td>Q</td>
+                                                                    <td>T</td>
+                                                                    <td>A</td>
                                                                 </tr>
                                                             </thead>
                                                             <tbody>
-                                                                @if ($target->standard)
+                                                                @if ($target->rating)
                                                                     <tr>
-                                                                        <td>5</td>
-                                                                        <td>{{ $target->standard->eff_5 }}</td>
-                                                                        <td>5</td>
-                                                                        <td>{{ $target->standard->qua_5 }}</td>
-                                                                        <td>5</td>
-                                                                        <td>{{ $target->standard->time_5 }}</td>
-                                                                        <td rowspan="5">
-                                                                            @if ((!$approval || ($approval->superior1_status == 2 || $approval->superior2_status == 2)) && ($duration && $duration->start_date <= date('Y-m-d') && $duration->end_date >= date('Y-m-d')))
+                                                                        <td>{{ $target->rating->accomplishment }}</td>
+                                                                        <td>{{ $target->rating->efficiency }}</td>
+                                                                        <td>{{ $target->rating->quality }}</td>
+                                                                        <td>{{ $target->rating->timeliness }}</td>
+                                                                        <td>{{ $target->rating->average }}</td>
+                                                                        <td>{{ $target->rating->remarks }}</td>
+                                                                        <td>
+                                                                            @if ($duration && $duration->start_date <= date('Y-m-d') && $duration->end_date >= date('Y-m-d'))
                                                                                 <button type="button"
                                                                                     class="btn icon btn-success"
-                                                                                    wire:click="clicked('{{ 'edit' }}', {{ $target->standard->id }})"
+                                                                                    wire:click="editRating({{ $target->rating->id }})"
                                                                                     data-bs-toggle="modal"
-                                                                                    data-bs-target="#EditStandardModal"
-                                                                                    title="Edit Standard">
+                                                                                    data-bs-target="#EditRatingModal"
+                                                                                    title="Edit Rating">
                                                                                     <i class="bi bi-pencil-square"></i>
                                                                                 </button>
                                                                                 <button type="button"
                                                                                     class="btn icon btn-danger"
-                                                                                    wire:click="clicked('{{ 'delete' }}', {{ $target->standard->id }})"
+                                                                                    wire:click="rating({{ 0 }}, {{ $target->rating->id }})"
                                                                                     data-bs-toggle="modal"
                                                                                     data-bs-target="#DeleteModal"
-                                                                                    title="Delete Standard">
+                                                                                    title="Delete Rating">
                                                                                     <i class="bi bi-trash"></i>
                                                                                 </button>
                                                                             @endif
                                                                         </td>
                                                                     </tr>
-                                                                    <tr>
-                                                                        <td>4</td>
-                                                                        <td>{{ $target->standard->eff_4 }}</td>
-                                                                        <td>4</td>
-                                                                        <td>{{ $target->standard->qua_4 }}</td>
-                                                                        <td>4</td>
-                                                                        <td>{{ $target->standard->time_4 }}</td>
-                                                                    </tr>
-                                                                    <tr>
-                                                                        <td>3</td>
-                                                                        <td>{{ $target->standard->eff_3 }}</td>
-                                                                        <td>3</td>
-                                                                        <td>{{ $target->standard->qua_3 }}</td>
-                                                                        <td>3</td>
-                                                                        <td>{{ $target->standard->time_3 }}</td>
-                                                                    </tr>
-                                                                    <tr>
-                                                                        <td>2</td>
-                                                                        <td>{{ $target->standard->eff_2 }}</td>
-                                                                        <td>2</td>
-                                                                        <td>{{ $target->standard->qua_2 }}</td>
-                                                                        <td>2</td>
-                                                                        <td>{{ $target->standard->time_2 }}</td>
-                                                                    </tr>
-                                                                    <tr>
-                                                                        <td>1</td>
-                                                                        <td>{{ $target->standard->eff_1 }}</td>
-                                                                        <td>1</td>
-                                                                        <td>{{ $target->standard->qua_1 }}</td>
-                                                                        <td>1</td>
-                                                                        <td>{{ $target->standard->time_1 }}</td>
-                                                                    </tr>
                                                                 @else
                                                                     <tr>
                                                                         <td colspan="6"></td>
                                                                         <td>
-                                                                            @if ((!$approval || ($approval->superior1_status == 2 || $approval->superior2_status == 2)) && ($duration && $duration->start_date <= date('Y-m-d') && $duration->end_date >= date('Y-m-d')))
+                                                                            @if ($approval &&
+                                                                                $approval->superior1_status == 1 &&
+                                                                                $approval->superior2_status == 1 &&
+                                                                                ($duration && $duration->start_date <= date('Y-m-d') && $duration->end_date >= date('Y-m-d')))
                                                                                 <button type="button"
                                                                                     class="btn icon btn-primary"
-                                                                                    wire:click="clicked('{{ 'add' }}', {{ $target->id }})"
+                                                                                    wire:click="rating({{ $target->id }})"
                                                                                     data-bs-toggle="modal"
-                                                                                    data-bs-target="#AddStandardModal"
-                                                                                    title="Add Standard">
+                                                                                    data-bs-target="#AddRatingModal"
+                                                                                    title="Add Rating">
                                                                                     <i class="bi bi-plus"></i>
                                                                                 </button>
                                                                             @endif
@@ -184,14 +169,14 @@
                                     id="{{ str_replace(' ', '', $output->output) }}{{ $output->id }}">
                                     <div class="d-sm-flex">
                                         @foreach ($output->targets as $target)
-                                            @if ($target->user_id == Auth::user()->id && $target->type == 'ipcr' && $target->duration_id == $duration->id)
+                                            @if ($target->user_id == Auth::user()->id && $target->type == 'ipcr' && $target->duration_id == $duration->id && $output->user_type == 'staff')
                                                 <div wire:ignore.self class="accordion-button collapsed gap-2"
                                                     type="button" data-bs-toggle="collapse"
                                                     data-bs-target="#{{ str_replace(' ', '', $target->target) }}{{ $target->id }}"
                                                     aria-expanded="true"
                                                     aria-controls="{{ str_replace(' ', '', $target->target) }}{{ $target->id }}"
                                                     role="button">
-                                                    @if ($target->standard)
+                                                    @if ($target->rating)
                                                         <span class="my-auto">
                                                             <i class="bi bi-check2"></i>
                                                         </span>
@@ -203,7 +188,7 @@
                                     </div>
 
                                     @foreach ($output->targets as $target)
-                                        @if ($target->user_id == Auth::user()->id && $target->type == 'ipcr' && $target->duration_id == $duration->id)
+                                        @if ($target->user_id == Auth::user()->id && $target->type == 'ipcr' && $target->duration_id == $duration->id && $output->user_type == 'staff')
                                             <div wire:ignore.self
                                                 id="{{ str_replace(' ', '', $target->target) }}{{ $target->id }}"
                                                 class="accordion-collapse collapse" aria-labelledby="flush-headingOne"
@@ -212,88 +197,62 @@
                                                     <table class="table table-lg text-center">
                                                         <thead>
                                                             <tr>
-                                                                <td colspan="6">Rating</td>
+                                                                <td rowspan="2">Actual Accomplishment</td>
+                                                                <td colspan="4">Rating</td>
+                                                                <td rowspan="2">Remarks</td>
                                                                 <td rowspan="2">Actions</td>
                                                             </tr>
                                                             <tr>
-                                                                <td colspan="2">E</td>
-                                                                <td colspan="2">Q</td>
-                                                                <td colspan="2">T</td>
+                                                                <td>E</td>
+                                                                <td>Q</td>
+                                                                <td>T</td>
+                                                                <td>A</td>
                                                             </tr>
                                                         </thead>
                                                         <tbody>
-                                                            @if ($target->standard)
+                                                            @if ($target->rating)
                                                                 <tr>
-                                                                    <td>5</td>
-                                                                    <td>{{ $target->standard->eff_5 }}</td>
-                                                                    <td>5</td>
-                                                                    <td>{{ $target->standard->qua_5 }}</td>
-                                                                    <td>5</td>
-                                                                    <td>{{ $target->standard->time_5 }}</td>
-                                                                    <td rowspan="5">
-                                                                        @if ((!$approval || ($approval->superior1_status == 2 || $approval->superior2_status == 2)) && ($duration && $duration->start_date <= date('Y-m-d') && $duration->end_date >= date('Y-m-d')))
+                                                                    <td>{{ $target->rating->accomplishment }}</td>
+                                                                    <td>{{ $target->rating->efficiency }}</td>
+                                                                    <td>{{ $target->rating->quality }}</td>
+                                                                    <td>{{ $target->rating->timeliness }}</td>
+                                                                    <td>{{ $target->rating->average }}</td>
+                                                                    <td>{{ $target->rating->remarks }}</td>
+                                                                    <td>
+                                                                        @if ($duration && $duration->start_date <= date('Y-m-d') && $duration->end_date >= date('Y-m-d'))
                                                                             <button type="button"
                                                                                 class="btn icon btn-success"
-                                                                                wire:click="clicked('{{ 'edit' }}', {{ $target->standard->id }})"
+                                                                                wire:click="editRating({{ $target->rating->id }})"
                                                                                 data-bs-toggle="modal"
-                                                                                data-bs-target="#EditStandardModal"
-                                                                                title="Edit Standard">
+                                                                                data-bs-target="#EditRatingModal"
+                                                                                title="Edit Rating">
                                                                                 <i class="bi bi-pencil-square"></i>
                                                                             </button>
                                                                             <button type="button"
                                                                                 class="btn icon btn-danger"
-                                                                                wire:click="clicked('{{ 'delete' }}', {{ $target->standard->id }})"
+                                                                                wire:click="rating({{ 0 }}, {{ $target->rating->id }})"
                                                                                 data-bs-toggle="modal"
                                                                                 data-bs-target="#DeleteModal"
-                                                                                title="Delete Standard">
+                                                                                title="Delete Rating">
                                                                                 <i class="bi bi-trash"></i>
                                                                             </button>
                                                                         @endif
                                                                     </td>
                                                                 </tr>
-                                                                <tr>
-                                                                    <td>4</td>
-                                                                    <td>{{ $target->standard->eff_4 }}</td>
-                                                                    <td>4</td>
-                                                                    <td>{{ $target->standard->qua_4 }}</td>
-                                                                    <td>4</td>
-                                                                    <td>{{ $target->standard->time_4 }}</td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <td>3</td>
-                                                                    <td>{{ $target->standard->eff_3 }}</td>
-                                                                    <td>3</td>
-                                                                    <td>{{ $target->standard->qua_3 }}</td>
-                                                                    <td>3</td>
-                                                                    <td>{{ $target->standard->time_3 }}</td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <td>2</td>
-                                                                    <td>{{ $target->standard->eff_2 }}</td>
-                                                                    <td>2</td>
-                                                                    <td>{{ $target->standard->qua_2 }}</td>
-                                                                    <td>2</td>
-                                                                    <td>{{ $target->standard->time_2 }}</td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <td>1</td>
-                                                                    <td>{{ $target->standard->eff_1 }}</td>
-                                                                    <td>1</td>
-                                                                    <td>{{ $target->standard->qua_1 }}</td>
-                                                                    <td>1</td>
-                                                                    <td>{{ $target->standard->time_1 }}</td>
-                                                                </tr>
                                                             @else
                                                                 <tr>
                                                                     <td colspan="6"></td>
                                                                     <td>
-                                                                        @if ((!$approval || ($approval->superior1_status == 2 || $approval->superior2_status == 2)) && ($duration && $duration->start_date <= date('Y-m-d') && $duration->end_date >= date('Y-m-d')))
+                                                                        @if ($approval &&
+                                                                            $approval->superior1_status == 1 &&
+                                                                            $approval->superior2_status == 1 &&
+                                                                            ($duration && $duration->start_date <= date('Y-m-d') && $duration->end_date >= date('Y-m-d')))
                                                                             <button type="button"
                                                                                 class="btn icon btn-primary"
-                                                                                wire:click="clicked('{{ 'add' }}', {{ $target->id }})"
+                                                                                wire:click="rating({{ $target->id }})"
                                                                                 data-bs-toggle="modal"
-                                                                                data-bs-target="#AddStandardModal"
-                                                                                title="Add Standard">
+                                                                                data-bs-target="#AddRatingModal"
+                                                                                title="Add Rating">
                                                                                 <i class="bi bi-plus"></i>
                                                                             </button>
                                                                         @endif
@@ -315,7 +274,6 @@
         @endforeach
     </section>
 
-
     {{ $functs->links('components.pagination') }}
-    <x-modals :users1="$users1" :users2="$users2" />
+    <x-modals :ost="$ost" :selected="$selected" :users1="$users1" :users2="$users2" :type="$type" :duration="$duration" :userType="$userType" />
 </div>

@@ -2,14 +2,14 @@
     <div class="page-title">
         <div class="row">
             <div class="col-12 col-md-6 order-md-1 order-last">
-                <h3>Office Performance Commitment and Review</h3>
+                <h3>Individual Performance Commitment and Review</h3>
             </div>
             <div class="col-12 col-md-6 order-md-2 order-first">
                 <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item active" aria-current="page"><a
                                 href="{{ route('dashboard') }}">Dashboard</a></li>
-                        <li class="breadcrumb-item active" aria-current="page">OPCR</li>
+                        <li class="breadcrumb-item active" aria-current="page">IPCR - Faculty</li>
                     </ol>
                 </nav>
             </div>
@@ -31,17 +31,21 @@
                 @if ((!$approval || ($approval->superior1_status == 2 || $approval->superior2_status == 2)) &&
                     ($duration && $duration->start_date <= date('Y-m-d') && $duration->end_date >= date('Y-m-d')))
                     <button type="button" class="ms-auto btn btn-outline-secondary" data-bs-toggle="modal"
-                        data-bs-target="#ConfigureOPCROSTModal" title="Confugure Output/Suboutput/Target">
+                        data-bs-target="#ConfigureIPCROSTModal" title="Confugure Output/Suboutput/Target">
                         Configure OST
                     </button>
                     <button type="button" class="btn btn-outline-info" data-bs-toggle="modal"
-                        data-bs-target="#SubmitISOModal" title="Save OPCR" wire:click="submit">
+                        data-bs-target="#SubmitISOModal" title="Save IPCR" wire:click="submit">
                         Submit
                     </button>
+                @elseif ($approval && $approval->superior1_status == 1 && $approval->superior2_status == 1)
+                    <a href="/print/ipcr" type="button" class="ms-auto btn icon btn-primary" title="Print IPCR">
+                        <i class="bi bi-printer"></i>
+                    </a>
                 @endif
             </div>
             @foreach ($funct->outputs as $output)
-                @if ($output->user_id == Auth::user()->id && $output->type == 'opcr' && $output->duration_id == $duration->id && $output->user_type == 'office')
+                @if ($output->user_id == Auth::user()->id && $output->type == 'ipcr' && $output->duration_id == $duration->id && $output->user_type == 'faculty')
                     <div class="card">
                         <div class="card-header">
                             <h4 class="card-title">{{ $output->code }} {{ $number++ }} {{ $output->output }}</h4>
@@ -49,8 +53,8 @@
                         </div>
                         @forelse ($output->suboutputs as $suboutput)
                             @if ($suboutput->user_id == Auth::user()->id &&
-                                $suboutput->type == 'opcr' &&
-                                $suboutput->duration_id == $duration->id && $output->user_type == 'office')
+                                $suboutput->type == 'ipcr' &&
+                                $suboutput->duration_id == $duration->id && $output->user_type == 'faculty')
                                 <div class="card-body">
                                     <h6>{{ $suboutput->suboutput }}</h6>
                                 </div>
@@ -59,7 +63,7 @@
                                         id="{{ str_replace(' ', '', $suboutput->suboutput) }}{{ $suboutput->id }}">
                                         <div class="d-sm-flex">
                                             @foreach ($suboutput->targets as $target)
-                                                @if ($target->user_id == Auth::user()->id && $target->type == 'opcr' && $target->duration_id == $duration->id && $output->user_type == 'office')
+                                                @if ($target->user_id == Auth::user()->id && $target->type == 'ipcr' && $target->duration_id == $duration->id && $output->user_type == 'faculty')
                                                     <div wire:ignore.self class="accordion-button collapsed gap-2"
                                                         type="button" data-bs-toggle="collapse"
                                                         data-bs-target="#{{ str_replace(' ', '', $target->target) }}{{ $target->id }}"
@@ -78,7 +82,7 @@
                                         </div>
 
                                         @foreach ($suboutput->targets as $target)
-                                            @if ($target->user_id == Auth::user()->id && $target->type == 'opcr' && $target->duration_id == $duration->id && $output->user_type == 'office')
+                                            @if ($target->user_id == Auth::user()->id && $target->type == 'ipcr' && $target->duration_id == $duration->id && $output->user_type == 'faculty')
                                                 <div wire:ignore.self
                                                     id="{{ str_replace(' ', '', $target->target) }}{{ $target->id }}"
                                                     class="accordion-collapse collapse"
@@ -88,8 +92,6 @@
                                                         <table class="table table-lg text-center">
                                                             <thead>
                                                                 <tr>
-                                                                    <td rowspan="2">Alloted Budget</td>
-                                                                    <td rowspan="2">Responsible Office/Person</td>
                                                                     <td rowspan="2">Actual Accomplishment</td>
                                                                     <td colspan="4">Rating</td>
                                                                     <td rowspan="2">Remarks</td>
@@ -105,8 +107,6 @@
                                                             <tbody>
                                                                 @if ($target->rating)
                                                                     <tr>
-                                                                        <td>{{ $target->rating->alloted_budget }}</td>
-                                                                        <td>{{ $target->rating->responsible }}</td>
                                                                         <td>{{ $target->rating->accomplishment }}</td>
                                                                         <td>{{ $target->rating->efficiency }}</td>
                                                                         <td>{{ $target->rating->quality }}</td>
@@ -136,7 +136,7 @@
                                                                     </tr>
                                                                 @else
                                                                     <tr>
-                                                                        <td colspan="8"></td>
+                                                                        <td colspan="6"></td>
                                                                         <td>
                                                                             @if ($approval &&
                                                                                 $approval->superior1_status == 1 &&
@@ -169,7 +169,7 @@
                                     id="{{ str_replace(' ', '', $output->output) }}{{ $output->id }}">
                                     <div class="d-sm-flex">
                                         @foreach ($output->targets as $target)
-                                            @if ($target->user_id == Auth::user()->id && $target->type == 'opcr' && $target->duration_id == $duration->id && $output->user_type == 'office')
+                                            @if ($target->user_id == Auth::user()->id && $target->type == 'ipcr' && $target->duration_id == $duration->id && $output->user_type == 'faculty')
                                                 <div wire:ignore.self class="accordion-button collapsed gap-2"
                                                     type="button" data-bs-toggle="collapse"
                                                     data-bs-target="#{{ str_replace(' ', '', $target->target) }}{{ $target->id }}"
@@ -188,7 +188,7 @@
                                     </div>
 
                                     @foreach ($output->targets as $target)
-                                        @if ($target->user_id == Auth::user()->id && $target->type == 'opcr' && $target->duration_id == $duration->id && $output->user_type == 'office')
+                                        @if ($target->user_id == Auth::user()->id && $target->type == 'ipcr' && $target->duration_id == $duration->id && $output->user_type == 'faculty')
                                             <div wire:ignore.self
                                                 id="{{ str_replace(' ', '', $target->target) }}{{ $target->id }}"
                                                 class="accordion-collapse collapse" aria-labelledby="flush-headingOne"
@@ -197,8 +197,6 @@
                                                     <table class="table table-lg text-center">
                                                         <thead>
                                                             <tr>
-                                                                <td rowspan="2">Alloted Budget</td>
-                                                                <td rowspan="2">Responsible Office/Person</td>
                                                                 <td rowspan="2">Actual Accomplishment</td>
                                                                 <td colspan="4">Rating</td>
                                                                 <td rowspan="2">Remarks</td>
@@ -214,8 +212,6 @@
                                                         <tbody>
                                                             @if ($target->rating)
                                                                 <tr>
-                                                                    <td>{{ $target->rating->alloted_budget }}</td>
-                                                                    <td>{{ $target->rating->responsible }}</td>
                                                                     <td>{{ $target->rating->accomplishment }}</td>
                                                                     <td>{{ $target->rating->efficiency }}</td>
                                                                     <td>{{ $target->rating->quality }}</td>
@@ -245,7 +241,7 @@
                                                                 </tr>
                                                             @else
                                                                 <tr>
-                                                                    <td colspan="8"></td>
+                                                                    <td colspan="6"></td>
                                                                     <td>
                                                                         @if ($approval &&
                                                                             $approval->superior1_status == 1 &&
@@ -279,5 +275,5 @@
     </section>
 
     {{ $functs->links('components.pagination') }}
-    <x-modals :ost="$ost" :selected="$selected" :type="$type" :users1="$users1" :users2="$users2" :duration="$duration" :userType="$userType" />
+    <x-modals :ost="$ost" :selected="$selected" :users1="$users1" :users2="$users2" :type="$type" :duration="$duration" :userType="$userType" />
 </div>

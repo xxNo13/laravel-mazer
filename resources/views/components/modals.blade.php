@@ -82,7 +82,7 @@
                                             wire:change="editChanged" required>
                                             <option value="">Select an output</option>
                                             @foreach (Auth::user()->outputs as $output)
-                                                @if ($output->type == 'ipcr' && $output->duration_id == $duration->id)
+                                                @if ($output->type == 'ipcr' && $output->duration_id == $duration->id && $output->user_type == $userType)
                                                     <option value="{{ $output->id }}">{{ $output->code }}
                                                         {{ $output->output }}
                                                     </option>
@@ -108,7 +108,7 @@
                                         <select placeholder="Output" class="form-control" wire:model="output_id" required>
                                             <option value="">Select an output</option>
                                             @foreach (Auth::user()->outputs as $output)
-                                                @if ($output->type == 'ipcr' && $output->duration_id == $duration->id)
+                                                @if ($output->type == 'ipcr' && $output->duration_id == $duration->id && $output->user_type == $userType)
                                                     <option value="{{ $output->id }}">{{ $output->code }}
                                                         {{ $output->output }}
                                                     </option>
@@ -127,7 +127,7 @@
                                             @foreach (Auth::user()->outputs as $output)
                                                 @forelse ($output->targets as $target)
                                                 @empty
-                                                    @if ($output->type == 'ipcr' && $output->duration_id == $duration->id)
+                                                    @if ($output->type == 'ipcr' && $output->duration_id == $duration->id && $output->user_type == $userType)
                                                         <option value="{{ $output->id }}">{{ $output->code }}
                                                             {{ $output->output }}
                                                         </option>
@@ -154,7 +154,7 @@
                                             wire:model="suboutput_id" wire:change="editChanged" required>
                                             <option value="">Select a suboutput</option>
                                             @foreach (Auth::user()->suboutputs as $suboutput)
-                                                @if ($suboutput->type == 'ipcr' && $suboutput->duration_id == $duration->id)
+                                                @if ($suboutput->type == 'ipcr' && $suboutput->duration_id == $duration->id && $suboutput->user_type == $userType)
                                                     <option value="{{ $suboutput->id }}">
                                                         {{ $suboutput->output->code }}
                                                         {{ $suboutput->output->output }} - {{ $suboutput->suboutput }}
@@ -182,7 +182,7 @@
                                             wire:model="suboutput_id">
                                             <option value="">Select a suboutput</option>
                                             @foreach (Auth::user()->suboutputs as $suboutput)
-                                                @if ($suboutput->type == 'ipcr' && $suboutput->duration_id == $duration->id)
+                                                @if ($suboutput->type == 'ipcr' && $suboutput->duration_id == $duration->id && $suboutput->user_type == $userType)
                                                     <option value="{{ $suboutput->id }}">
                                                         {{ $suboutput->output->code }}
                                                         {{ $suboutput->output->output }} - {{ $suboutput->suboutput }}
@@ -202,7 +202,7 @@
                                             @foreach (Auth::user()->outputs as $output)
                                                 @forelse ($output->suboutputs as $suboutput)
                                                 @empty
-                                                    @if ($output->type == 'ipcr' && $output->duration_id == $duration->id)
+                                                    @if ($output->type == 'ipcr' && $output->duration_id == $duration->id && $output->user_type == $userType)
                                                         <option value="output, {{ $output->id }}">
                                                             {{ $output->code }}
                                                             {{ $output->output }}
@@ -211,7 +211,7 @@
                                                 @endforelse
                                             @endforeach
                                             @foreach (Auth::user()->suboutputs as $suboutput)
-                                                @if ($suboutput->type == 'ipcr' && $suboutput->duration_id == $duration->id)
+                                                @if ($suboutput->type == 'ipcr' && $suboutput->duration_id == $duration->id && $suboutput->user_type == $userType)
                                                     <option value="suboutput, {{ $suboutput->id }}">
                                                         {{ $suboutput->output->code }}
                                                         {{ $suboutput->output->output }} -
@@ -239,7 +239,7 @@
                                             wire:change="editChanged">
                                             <option value="">Select a Target</option>
                                             @foreach (Auth::user()->targets as $target)
-                                                @if ($target->type == 'ipcr' && $target->duration_id == $duration->id)
+                                                @if ($target->type == 'ipcr' && $target->duration_id == $duration->id && $target->user_type == $userType)
                                                     <option value="{{ $target->id }}">
                                                         @if ($target->output)
                                                             {{ $target->output->code }} {{ $target->output->output }}
@@ -273,7 +273,7 @@
                                         <select placeholder="Target" class="form-control" wire:model="target_id" required>
                                             <option value="">Select a target</option>
                                             @foreach (Auth::user()->targets as $target)
-                                                @if ($target->type == 'ipcr' && $target->duration_id == $duration->id)
+                                                @if ($target->type == 'ipcr' && $target->duration_id == $duration->id && $target->user_type == $userType)
                                                     <option value="{{ $target->id }}">
                                                         @if ($target->output)
                                                             {{ $target->output->code }} {{ $target->output->output }}
@@ -405,7 +405,7 @@
                                             wire:change="editChanged">
                                             <option value="">Select an output</option>
                                             @foreach (Auth::user()->outputs as $output)
-                                                @if ($output->type == 'opcr' && $output->duration_id == $duration->id)
+                                                @if ($output->type == 'opcr' && $output->duration_id == $duration->id && $output->user_type == $userType)
                                                     <option value="{{ $output->id }}">{{ $output->code }}
                                                         {{ $output->output }}
                                                     </option>
@@ -431,7 +431,7 @@
                                         <select placeholder="Output" class="form-control" wire:model="output_id" required>
                                             <option value="">Select an output</option>
                                             @foreach (Auth::user()->outputs as $output)
-                                                @if ($output->type == 'opcr' && $output->duration_id == $duration->id)
+                                                @if ($output->type == 'opcr' && $output->duration_id == $duration->id && $output->user_type == $userType)
                                                     <option value="{{ $output->id }}">{{ $output->code }}
                                                         {{ $output->output }}
                                                     </option>
@@ -450,7 +450,7 @@
                                             @foreach (Auth::user()->outputs as $output)
                                                 @forelse ($output->targets as $target)
                                                 @empty
-                                                    @if ($output->type == 'opcr' && $output->duration_id == $duration->id)
+                                                    @if ($output->type == 'opcr' && $output->duration_id == $duration->id && $output->user_type == $userType)
                                                         <option value="{{ $output->id }}">{{ $output->code }}
                                                             {{ $output->output }}
                                                         </option>
@@ -477,7 +477,7 @@
                                             wire:model="suboutput_id" wire:change="editChanged">
                                             <option value="">Select a suboutput</option>
                                             @foreach (Auth::user()->suboutputs as $suboutput)
-                                                @if ($suboutput->type == 'opcr' && $suboutput->duration_id == $duration->id)
+                                                @if ($suboutput->type == 'opcr' && $suboutput->duration_id == $duration->id && $suboutput->user_type == $userType)
                                                     <option value="{{ $suboutput->id }}">
                                                         {{ $suboutput->output->code }}
                                                         {{ $suboutput->output->output }} - {{ $suboutput->suboutput }}
@@ -505,7 +505,7 @@
                                             wire:model="suboutput_id">
                                             <option value="">Select a suboutput</option>
                                             @foreach (Auth::user()->suboutputs as $suboutput)
-                                                @if ($suboutput->type == 'opcr' && $suboutput->duration_id == $duration->id)
+                                                @if ($suboutput->type == 'opcr' && $suboutput->duration_id == $duration->id && $suboutput->user_type == $userType)
                                                     <option value="{{ $suboutput->id }}">
                                                         {{ $suboutput->output->code }}
                                                         {{ $suboutput->output->output }} - {{ $suboutput->suboutput }}
@@ -526,7 +526,7 @@
                                             @foreach (Auth::user()->outputs as $output)
                                                 @forelse ($output->suboutputs as $suboutput)
                                                 @empty
-                                                    @if ($output->type == 'opcr' && $output->duration_id == $duration->id)
+                                                    @if ($output->type == 'opcr' && $output->duration_id == $duration->id && $output->user_type == $userType)
                                                         <option value="output, {{ $output->id }}">
                                                             {{ $output->code }}
                                                             {{ $output->output }}
@@ -535,7 +535,7 @@
                                                 @endforelse
                                             @endforeach
                                             @foreach (Auth::user()->suboutputs as $suboutput)
-                                                @if ($suboutput->type == 'opcr' && $suboutput->duration_id == $duration->id)
+                                                @if ($suboutput->type == 'opcr' && $suboutput->duration_id == $duration->id && $suboutput->user_type == $userType)
                                                     <option value="suboutput, {{ $suboutput->id }}">
                                                         {{ $suboutput->output->code }}
                                                         {{ $suboutput->output->output }} -
@@ -563,7 +563,7 @@
                                             wire:change="editChanged">
                                             <option value="">Select a Target</option>
                                             @foreach (Auth::user()->targets as $target)
-                                                @if ($target->type == 'opcr' && $target->duration_id == $duration->id)
+                                                @if ($target->type == 'opcr' && $target->duration_id == $duration->id && $target->user_type == $userType)
                                                     <option value="{{ $target->id }}">
                                                         @if ($target->output)
                                                             {{ $target->output->code }} {{ $target->output->output }}
@@ -597,7 +597,7 @@
                                         <select placeholder="Target" class="form-control" wire:model="target_id" required>
                                             <option value="">Select a target</option>
                                             @foreach (Auth::user()->targets as $target)
-                                                @if ($target->type == 'opcr' && $target->duration_id == $duration->id)
+                                                @if ($target->type == 'opcr' && $target->duration_id == $duration->id && $target->user_type == $userType)
                                                     <option value="{{ $target->id }}">
                                                         @if ($target->output)
                                                             {{ $target->output->code }} {{ $target->output->output }}

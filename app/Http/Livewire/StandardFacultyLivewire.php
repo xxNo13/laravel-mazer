@@ -11,7 +11,7 @@ use App\Models\Standard;
 use Livewire\WithPagination;
 use Illuminate\Support\Facades\Auth;
 
-class StandardLivewire extends Component
+class StandardFacultyLivewire extends Component
 {   
     use WithPagination;
 
@@ -53,13 +53,20 @@ class StandardLivewire extends Component
             return $query->where('account_type', 'like', "%head%");
         })->where('id', '!=', Auth::user()->id)->get();
         $this->duration = Duration::orderBy('id', 'DESC')->where('start_date', '<=', date('Y-m-d'))->first();
-        $this->approval = Approval::orderBy('id', 'DESC')->where('user_id', Auth::user()->id)->where('type', 'standard')->where('duration_id', $this->duration->id)->first();
+        if ($this->duration) {
+            $this->approval = Approval::orderBy('id', 'DESC')
+                    ->where('user_id', Auth::user()->id)
+                    ->where('type', 'standard')
+                    ->where('duration_id', $this->duration->id)
+                    ->where('user_type', 'faculty')
+                    ->first();
+        }
     }
 
     public function render()
     {
         $functs = Funct::paginate(1);
-        return view('livewire.standard-livewire',[
+        return view('livewire.standard-faculty-livewire',[
             'functs' => $functs
         ]);
     }
@@ -159,12 +166,12 @@ class StandardLivewire extends Component
     public function changeUser(){
         if($this->superior1_id != ''){
             $this->users2 = User::whereHas('account_types', function(\Illuminate\Database\Eloquent\Builder $query) {
-            return $query->where('account_type', 'like', "%head%");
-        })->where('id', '!=', $this->superior1_id)->get();
+                return $query->where('account_type', 'like', "%head%");
+            })->where('id', '!=', $this->superior1_id)->where('id', '!=', Auth::user()->id)->get();
         } elseif ($this->superior2_id != ''){
             $this->users1 = User::whereHas('account_types', function(\Illuminate\Database\Eloquent\Builder $query) {
-            return $query->where('account_type', 'like', "%head%");
-        })->where('id', '!=', $this->superior2_id)->get();
+                return $query->where('account_type', 'like', "%head%");
+            })->where('id', '!=', $this->superior2_id)->where('id', '!=', Auth::user()->id)->get();
         }
     }
 
@@ -177,6 +184,7 @@ class StandardLivewire extends Component
             'superior1_id' => $this->superior1_id,
             'superior2_id' => $this->superior2_id,
             'type' => 'standard',
+            'user_type' => 'faculty',
             'duration_id' => $this->duration->id
         ]);
 

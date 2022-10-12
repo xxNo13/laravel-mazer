@@ -15,6 +15,7 @@ class Target extends Model
         'suboutput_id',
         'user_id',
         'type',
+        'user_type',
         'duration_id'
     ];
 

@@ -2,7 +2,7 @@
     <div class="page-title">
         <div class="row">
             <div class="col-12 col-md-6 order-md-1 order-last">
-                <h3>{{ $user->name }}</h3>
+                <h3>{{ $user->name }} - OPCR</h3>
             </div>
             <div class="col-12 col-md-6 order-md-3 order-first">
                 <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
@@ -72,14 +72,14 @@
                 <h4>{{ $funct->funct }}</h4>
             </div>
             @foreach ($funct->outputs as $output)
-                @if ($output->user_id == $user_id && $output->type == 'opcr' && $output->duration_id == $duration->id)
+                @if ($output->user_id == $user_id && $output->type == 'opcr' && $output->duration_id == $duration->id && $output->user_type == $user_type)
                     <div class="card">
                         <div class="card-header">
                             <h4 class="card-title">{{ $output->code }} {{ $output->output }}</h4>
                             <p class="text-subtitle text-muted"></p>
                         </div>
                         @forelse ($output->suboutputs as $suboutput)
-                            @if ($suboutput->user_id == $user_id && $suboutput->type == 'opcr' && $suboutput->duration_id == $duration->id)
+                            @if ($suboutput->user_id == $user_id && $suboutput->type == 'opcr' && $suboutput->duration_id == $duration->id && $output->user_type == $user_type)
                                 <div class="card-body">
                                     <h6>{{ $suboutput->suboutput }}</h6>
                                 </div>
@@ -88,7 +88,7 @@
                                         id="{{ str_replace(' ', '', $suboutput->suboutput) }}{{ $suboutput->id }}">
                                         <div class="d-sm-flex">
                                             @foreach ($suboutput->targets as $target)
-                                                @if ($target->user_id == $user_id && $target->type == 'opcr' && $target->duration_id == $duration->id)
+                                                @if ($target->user_id == $user_id && $target->type == 'opcr' && $target->duration_id == $duration->id && $output->user_type == $user_type)
                                                     <div class="accordion-button collapsed gap-2" type="button"
                                                         data-bs-toggle="collapse"
                                                         data-bs-target="#{{ str_replace(' ', '', $target->target) }}{{ $target->id }}"
@@ -107,7 +107,7 @@
                                         </div>
 
                                         @foreach ($suboutput->targets as $target)
-                                            @if ($target->user_id == $user_id && $target->type == 'opcr' && $target->duration_id == $duration->id)
+                                            @if ($target->user_id == $user_id && $target->type == 'opcr' && $target->duration_id == $duration->id && $output->user_type == $user_type)
                                                 <div id="{{ str_replace(' ', '', $target->target) }}{{ $target->id }}"
                                                     class="accordion-collapse collapse"
                                                     aria-labelledby="flush-headingOne"
@@ -153,7 +153,7 @@
                                     id="{{ str_replace(' ', '', $output->output) }}{{ $output->id }}">
                                     <div class="d-sm-flex">
                                         @foreach ($output->targets as $target)
-                                            @if ($target->user_id == $user_id && $target->type == 'opcr' && $target->duration_id == $duration->id)
+                                            @if ($target->user_id == $user_id && $target->type == 'opcr' && $target->duration_id == $duration->id && $output->user_type == $user_type)
                                                 <div class="accordion-button collapsed gap-2" type="button"
                                                     data-bs-toggle="collapse"
                                                     data-bs-target="#{{ str_replace(' ', '', $target->target) }}{{ $target->id }}"
@@ -172,7 +172,7 @@
                                     </div>
 
                                     @foreach ($output->targets as $target)
-                                        @if ($target->user_id == $user_id && $target->type == 'opcr' && $target->duration_id == $duration->id)
+                                        @if ($target->user_id == $user_id && $target->type == 'opcr' && $target->duration_id == $duration->id && $output->user_type == $user_type)
                                             <div id="{{ str_replace(' ', '', $target->target) }}{{ $target->id }}"
                                                 class="accordion-collapse collapse" aria-labelledby="flush-headingOne"
                                                 data-bs-parent="#{{ str_replace(' ', '', $output->output) }}{{ $output->id }}">

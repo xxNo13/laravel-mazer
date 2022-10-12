@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('code');
             $table->string('output');
             $table->string('type');
+            $table->string('user_type');
             $table->foreignId('funct_id')->onDelete('cascade');
             $table->foreignId('user_id')->constrained();
             $table->foreignId('duration_id')->onDelete('cascade');

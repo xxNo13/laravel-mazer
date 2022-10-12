@@ -17,13 +17,15 @@ class OfficemateLivewire extends Component
     public $url = '';
     public $search = '';
     public $duration;
-    
+    public $user_type = '';
+
     protected  $queryString = ['search'];
 
-    public function viewed($user_id, $url){
+    public function viewed($user_id, $url, $user_type){
         $this->user_id = $user_id;
         $this->url = $url;
         $this->view = true;
+        $this->user_type = $user_type;
     }
 
     public function mount(){
@@ -46,7 +48,8 @@ class OfficemateLivewire extends Component
                 'functs' => $functs,
                 'user' => $user,
                 'url' => $this->url,
-                'duration' => $this->duration
+                'duration' => $this->duration,
+                'user_type' => $this->user_type
             ]);
         } else {
             $query = User::query();
