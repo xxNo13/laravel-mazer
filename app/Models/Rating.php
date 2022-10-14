@@ -20,6 +20,7 @@ class Rating extends Model
         'remarks',
         'target_id',
         'user_id',
-        'type'
+        'type',
+        'duration_id'
     ];
 }

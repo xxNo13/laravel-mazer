@@ -244,8 +244,9 @@ class IpcrStaffLivewire extends Component
                 'average' => $average,
                 'remarks' => 'Done',
                 'target_id' => $this->target_id,
-                'user_id' => Auth::user()->id,
-                'type' => 'ipcr'
+                'type' => 'ipcr',
+                'duration_id' => $this->duration->id,
+                'user_id' => Auth::user()->id
             ]);
 
             session()->flash('message', 'Added Successfully!');

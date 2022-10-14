@@ -9,7 +9,7 @@
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item active" aria-current="page"><a
                                 href="{{ route('dashboard') }}">Dashboard</a></li>
-                        <li class="breadcrumb-item active" aria-current="page">IPCR - Staff</li>
+                        <li class="breadcrumb-item active" aria-current="page">IPCR - Faculty</li>
                     </ol>
                 </nav>
             </div>
@@ -30,10 +30,15 @@
                 <h4>{{ $funct->funct }}</h4>
                 @if ((!$approval || ($approval->superior1_status == 2 || $approval->superior2_status == 2)) &&
                     ($duration && $duration->start_date <= date('Y-m-d') && $duration->end_date >= date('Y-m-d')))
-                    <button type="button" class="ms-auto btn btn-outline-secondary" data-bs-toggle="modal"
-                        data-bs-target="#ConfigureIPCROSTModal" title="Configure Output/Suboutput/Target">
-                        Configure OST
-                    </button>
+                    @if ($output)
+                        <button type="button" class="ms-auto btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#ResetIPCRModal" title="Configure Output/Suboutput/Target">
+                            Reset IPCR
+                        </button>
+                    @else
+                        <button type="button" class="ms-auto btn btn-outline-secondary" wire:click="configure" title="Configure Output/Suboutput/Target">
+                            Add IPCR
+                        </button>
+                    @endif
                     <button type="button" class="btn btn-outline-info" data-bs-toggle="modal"
                         data-bs-target="#SubmitISOModal" title="Save IPCR" wire:click="submit">
                         Submit
@@ -45,7 +50,7 @@
                 @endif
             </div>
             @foreach ($funct->outputs as $output)
-                @if ($output->user_id == Auth::user()->id && $output->type == 'ipcr' && $output->duration_id == $duration->id && $output->user_type == 'staff')
+                @if ($output->user_id == Auth::user()->id && $output->type == 'ipcr' && $output->duration_id == $duration->id && $output->user_type == 'faculty')
                     <div class="card">
                         <div class="card-header">
                             <h4 class="card-title">{{ $output->code }} {{ $number++ }} {{ $output->output }}</h4>
@@ -54,7 +59,7 @@
                         @forelse ($output->suboutputs as $suboutput)
                             @if ($suboutput->user_id == Auth::user()->id &&
                                 $suboutput->type == 'ipcr' &&
-                                $suboutput->duration_id == $duration->id && $output->user_type == 'staff')
+                                $suboutput->duration_id == $duration->id && $output->user_type == 'faculty')
                                 <div class="card-body">
                                     <h6>{{ $suboutput->suboutput }}</h6>
                                 </div>
@@ -63,7 +68,7 @@
                                         id="{{ str_replace(' ', '', $suboutput->suboutput) }}{{ $suboutput->id }}">
                                         <div class="d-sm-flex">
                                             @foreach ($suboutput->targets as $target)
-                                                @if ($target->user_id == Auth::user()->id && $target->type == 'ipcr' && $target->duration_id == $duration->id && $output->user_type == 'staff')
+                                                @if ($target->user_id == Auth::user()->id && $target->type == 'ipcr' && $target->duration_id == $duration->id && $output->user_type == 'faculty')
                                                     <div wire:ignore.self class="accordion-button collapsed gap-2"
                                                         type="button" data-bs-toggle="collapse"
                                                         data-bs-target="#{{ str_replace(' ', '', $target->target) }}{{ $target->id }}"
@@ -82,7 +87,7 @@
                                         </div>
 
                                         @foreach ($suboutput->targets as $target)
-                                            @if ($target->user_id == Auth::user()->id && $target->type == 'ipcr' && $target->duration_id == $duration->id && $output->user_type == 'staff')
+                                            @if ($target->user_id == Auth::user()->id && $target->type == 'ipcr' && $target->duration_id == $duration->id && $output->user_type == 'faculty')
                                                 <div wire:ignore.self
                                                     id="{{ str_replace(' ', '', $target->target) }}{{ $target->id }}"
                                                     class="accordion-collapse collapse"
@@ -169,7 +174,7 @@
                                     id="{{ str_replace(' ', '', $output->output) }}{{ $output->id }}">
                                     <div class="d-sm-flex">
                                         @foreach ($output->targets as $target)
-                                            @if ($target->user_id == Auth::user()->id && $target->type == 'ipcr' && $target->duration_id == $duration->id && $output->user_type == 'staff')
+                                            @if ($target->user_id == Auth::user()->id && $target->type == 'ipcr' && $target->duration_id == $duration->id && $output->user_type == 'faculty')
                                                 <div wire:ignore.self class="accordion-button collapsed gap-2"
                                                     type="button" data-bs-toggle="collapse"
                                                     data-bs-target="#{{ str_replace(' ', '', $target->target) }}{{ $target->id }}"
@@ -188,7 +193,7 @@
                                     </div>
 
                                     @foreach ($output->targets as $target)
-                                        @if ($target->user_id == Auth::user()->id && $target->type == 'ipcr' && $target->duration_id == $duration->id && $output->user_type == 'staff')
+                                        @if ($target->user_id == Auth::user()->id && $target->type == 'ipcr' && $target->duration_id == $duration->id && $output->user_type == 'faculty')
                                             <div wire:ignore.self
                                                 id="{{ str_replace(' ', '', $target->target) }}{{ $target->id }}"
                                                 class="accordion-collapse collapse" aria-labelledby="flush-headingOne"
@@ -275,5 +280,5 @@
     </section>
 
     {{ $functs->links('components.pagination') }}
-    <x-modals :ost="$ost" :selected="$selected" :users1="$users1" :users2="$users2" :type="$type" :duration="$duration" :userType="$userType" />
+    <x-modals :users1="$users1" :users2="$users2" :type="$type" />
 </div>

@@ -25,6 +25,6 @@ class UserSeeder extends Seeder
             'remember_token' => Str::random(10),
         ]);
 
-        $user->account_types()->attach([1,3,4]);
+        $user->account_types()->attach([1,2,3,4,5]);
     }
 }

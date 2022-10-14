@@ -5,6 +5,9 @@
 <link rel="stylesheet" href="{{ asset('/vendors/perfect-scrollbar/perfect-scrollbar.css') }}">
 <link rel="stylesheet" href="{{ asset('/vendors/bootstrap-icons/bootstrap-icons.css') }}">
 <link rel="stylesheet" href="{{ asset('/vendors/toastify/toastify.css') }}">
+<link rel="stylesheet" href="{{ asset('/vendors/iconly/bold.css') }}">
+<link rel="stylesheet" href="{{ asset('/vendors/apexcharts/apexcharts.css') }}">
+
 
 
 <!-- Styles -->

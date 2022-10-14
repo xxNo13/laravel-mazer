@@ -39,7 +39,7 @@ class UpdateUserProfileInformation implements UpdatesUserProfileInformation
                 'office_id' => $input['office_id'],
             ])->save();
 
-            if($input['account_type']) {
+            if(isset($input['account_type'])) {
                 $user->account_types()->sync($input['account_type']);
             }
         }

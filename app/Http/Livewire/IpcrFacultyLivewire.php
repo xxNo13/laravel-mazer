@@ -104,15 +104,15 @@ class IpcrFacultyLivewire extends Component
         if ($this->ost == 'add'){
             if ($this->selected == 'output'){
                 switch (str_replace(url('/'), '', url()->previous())) {
-                    case '/ipcr/faculty':
+                    case '/ipcr/add/faculty':
                         $this->code = 'CF ';
                         $this->funct_id = 1;
                         break;
-                    case '/ipcr/faculty?page=2':
+                    case '/ipcr/add/faculty?page=2':
                         $this->code = 'STF ';
                         $this->funct_id = 2;
                         break;
-                    case '/ipcr/faculty?page=3':
+                    case '/ipcr/add/faculty?page=3':
                         $this->code = 'SF ';
                         $this->funct_id = 3;
                         break;
@@ -244,8 +244,9 @@ class IpcrFacultyLivewire extends Component
                 'average' => $average,
                 'remarks' => 'Done',
                 'target_id' => $this->target_id,
-                'user_id' => Auth::user()->id,
-                'type' => 'ipcr'
+                'type' => 'ipcr',
+                'duration_id' => $this->duration->id,
+                'user_id' => Auth::user()->id
             ]);
 
             session()->flash('message', 'Added Successfully!');
@@ -288,36 +289,19 @@ class IpcrFacultyLivewire extends Component
     }
 
     // SUBMITING OF IPCR START ------------>
-    public function submit(){
-        $this->selected = 'submit';
-    }
-    
-    public function changeUser(){
-        if($this->superior1_id != ''){
-            $this->users2 = User::whereHas('account_types', function(\Illuminate\Database\Eloquent\Builder $query) {
-                return $query->where('account_type', 'like', "%head%");
-            })->where('id', '!=', $this->superior1_id)->where('id', '!=', Auth::user()->id)->get();
-        } elseif ($this->superior2_id != ''){
-            $this->users1 = User::whereHas('account_types', function(\Illuminate\Database\Eloquent\Builder $query) {
-                return $query->where('account_type', 'like', "%head%");
-            })->where('id', '!=', $this->superior2_id)->where('id', '!=', Auth::user()->id)->get();
-        }
-    }
-
-    public function submitISO(){
-
-        $this->validate();
-
+    public function saveIPCR(){
         Approval::create([
             'user_id' => Auth::user()->id,
-            'superior1_id' => $this->superior1_id,
-            'superior2_id' => $this->superior2_id,
+            'superior1_id' => 1,
+            'superior1_status' => 1,
+            'superior2_id' => 1,
+            'superior2_status' => 1,
             'type' => 'ipcr',
             'user_type' => 'faculty',
             'duration_id' => $this->duration->id
         ]);
 
-        session()->flash('message', 'Submitted Successfully!');
+        session()->flash('message', 'Saved Successfully!');
         $this->resetInput();
         $this->dispatchBrowserEvent('close-modal'); 
         return redirect(request()->header('Referer'));

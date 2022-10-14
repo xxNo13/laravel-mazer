@@ -31,17 +31,12 @@
                 @if ((!$approval || ($approval->superior1_status == 2 || $approval->superior2_status == 2)) &&
                     ($duration && $duration->start_date <= date('Y-m-d') && $duration->end_date >= date('Y-m-d')))
                     <button type="button" class="ms-auto btn btn-outline-secondary" data-bs-toggle="modal"
-                        data-bs-target="#ConfigureIPCROSTModal" title="Confugure Output/Suboutput/Target">
+                        data-bs-target="#ConfigureIPCROSTModal" title="Configure Output/Suboutput/Target">
                         Configure OST
                     </button>
-                    <button type="button" class="btn btn-outline-info" data-bs-toggle="modal"
-                        data-bs-target="#SubmitISOModal" title="Save IPCR" wire:click="submit">
-                        Submit
+                    <button type="button" class="btn btn-outline-info" data-bs-toggle="modal" title="Save IPCR" wire:click="saveIPCR">
+                        Save
                     </button>
-                @elseif ($approval && $approval->superior1_status == 1 && $approval->superior2_status == 1)
-                    <a href="/print/ipcr" type="button" class="ms-auto btn icon btn-primary" title="Print IPCR">
-                        <i class="bi bi-printer"></i>
-                    </a>
                 @endif
             </div>
             @foreach ($funct->outputs as $output)
@@ -64,7 +59,7 @@
                                         <div class="d-sm-flex">
                                             @foreach ($suboutput->targets as $target)
                                                 @if ($target->user_id == Auth::user()->id && $target->type == 'ipcr' && $target->duration_id == $duration->id && $output->user_type == 'faculty')
-                                                    <div wire:ignore.self class="accordion-button collapsed gap-2"
+                                                    <div wire:ignore.self class="gap-2"
                                                         type="button" data-bs-toggle="collapse"
                                                         data-bs-target="#{{ str_replace(' ', '', $target->target) }}{{ $target->id }}"
                                                         aria-expanded="true"
@@ -80,86 +75,6 @@
                                                 @endif
                                             @endforeach
                                         </div>
-
-                                        @foreach ($suboutput->targets as $target)
-                                            @if ($target->user_id == Auth::user()->id && $target->type == 'ipcr' && $target->duration_id == $duration->id && $output->user_type == 'faculty')
-                                                <div wire:ignore.self
-                                                    id="{{ str_replace(' ', '', $target->target) }}{{ $target->id }}"
-                                                    class="accordion-collapse collapse"
-                                                    aria-labelledby="flush-headingOne"
-                                                    data-bs-parent="#{{ str_replace(' ', '', $suboutput->suboutput) }}{{ $suboutput->id }}">
-                                                    <div class="accordion-body table-responsive">
-                                                        <table class="table table-lg text-center">
-                                                            <thead>
-                                                                <tr>
-                                                                    <td rowspan="2">Actual Accomplishment</td>
-                                                                    <td colspan="4">Rating</td>
-                                                                    <td rowspan="2">Remarks</td>
-                                                                    <td rowspan="2">Actions</td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <td>E</td>
-                                                                    <td>Q</td>
-                                                                    <td>T</td>
-                                                                    <td>A</td>
-                                                                </tr>
-                                                            </thead>
-                                                            <tbody>
-                                                                @if ($target->rating)
-                                                                    <tr>
-                                                                        <td>{{ $target->rating->accomplishment }}</td>
-                                                                        <td>{{ $target->rating->efficiency }}</td>
-                                                                        <td>{{ $target->rating->quality }}</td>
-                                                                        <td>{{ $target->rating->timeliness }}</td>
-                                                                        <td>{{ $target->rating->average }}</td>
-                                                                        <td>{{ $target->rating->remarks }}</td>
-                                                                        <td>
-                                                                            @if ($duration && $duration->start_date <= date('Y-m-d') && $duration->end_date >= date('Y-m-d'))
-                                                                                <button type="button"
-                                                                                    class="btn icon btn-success"
-                                                                                    wire:click="editRating({{ $target->rating->id }})"
-                                                                                    data-bs-toggle="modal"
-                                                                                    data-bs-target="#EditRatingModal"
-                                                                                    title="Edit Rating">
-                                                                                    <i class="bi bi-pencil-square"></i>
-                                                                                </button>
-                                                                                <button type="button"
-                                                                                    class="btn icon btn-danger"
-                                                                                    wire:click="rating({{ 0 }}, {{ $target->rating->id }})"
-                                                                                    data-bs-toggle="modal"
-                                                                                    data-bs-target="#DeleteModal"
-                                                                                    title="Delete Rating">
-                                                                                    <i class="bi bi-trash"></i>
-                                                                                </button>
-                                                                            @endif
-                                                                        </td>
-                                                                    </tr>
-                                                                @else
-                                                                    <tr>
-                                                                        <td colspan="6"></td>
-                                                                        <td>
-                                                                            @if ($approval &&
-                                                                                $approval->superior1_status == 1 &&
-                                                                                $approval->superior2_status == 1 &&
-                                                                                ($duration && $duration->start_date <= date('Y-m-d') && $duration->end_date >= date('Y-m-d')))
-                                                                                <button type="button"
-                                                                                    class="btn icon btn-primary"
-                                                                                    wire:click="rating({{ $target->id }})"
-                                                                                    data-bs-toggle="modal"
-                                                                                    data-bs-target="#AddRatingModal"
-                                                                                    title="Add Rating">
-                                                                                    <i class="bi bi-plus"></i>
-                                                                                </button>
-                                                                            @endif
-                                                                        </td>
-                                                                    </tr>
-                                                                @endif
-                                                            </tbody>
-                                                        </table>
-                                                    </div>
-                                                </div>
-                                            @endif
-                                        @endforeach
                                     </div>
                                 </div>
                             @endif
@@ -186,85 +101,6 @@
                                             @endif
                                         @endforeach
                                     </div>
-
-                                    @foreach ($output->targets as $target)
-                                        @if ($target->user_id == Auth::user()->id && $target->type == 'ipcr' && $target->duration_id == $duration->id && $output->user_type == 'faculty')
-                                            <div wire:ignore.self
-                                                id="{{ str_replace(' ', '', $target->target) }}{{ $target->id }}"
-                                                class="accordion-collapse collapse" aria-labelledby="flush-headingOne"
-                                                data-bs-parent="#{{ str_replace(' ', '', $output->output) }}{{ $output->id }}">
-                                                <div class="accordion-body table-responsive">
-                                                    <table class="table table-lg text-center">
-                                                        <thead>
-                                                            <tr>
-                                                                <td rowspan="2">Actual Accomplishment</td>
-                                                                <td colspan="4">Rating</td>
-                                                                <td rowspan="2">Remarks</td>
-                                                                <td rowspan="2">Actions</td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td>E</td>
-                                                                <td>Q</td>
-                                                                <td>T</td>
-                                                                <td>A</td>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody>
-                                                            @if ($target->rating)
-                                                                <tr>
-                                                                    <td>{{ $target->rating->accomplishment }}</td>
-                                                                    <td>{{ $target->rating->efficiency }}</td>
-                                                                    <td>{{ $target->rating->quality }}</td>
-                                                                    <td>{{ $target->rating->timeliness }}</td>
-                                                                    <td>{{ $target->rating->average }}</td>
-                                                                    <td>{{ $target->rating->remarks }}</td>
-                                                                    <td>
-                                                                        @if ($duration && $duration->start_date <= date('Y-m-d') && $duration->end_date >= date('Y-m-d'))
-                                                                            <button type="button"
-                                                                                class="btn icon btn-success"
-                                                                                wire:click="editRating({{ $target->rating->id }})"
-                                                                                data-bs-toggle="modal"
-                                                                                data-bs-target="#EditRatingModal"
-                                                                                title="Edit Rating">
-                                                                                <i class="bi bi-pencil-square"></i>
-                                                                            </button>
-                                                                            <button type="button"
-                                                                                class="btn icon btn-danger"
-                                                                                wire:click="rating({{ 0 }}, {{ $target->rating->id }})"
-                                                                                data-bs-toggle="modal"
-                                                                                data-bs-target="#DeleteModal"
-                                                                                title="Delete Rating">
-                                                                                <i class="bi bi-trash"></i>
-                                                                            </button>
-                                                                        @endif
-                                                                    </td>
-                                                                </tr>
-                                                            @else
-                                                                <tr>
-                                                                    <td colspan="6"></td>
-                                                                    <td>
-                                                                        @if ($approval &&
-                                                                            $approval->superior1_status == 1 &&
-                                                                            $approval->superior2_status == 1 &&
-                                                                            ($duration && $duration->start_date <= date('Y-m-d') && $duration->end_date >= date('Y-m-d')))
-                                                                            <button type="button"
-                                                                                class="btn icon btn-primary"
-                                                                                wire:click="rating({{ $target->id }})"
-                                                                                data-bs-toggle="modal"
-                                                                                data-bs-target="#AddRatingModal"
-                                                                                title="Add Rating">
-                                                                                <i class="bi bi-plus"></i>
-                                                                            </button>
-                                                                        @endif
-                                                                    </td>
-                                                                </tr>
-                                                            @endif
-                                                        </tbody>
-                                                    </table>
-                                                </div>
-                                            </div>
-                                        @endif
-                                    @endforeach
                                 </div>
                             </div>
                         @endforelse

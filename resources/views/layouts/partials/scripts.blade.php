@@ -3,6 +3,7 @@
 <script src="{{ asset('/vendors/perfect-scrollbar/perfect-scrollbar.min.js') }}"></script>
 <script src="{{ asset('/vendors/tinymce/tinymce.min.js') }}"></script>
 <script src="{{ asset('/vendors/toastify/toastify.js') }}"></script>
+<script src="{{ asset('/vendors/apexcharts/apexcharts.js') }}"></script>
 
 
 <script src="//unpkg.com/alpinejs" defer></script>
@@ -30,7 +31,12 @@
         $('#EditAccountTypeModal').modal('hide');
         $('#AddDurationModal').modal('hide');
         $('#EditDurationModal').modal('hide');
+        $('#ResetIPCRModal').modal('hide');
     });
 </script>
 
 {{ $script ?? ''}}
+
+@stack('target')
+@stack('assignment')
+@stack('rating')
