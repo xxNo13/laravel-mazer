@@ -16,12 +16,13 @@ return new class extends Migration
         Schema::create('approvals', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->onDelete('cascade')->nullable();
-            $table->integer('superior1_id');
+            $table->integer('superior1_id')->nullable();
             $table->smallInteger('superior1_status')->nullable();
-            $table->integer('superior2_id');
+            $table->integer('superior2_id')->nullable();
             $table->smallInteger('superior2_status')->nullable();
             $table->string('type');
             $table->string('user_type');
+            $table->smallInteger('added_id')->nullable();
             $table->foreignId('duration_id')->onDelete('cascade');
             $table->timestamps();
         });

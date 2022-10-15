@@ -52,11 +52,14 @@ class OfficemateLivewire extends Component
                 'user_type' => $this->user_type
             ]);
         } else {
+            $search = $this->search;
             $query = User::query();
-            if ($this->search) {
-                $query->where('name', 'like', "%{$this->search}%")
-                    ->orwhere('email', 'like', "%{$this->search}%")
-                    ->orwhere('account_types', 'like', "%{$this->search}%");
+            if ($search) {
+                $query->where('name', 'like', "%{$search}%")
+                    ->orwhere('email', 'like', "%{$search}%")
+                    ->orWhereHas('account_types', function(\Illuminate\Database\Eloquent\Builder $query) use ($search){
+                        return $query->where('account_type', 'LIKE','%'.$search.'%');
+                    });
             }
             // $users = User::where('name', 'like', '%'.$this->search.'%')->orderBy('name', 'ASC')->paginate(10);
             return view('livewire.officemate-livewire',[

@@ -48,6 +48,9 @@ class IpcrFacultyLivewire extends Component
     public $approval;
     public $type = 'IPCR';
     public $duration;
+    public $outputs = '';
+    public $suboutputs = '';
+    public $targets = '';
 
     // protected $paginationTheme = 'bootstrap';
     protected $rules = [
@@ -69,31 +72,35 @@ class IpcrFacultyLivewire extends Component
         $this->duration = Duration::orderBy('id', 'DESC')->where('start_date', '<=', date('Y-m-d'))->first();
         if ($this->duration) {
             $this->approval = Approval::orderBy('id', 'DESC')
-                ->where('user_id', Auth::user()->id)
+                ->where('added_id', Auth::user()->id)
                 ->where('type', 'ipcr')
                 ->where('duration_id', $this->duration->id)
                 ->where('user_type', 'faculty')
                 ->first();
-
-            $this->outputs = Output::where('user_id', null)
-                ->where('duration_id', $this->duration->id)
-                ->get();
-            $this->suboutputs = Suboutput::where('user_id', null)
-                ->where('duration_id', $this->duration->id)
-                ->get();;
-            $this->targets = Target::where('user_id', null)
-                ->where('duration_id', $this->duration->id)
-                ->get();;
         }
     }
 
     public function render()
     {
         $functs = Funct::paginate(1);
+        if ($this->duration){
+            $this->outputs = Output::where('user_id', null)
+                ->where('duration_id', $this->duration->id)
+                ->get();
+            $this->suboutputs = Suboutput::where('user_id', null)
+                ->where('duration_id', $this->duration->id)
+                ->get();
+            $this->targets = Target::where('user_id', null)
+                ->where('duration_id', $this->duration->id)
+                ->get();
+        }
 
         return view('livewire.ipcr-faculty-livewire', [
             'functs' => $functs,
-            'userType' => 'faculty'
+            'userType' => 'faculty',
+            'outputs' => $this->outputs,
+            'suboutputs' => $this->suboutputs,
+            'targets' => $this->targets
         ]);
     }
 
@@ -235,9 +242,8 @@ class IpcrFacultyLivewire extends Component
     public function saveIPCR()
     {
         Approval::create([
-            'superior1_id' => 1,
+            'added_id' => Auth::user()->id,
             'superior1_status' => 1,
-            'superior2_id' => 1,
             'superior2_status' => 1,
             'type' => 'ipcr',
             'user_type' => 'faculty',

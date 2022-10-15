@@ -79,19 +79,21 @@ class ForapprovalLivewire extends Component
 
             if ($search) {
                 $approvals->whereHas('user', function(\Illuminate\Database\Eloquent\Builder $query) use ($search){
-                    return $query->whereHas('office', function(\Illuminate\Database\Eloquent\Builder $query) use ($search){
-                        return $query->where('office', 'LIKE','%'.$search.'%')
-                            ->orWhere('building','LIKE','%'.$search.'%');
-                    })->where('name', 'LIKE','%'.$search.'%')
+                    return $query->where('name', 'LIKE','%'.$search.'%')
                         ->orWhere('email','LIKE','%'.$search.'%')
-                        ->orWhere('account_types','LIKE','%'.$search.'%');
+                        ->orwhereHas('office', function(\Illuminate\Database\Eloquent\Builder $query) use ($search){
+                            return $query->where('office', 'LIKE','%'.$search.'%')
+                                ->orWhere('building','LIKE','%'.$search.'%');
+                        })->orWhereHas('account_types', function(\Illuminate\Database\Eloquent\Builder $query) use ($search){
+                            return $query->where('account_type', 'LIKE','%'.$search.'%');
+                        });
                 })
                 ->orWhere('type','LIKE','%'.$search.'%')
                 ->get();
             }
 
             return view('livewire.forapproval-livewire', [
-                'approvals' => $approvals->paginate(10),
+                'approvals' => $approvals->orderBy('id','DESC')->paginate(10),
             ]);
         }
     }

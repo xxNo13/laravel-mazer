@@ -21,14 +21,15 @@ class RatingchartLivewire extends Component
             ->where('type', 'ipcr')
             ->where('duration_id', $this->duration->id)
             ->get();
-        foreach($this->targs as $target){
-            $this->targets[$this->number] = $target->target;
-            if ($target->rating) {
-                $this->ratings[$this->number] = Rating::where('target_id', $target->id)
-                ->where('type', 'ipcr')
-                ->where('duration_id', $this->duration->id)
-                ->pluck('average');
-            } elseif(!$target->rating) {
+        foreach($this->targs as $targ){
+            $this->targets[$this->number] = $targ->target;
+            if ($targ->rating) {
+                $rating = Rating::where('target_id', $targ->id)
+                    ->where('type', 'ipcr')
+                    ->where('duration_id', $this->duration->id)
+                    ->first();
+                $this->ratings[$this->number] = $rating->average;
+            } else {
                 $this->ratings[$this->number] = 0;
             }
 

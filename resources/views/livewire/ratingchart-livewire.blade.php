@@ -8,6 +8,7 @@
         var options = {
             chart: {
                 type: 'bar',
+                height: 500,
                 zoom: {
                     enabled: false,
                 }

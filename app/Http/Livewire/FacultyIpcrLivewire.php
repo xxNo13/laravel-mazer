@@ -48,12 +48,13 @@ class FacultyIpcrLivewire extends Component
         $this->users2 = User::whereHas('account_types', function(\Illuminate\Database\Eloquent\Builder $query) {
             return $query->where('account_type', 'like', "%head%");
         })->where('id', '!=', Auth::user()->id)->get();
-        $this->output = Output::where('user_id', Auth::user()->id)
-                            ->where('type', 'ipcr')
-                            ->where('user_type', 'faculty')
-                            ->first();
         $this->duration = Duration::orderBy('id', 'DESC')->where('start_date', '<=', date('Y-m-d'))->first();
         if ($this->duration) {
+            $this->output = Output::where('user_id', Auth::user()->id)
+                    ->where('type', 'ipcr')
+                    ->where('user_type', 'faculty')
+                    ->where('duration_id', $this->duration->id)
+                    ->first();
             $this->approval = Approval::orderBy('id', 'DESC')
                     ->where('user_id', Auth::user()->id)
                     ->where('type', 'ipcr')
@@ -262,7 +263,17 @@ class FacultyIpcrLivewire extends Component
 
             session()->flash('message', 'Added Successfully!');
         } elseif ($category == 'edit') {
-            $number = ($this->efficiency + $this->quality + $this->timeliness) / 3;
+            $divisor= 0;
+            if(!$this->efficiency){
+                $divisor++;
+            }
+            if(!$this->quality){
+                $divisor++;
+            }
+            if(!$this->timeliness){
+                $divisor++;
+            }
+            $number = ($this->efficiency + $this->quality + $this->timeliness) / (3 - $divisor);
             $average = number_format((float)$number, 2, '.', '');
 
             Rating::where('id', $this->rating_id)->update([

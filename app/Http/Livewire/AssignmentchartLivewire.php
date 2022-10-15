@@ -27,6 +27,7 @@ class AssignmentchartLivewire extends Component
         $ttmas = Ttma::orderBy('updated_at', 'DESC')
                     ->where('user_id', Auth::user()->id)
                     ->where('duration_id', $this->duration->id)
+                    ->where('remarks', 'Done')
                     ->get();
         $this->assignments = [0,0,0,0,0,0,0];
         foreach($ttmas as $ttma) {

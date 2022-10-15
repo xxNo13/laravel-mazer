@@ -18,21 +18,21 @@ class OpcrLivewire extends Component
 {
     use WithPagination;
 
-    public string $funct = '';
+    public string $funct;
     public string $selected = 'output';
     public string $ost = 'add';
-    public string $output = '';
-    public string $suboutput = '';
-    public string $subput = '';
+    public string $output;
+    public string $suboutput;
+    public string $subput;
     public $subputArr = [];
-    public string $target = '';
-    public string $accomplishment = '';
-    public $efficiency = '';
-    public $quality = '';
-    public $timeliness = '';
+    public string $target;
+    public $accomplishment;
+    public $efficiency;
+    public $quality;
+    public $timeliness;
     public $average;
-    public string $remarks = '';
-    public string $code = '';
+    public string $remarks;
+    public string $code;
     public $funct_id;
     public $number = 1;
     public $output_id;
@@ -231,7 +231,17 @@ class OpcrLivewire extends Component
         $this->validate();
 
         if ($category == 'add') {
-            $number = ($this->efficiency + $this->quality + $this->timeliness) / 3;
+            $divisor= 0;
+            if(!$this->efficiency){
+                $divisor++;
+            }
+            if(!$this->quality){
+                $divisor++;
+            }
+            if(!$this->timeliness){
+                $divisor++;
+            }
+            $number = ($this->efficiency + $this->quality + $this->timeliness) / (3 - $divisor);
             $average = number_format((float)$number, 2, '.', '');
 
             Rating::create([
@@ -245,6 +255,7 @@ class OpcrLivewire extends Component
                 'remarks' => 'Done',
                 'target_id' => $this->target_id,
                 'user_id' => Auth::user()->id,
+                'duration_id' => $this->duration->id,
                 'type' => 'opcr'
             ]);
 
