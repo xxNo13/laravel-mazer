@@ -108,9 +108,27 @@
                                                                 @if ($target->rating)
                                                                     <tr>
                                                                         <td>{{ $target->rating->accomplishment }}</td>
-                                                                        <td>{{ $target->rating->efficiency }}</td>
-                                                                        <td>{{ $target->rating->quality }}</td>
-                                                                        <td>{{ $target->rating->timeliness }}</td>
+                                                                        <td>
+                                                                            @if ($target->rating->efficiency)
+                                                                                {{ $target->rating->efficiency }}
+                                                                            @else
+                                                                                NR
+                                                                            @endif
+                                                                        </td>
+                                                                        <td>
+                                                                            @if ($target->rating->quality)
+                                                                            {{ $target->rating->quality }}
+                                                                            @else
+                                                                                NR
+                                                                            @endif
+                                                                        </td>
+                                                                        <td>
+                                                                            @if ($target->rating->timeliness)
+                                                                            {{ $target->rating->timeliness }}
+                                                                            @else
+                                                                                NR
+                                                                            @endif
+                                                                        </td>
                                                                         <td>{{ $target->rating->average }}</td>
                                                                         <td>{{ $target->rating->remarks }}</td>
                                                                         <td>
@@ -213,9 +231,27 @@
                                                             @if ($target->rating)
                                                                 <tr>
                                                                     <td>{{ $target->rating->accomplishment }}</td>
-                                                                    <td>{{ $target->rating->efficiency }}</td>
-                                                                    <td>{{ $target->rating->quality }}</td>
-                                                                    <td>{{ $target->rating->timeliness }}</td>
+                                                                    <td>
+                                                                        @if ($target->rating->efficiency)
+                                                                            {{ $target->rating->efficiency }}
+                                                                        @else
+                                                                            NR
+                                                                        @endif
+                                                                    </td>
+                                                                    <td>
+                                                                        @if ($target->rating->quality)
+                                                                        {{ $target->rating->quality }}
+                                                                        @else
+                                                                            NR
+                                                                        @endif
+                                                                    </td>
+                                                                    <td>
+                                                                        @if ($target->rating->timeliness)
+                                                                        {{ $target->rating->timeliness }}
+                                                                        @else
+                                                                            NR
+                                                                        @endif
+                                                                    </td>
                                                                     <td>{{ $target->rating->average }}</td>
                                                                     <td>{{ $target->rating->remarks }}</td>
                                                                     <td>

@@ -37,9 +37,6 @@ class FacultyIpcrLivewire extends Component
 
     protected $rules = [
         'accomplishment' => ['required_if:selected,rating'],
-        'efficiency' => ['required_if:selected,rating'],
-        'quality' => ['required_if:selected,rating'],
-        'timeliness' => ['required_if:selected,rating'],
         'superior1_id' => ['required_if:selected,approval'],
         'superior2_id' => ['required_if:selected,approval'],
     ];
@@ -69,12 +66,8 @@ class FacultyIpcrLivewire extends Component
     public function render()
     {
         if ($this->configure){
-            $user = User::whereHas('account_types', function(\Illuminate\Database\Eloquent\Builder $query) {
-                return $query->where('account_type', 'like', "%head of agency%");
-            })->first();
             return view('components.ipcr-faculty', [
                 'functs' => Funct::all(),
-                'user_id' => $user->id,
                 'user_type' => 'faculty',
             ]);
         } else {
@@ -178,7 +171,7 @@ class FacultyIpcrLivewire extends Component
                         'target' => $target->target,
                         'type' => $target->type,
                         'user_type' => $target->user_type,
-                        'suboutput' => $storeSuboutput->id,
+                        'suboutput_id' => $storeSuboutput->id,
                         'user_id' => Auth::user()->id,
                         'duration_id' => $this->duration->id
                     ]);
@@ -241,7 +234,17 @@ class FacultyIpcrLivewire extends Component
         $this->validate();
 
         if ($category == 'add') {
-            $number = ($this->efficiency + $this->quality + $this->timeliness) / 3;
+            $divisor= 0;
+            if(!$this->efficiency){
+                $divisor++;
+            }
+            if(!$this->quality){
+                $divisor++;
+            }
+            if(!$this->timeliness){
+                $divisor++;
+            }
+            $number = ($this->efficiency + $this->quality + $this->timeliness) / (3 - $divisor);
             $average = number_format((float)$number, 2, '.', '');
 
             Rating::create([

@@ -31,7 +31,7 @@
     <section class="section pt-3">
         <div class="row">
             <div class="col-12 hstack">
-                <button class="ms-auto btn btn-outline-primary" wire:click="saveIPCR">
+                <button wire:loading.attr="disabled" class="ms-auto btn btn-outline-primary" wire:click="saveIPCR">
                     Save
                 </button>
             </div>
@@ -41,21 +41,21 @@
                 <h4>{{ $funct->funct }}</h4>
             </div>
             @foreach ($funct->outputs as $output)
-                @if ($output->user_id == $user_id && $output->type == 'ipcr' && $output->duration_id == $duration->id && $output->user_type == $user_type)
+                @if (!$output->user_id && $output->type == 'ipcr' && $output->duration_id == $duration->id && $output->user_type == $user_type)
                     <div class="card">
                         <div class="card-header">
                             <h4 class="card-title">{{ $output->code }} {{ $number++ }} {{ $output->output }}</h4>
                             <p class="text-subtitle text-muted"></p>
                         </div>
                         @forelse ($output->suboutputs as $suboutput)
-                            @if ($suboutput->user_id == $user_id && $suboutput->type == 'ipcr' && $suboutput->duration_id == $duration->id && $output->user_type == $user_type)
+                            @if (!$suboutput->user_id && $suboutput->type == 'ipcr' && $suboutput->duration_id == $duration->id && $output->user_type == $user_type)
                                 <div class="card-body">
                                     <h6>{{ $suboutput->suboutput }}</h6>
                                 </div>
                                 <div class="card-body">
                                     <div class="d-sm-flex gap-5">
                                         @foreach ($suboutput->targets as $target)
-                                            @if ($target->user_id == $user_id && $target->type == 'ipcr' && $target->duration_id == $duration->id && $output->user_type == $user_type)
+                                            @if (!$target->user_id && $target->type == 'ipcr' && $target->duration_id == $duration->id && $output->user_type == $user_type)
                                                 <div class="form-check form-switch">
                                                     <input class="form-check-input" type="checkbox" id="{{ $target->target }}{{ $target->id }}" value="{{ $target->id }}" wire:model="targets">
                                                     <label class="form-check-label" for="{{ $target->target }}{{ $target->id }}">{{ $target->target }}</label>
@@ -69,7 +69,7 @@
                             <div class="card-body">
                                 <div class="d-sm-flex gap-5">
                                     @foreach ($output->targets as $target)
-                                        @if ($target->user_id == $user_id && $target->type == 'ipcr' && $target->duration_id == $duration->id && $output->user_type == $user_type)
+                                        @if (!$target->user_id && $target->type == 'ipcr' && $target->duration_id == $duration->id && $output->user_type == $user_type)
                                             <div class="form-check form-switch">
                                                 <input class="form-check-input" type="checkbox" id="{{ $target->target }}{{ $target->id }}" value="{{ $target->id }}" wire:model="targets">
                                                 <label class="form-check-label" for="{{ $target->target }}{{ $target->id }}">{{ $target->target }}</label>

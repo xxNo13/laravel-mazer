@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('approvals', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained();
+            $table->foreignId('user_id')->onDelete('cascade')->nullable();
             $table->integer('superior1_id');
             $table->smallInteger('superior1_status')->nullable();
             $table->integer('superior2_id');

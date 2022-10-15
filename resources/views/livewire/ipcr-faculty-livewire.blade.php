@@ -40,14 +40,14 @@
                 @endif
             </div>
             @foreach ($funct->outputs as $output)
-                @if ($output->user_id == Auth::user()->id && $output->type == 'ipcr' && $output->duration_id == $duration->id && $output->user_type == 'faculty')
+                @if (!$output->user_id && $output->type == 'ipcr' && $output->duration_id == $duration->id && $output->user_type == 'faculty')
                     <div class="card">
                         <div class="card-header">
                             <h4 class="card-title">{{ $output->code }} {{ $number++ }} {{ $output->output }}</h4>
                             <p class="text-subtitle text-muted"></p>
                         </div>
                         @forelse ($output->suboutputs as $suboutput)
-                            @if ($suboutput->user_id == Auth::user()->id &&
+                            @if (!$suboutput->user_id &&
                                 $suboutput->type == 'ipcr' &&
                                 $suboutput->duration_id == $duration->id && $output->user_type == 'faculty')
                                 <div class="card-body">
@@ -58,8 +58,8 @@
                                         id="{{ str_replace(' ', '', $suboutput->suboutput) }}{{ $suboutput->id }}">
                                         <div class="d-sm-flex">
                                             @foreach ($suboutput->targets as $target)
-                                                @if ($target->user_id == Auth::user()->id && $target->type == 'ipcr' && $target->duration_id == $duration->id && $output->user_type == 'faculty')
-                                                    <div wire:ignore.self class="gap-2"
+                                                @if (!$target->user_id && $target->type == 'ipcr' && $target->duration_id == $duration->id && $output->user_type == 'faculty')
+                                                    <div wire:ignore.self class="accordion-button collapsed gap-2"
                                                         type="button" data-bs-toggle="collapse"
                                                         data-bs-target="#{{ str_replace(' ', '', $target->target) }}{{ $target->id }}"
                                                         aria-expanded="true"
@@ -84,7 +84,7 @@
                                     id="{{ str_replace(' ', '', $output->output) }}{{ $output->id }}">
                                     <div class="d-sm-flex">
                                         @foreach ($output->targets as $target)
-                                            @if ($target->user_id == Auth::user()->id && $target->type == 'ipcr' && $target->duration_id == $duration->id && $output->user_type == 'faculty')
+                                            @if (!$target->user_id && $target->type == 'ipcr' && $target->duration_id == $duration->id && $output->user_type == 'faculty')
                                                 <div wire:ignore.self class="accordion-button collapsed gap-2"
                                                     type="button" data-bs-toggle="collapse"
                                                     data-bs-target="#{{ str_replace(' ', '', $target->target) }}{{ $target->id }}"
@@ -111,5 +111,5 @@
     </section>
 
     {{ $functs->links('components.pagination') }}
-    <x-modals :ost="$ost" :selected="$selected" :users1="$users1" :users2="$users2" :type="$type" :duration="$duration" :userType="$userType" />
+    <x-modals :ost="$ost" :selected="$selected" :users1="$users1" :users2="$users2" :type="$type" :duration="$duration" :userType="$userType" :outputs="$outputs" :suboutputs="$suboutputs" :targets="$targets" />
 </div>

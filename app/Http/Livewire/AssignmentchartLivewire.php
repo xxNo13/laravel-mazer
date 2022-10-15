@@ -32,59 +32,17 @@ class AssignmentchartLivewire extends Component
         foreach($ttmas as $ttma) {
             if(date('M-d-Y', strtotime($ttma->updated_at)) == date('M-d-Y')){
                 ++$this->assignments[6];
-                $this->assignments[5];
-                $this->assignments[4];
-                $this->assignments[3];
-                $this->assignments[2];
-                $this->assignments[1];
-                $this->assignments[0];
             }elseif(date('M-d-Y', strtotime($ttma->updated_at)) == date('M-d-Y', strtotime(date('M-d-Y'). '- 1 days'))) {
-                $this->assignments[6];
                 ++$this->assignments[5];
-                $this->assignments[4];
-                $this->assignments[3];
-                $this->assignments[2];
-                $this->assignments[1];
-                $this->assignments[0];
             }elseif(date('M-d-Y', strtotime($ttma->updated_at)) == date('M-d-Y', strtotime(date('M-d-Y'). '- 2 days'))) {
-                $this->assignments[6];
-                $this->assignments[5];
                 ++$this->assignments[4];
-                $this->assignments[3];
-                $this->assignments[2];
-                $this->assignments[1];
-                $this->assignments[0];
             }elseif(date('M-d-Y', strtotime($ttma->updated_at)) == date('M-d-Y', strtotime(date('M-d-Y'). '- 3 days'))) {
-                $this->assignments[6];
-                $this->assignments[5];
-                $this->assignments[4];
                 ++$this->assignments[3];
-                $this->assignments[2];
-                $this->assignments[1];
-                $this->assignments[0];
             }elseif(date('M-d-Y', strtotime($ttma->updated_at)) == date('M-d-Y', strtotime(date('M-d-Y'). '- 4 days'))) {
-                $this->assignments[6];
-                $this->assignments[5];
-                $this->assignments[4];
-                $this->assignments[3];
                 ++$this->assignments[2];
-                $this->assignments[1];
-                $this->assignments[0];
             }elseif(date('M-d-Y', strtotime($ttma->updated_at)) == date('M-d-Y', strtotime(date('M-d-Y'). '- 5 days'))) {
-                $this->assignments[6];
-                $this->assignments[5];
-                $this->assignments[4];
-                $this->assignments[3];
-                $this->assignments[2];
                 ++$this->assignments[1];
-                $this->assignments[0];
             }elseif(date('M-d-Y', strtotime($ttma->updated_at)) == date('M-d-Y', strtotime(date('M-d-Y'). '- 6 days'))) {
-                $this->assignments[6];
-                $this->assignments[5];
-                $this->assignments[4];
-                $this->assignments[3];
-                $this->assignments[2];
-                $this->assignments[1];
                 ++$this->assignments[0];
             }
         }

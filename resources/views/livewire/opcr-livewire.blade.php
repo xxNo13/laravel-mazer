@@ -41,7 +41,10 @@
                 @endif
             </div>
             @foreach ($funct->outputs as $output)
-                @if ($output->user_id == Auth::user()->id && $output->type == 'opcr' && $output->duration_id == $duration->id && $output->user_type == 'office')
+                @if ($output->user_id == Auth::user()->id &&
+                    $output->type == 'opcr' &&
+                    $output->duration_id == $duration->id &&
+                    $output->user_type == 'office')
                     <div class="card">
                         <div class="card-header">
                             <h4 class="card-title">{{ $output->code }} {{ $number++ }} {{ $output->output }}</h4>
@@ -50,7 +53,8 @@
                         @forelse ($output->suboutputs as $suboutput)
                             @if ($suboutput->user_id == Auth::user()->id &&
                                 $suboutput->type == 'opcr' &&
-                                $suboutput->duration_id == $duration->id && $output->user_type == 'office')
+                                $suboutput->duration_id == $duration->id &&
+                                $output->user_type == 'office')
                                 <div class="card-body">
                                     <h6>{{ $suboutput->suboutput }}</h6>
                                 </div>
@@ -59,7 +63,10 @@
                                         id="{{ str_replace(' ', '', $suboutput->suboutput) }}{{ $suboutput->id }}">
                                         <div class="d-sm-flex">
                                             @foreach ($suboutput->targets as $target)
-                                                @if ($target->user_id == Auth::user()->id && $target->type == 'opcr' && $target->duration_id == $duration->id && $output->user_type == 'office')
+                                                @if ($target->user_id == Auth::user()->id &&
+                                                    $target->type == 'opcr' &&
+                                                    $target->duration_id == $duration->id &&
+                                                    $output->user_type == 'office')
                                                     <div wire:ignore.self class="accordion-button collapsed gap-2"
                                                         type="button" data-bs-toggle="collapse"
                                                         data-bs-target="#{{ str_replace(' ', '', $target->target) }}{{ $target->id }}"
@@ -78,7 +85,10 @@
                                         </div>
 
                                         @foreach ($suboutput->targets as $target)
-                                            @if ($target->user_id == Auth::user()->id && $target->type == 'opcr' && $target->duration_id == $duration->id && $output->user_type == 'office')
+                                            @if ($target->user_id == Auth::user()->id &&
+                                                $target->type == 'opcr' &&
+                                                $target->duration_id == $duration->id &&
+                                                $output->user_type == 'office')
                                                 <div wire:ignore.self
                                                     id="{{ str_replace(' ', '', $target->target) }}{{ $target->id }}"
                                                     class="accordion-collapse collapse"
@@ -108,9 +118,27 @@
                                                                         <td>{{ $target->rating->alloted_budget }}</td>
                                                                         <td>{{ $target->rating->responsible }}</td>
                                                                         <td>{{ $target->rating->accomplishment }}</td>
-                                                                        <td>{{ $target->rating->efficiency }}</td>
-                                                                        <td>{{ $target->rating->quality }}</td>
-                                                                        <td>{{ $target->rating->timeliness }}</td>
+                                                                        <td>
+                                                                            @if ($target->rating->efficiency)
+                                                                                {{ $target->rating->efficiency }}
+                                                                            @else
+                                                                                NR
+                                                                            @endif
+                                                                        </td>
+                                                                        <td>
+                                                                            @if ($target->rating->quality)
+                                                                                {{ $target->rating->quality }}
+                                                                            @else
+                                                                                NR
+                                                                            @endif
+                                                                        </td>
+                                                                        <td>
+                                                                            @if ($target->rating->timeliness)
+                                                                                {{ $target->rating->timeliness }}
+                                                                            @else
+                                                                                NR
+                                                                            @endif
+                                                                        </td>
                                                                         <td>{{ $target->rating->average }}</td>
                                                                         <td>{{ $target->rating->remarks }}</td>
                                                                         <td>
@@ -169,7 +197,10 @@
                                     id="{{ str_replace(' ', '', $output->output) }}{{ $output->id }}">
                                     <div class="d-sm-flex">
                                         @foreach ($output->targets as $target)
-                                            @if ($target->user_id == Auth::user()->id && $target->type == 'opcr' && $target->duration_id == $duration->id && $output->user_type == 'office')
+                                            @if ($target->user_id == Auth::user()->id &&
+                                                $target->type == 'opcr' &&
+                                                $target->duration_id == $duration->id &&
+                                                $output->user_type == 'office')
                                                 <div wire:ignore.self class="accordion-button collapsed gap-2"
                                                     type="button" data-bs-toggle="collapse"
                                                     data-bs-target="#{{ str_replace(' ', '', $target->target) }}{{ $target->id }}"
@@ -188,7 +219,10 @@
                                     </div>
 
                                     @foreach ($output->targets as $target)
-                                        @if ($target->user_id == Auth::user()->id && $target->type == 'opcr' && $target->duration_id == $duration->id && $output->user_type == 'office')
+                                        @if ($target->user_id == Auth::user()->id &&
+                                            $target->type == 'opcr' &&
+                                            $target->duration_id == $duration->id &&
+                                            $output->user_type == 'office')
                                             <div wire:ignore.self
                                                 id="{{ str_replace(' ', '', $target->target) }}{{ $target->id }}"
                                                 class="accordion-collapse collapse" aria-labelledby="flush-headingOne"
@@ -217,9 +251,27 @@
                                                                     <td>{{ $target->rating->alloted_budget }}</td>
                                                                     <td>{{ $target->rating->responsible }}</td>
                                                                     <td>{{ $target->rating->accomplishment }}</td>
-                                                                    <td>{{ $target->rating->efficiency }}</td>
-                                                                    <td>{{ $target->rating->quality }}</td>
-                                                                    <td>{{ $target->rating->timeliness }}</td>
+                                                                    <td>
+                                                                        @if ($target->rating->efficiency)
+                                                                            {{ $target->rating->efficiency }}
+                                                                        @else
+                                                                            NR
+                                                                        @endif
+                                                                    </td>
+                                                                    <td>
+                                                                        @if ($target->rating->quality)
+                                                                            {{ $target->rating->quality }}
+                                                                        @else
+                                                                            NR
+                                                                        @endif
+                                                                    </td>
+                                                                    <td>
+                                                                        @if ($target->rating->timeliness)
+                                                                            {{ $target->rating->timeliness }}
+                                                                        @else
+                                                                            NR
+                                                                        @endif
+                                                                    </td>
                                                                     <td>{{ $target->rating->average }}</td>
                                                                     <td>{{ $target->rating->remarks }}</td>
                                                                     <td>
@@ -279,5 +331,6 @@
     </section>
 
     {{ $functs->links('components.pagination') }}
-    <x-modals :ost="$ost" :selected="$selected" :type="$type" :users1="$users1" :users2="$users2" :duration="$duration" :userType="$userType" />
+    <x-modals :ost="$ost" :selected="$selected" :type="$type" :users1="$users1" :users2="$users2"
+        :duration="$duration" :userType="$userType" />
 </div>

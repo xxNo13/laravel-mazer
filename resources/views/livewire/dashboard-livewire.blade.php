@@ -30,7 +30,7 @@
                                         class="col-md-9 col-lg-12 col-xl-12 col-xxl-8 text-md-start text-lg-center text-xxl-start">
                                         <h6 class="text-muted font-semibold">Rated Targets</h6>
                                         <h6 class="font-extrabold mb-0">
-                                            @if ($approvalIPCR && $approvalIPCR->superior1_status == 1 && $approvalIPCR->superior2_status == 1)
+                                            @if (isset($approvalIPCR) && $approvalIPCR->superior1_status == 1 && $approvalIPCR->superior2_status == 1)
                                                 {{ count($ratings) }} / {{ count($targets) }}
                                             @else
                                                 Not approved or semester's not started yet.
@@ -54,7 +54,9 @@
                                         class="col-md-9 col-lg-12 col-xl-12 col-xxl-8 text-md-start text-lg-center text-xxl-start">
                                         <h6 class="text-muted font-semibold">Standards</h6>
                                         <h6 class="font-extrabold mb-0">
-                                            @if ($approvalStandard && $approvalStandard->superior1_status == 1 && $approvalStandard->superior2_status == 1)
+                                            @if (isset($approvalStandard) &&
+                                                $approvalStandard->superior1_status == 1 &&
+                                                $approvalStandard->superior2_status == 1)
                                                 {{ count($standards) }} / {{ count($targets) }}
                                             @else
                                                 Not approved or semester's not started yet.
@@ -148,27 +150,31 @@
                         <h4>Recent Targets</h4>
                     </div>
                     <div class="card-body">
-                        @forelse ($recentTargets as $target)
-                            @if ($approvalIPCR && $approvalIPCR->superior1_status == 1 && $approvalIPCR->superior2_status == 1)
-                                <h6 class="text-muted mb-2">
-                                    <a
-                                        href="
-                                        @if ($target->user_type == 'staff') {{ route('ipcr.staff') }}
-                                        @elseif ($target->user_type == 'faculty')
-                                            {{ route('ipcr.faculty') }} @endif
-                                    ">
-                                        @if ($target->rating)
-                                            <i class="bi bi-check"></i>
-                                        @endif
-                                        {{ $target->target }}
-                                    </a>
-                                </h6>
-                            @elseif($loop->last)
+                        @if (isset($recentTargets))
+                            @forelse ($recentTargets as $target)
+                                @if ($approvalIPCR && $approvalIPCR->superior1_status == 1 && $approvalIPCR->superior2_status == 1)
+                                    <h6 class="text-muted mb-2">
+                                        <a
+                                            href="
+                                    @if ($target->user_type == 'staff') {{ route('ipcr.staff') }}
+                                    @elseif ($target->user_type == 'faculty')
+                                        {{ route('ipcr.faculty') }} @endif
+                                ">
+                                            @if ($target->rating)
+                                                <i class="bi bi-check"></i>
+                                            @endif
+                                            {{ $target->target }}
+                                        </a>
+                                    </h6>
+                                @elseif($loop->last)
+                                    <h6 class="text-muted mb-2">No Data avialable</h6>
+                                @endif
+                            @empty
                                 <h6 class="text-muted mb-2">No Data avialable</h6>
-                            @endif
-                        @empty
+                            @endforelse
+                        @else
                             <h6 class="text-muted mb-2">No Data avialable</h6>
-                        @endforelse
+                        @endif
                         <h6 class="text-muted text-center mt-4 mb-2">
                             <a
                                 href="
@@ -186,18 +192,22 @@
                         <h4>Recent Assignments</h4>
                     </div>
                     <div class="card-body">
-                        @forelse ($recentAssignments as $assignment)
-                            <h6 class="text-muted mb-2">
-                                <a href="{{ route('ttma') }}">
-                                    @if ($assignment->remarks == 'Done')
-                                        <i class="bi bi-check"></i>
-                                    @endif
-                                    {{ $assignment->output }}
-                                </a>
-                            </h6>
-                        @empty
+                        @if (isset($recentAssignments))
+                            @forelse ($recentAssignments as $assignment)
+                                <h6 class="text-muted mb-2">
+                                    <a href="{{ route('ttma') }}">
+                                        @if ($assignment->remarks == 'Done')
+                                            <i class="bi bi-check"></i>
+                                        @endif
+                                        {{ $assignment->output }}
+                                    </a>
+                                </h6>
+                            @empty
+                                <h6 class="text-muted mb-2">No Data avialable</h6>
+                            @endforelse
+                        @else
                             <h6 class="text-muted mb-2">No Data avialable</h6>
-                        @endforelse
+                        @endif
                         <h6 class="text-muted text-center mt-4 mb-2">
                             <a href="{{ route('ttma') }}">
                                 View all <i class="bi bi-arrow-right"></i>

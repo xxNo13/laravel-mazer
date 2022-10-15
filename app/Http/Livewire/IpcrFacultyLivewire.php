@@ -54,29 +54,36 @@ class IpcrFacultyLivewire extends Component
         'output' => ['required_if:selected,output'],
         'suboutput' => ['required_if:selected,suboutput'],
         'target' => ['required_if:selected,target'],
-        'accomplishment' => ['required_if:selected,rating'],
-        'quality' => ['required_if:selected,rating'],
-        'efficiency' => ['required_if:selected,rating'],
-        'timeliness' => ['required_if:selected,rating'],
         'superior1_id' => ['required_if:selected,submit'],
         'superior2_id' => ['required_if:selected,submit'],
     ];
 
-    public function mount(){
-        $this->users1 = User::whereHas('account_types', function(\Illuminate\Database\Eloquent\Builder $query) {
+    public function mount()
+    {
+        $this->users1 = User::whereHas('account_types', function (\Illuminate\Database\Eloquent\Builder $query) {
             return $query->where('account_type', 'like', "%head%");
         })->where('id', '!=', Auth::user()->id)->get();
-        $this->users2 = User::whereHas('account_types', function(\Illuminate\Database\Eloquent\Builder $query) {
+        $this->users2 = User::whereHas('account_types', function (\Illuminate\Database\Eloquent\Builder $query) {
             return $query->where('account_type', 'like', "%head%");
         })->where('id', '!=', Auth::user()->id)->get();
         $this->duration = Duration::orderBy('id', 'DESC')->where('start_date', '<=', date('Y-m-d'))->first();
         if ($this->duration) {
             $this->approval = Approval::orderBy('id', 'DESC')
-                    ->where('user_id', Auth::user()->id)
-                    ->where('type', 'ipcr')
-                    ->where('duration_id', $this->duration->id)
-                    ->where('user_type', 'faculty')
-                    ->first();
+                ->where('user_id', Auth::user()->id)
+                ->where('type', 'ipcr')
+                ->where('duration_id', $this->duration->id)
+                ->where('user_type', 'faculty')
+                ->first();
+
+            $this->outputs = Output::where('user_id', null)
+                ->where('duration_id', $this->duration->id)
+                ->get();
+            $this->suboutputs = Suboutput::where('user_id', null)
+                ->where('duration_id', $this->duration->id)
+                ->get();;
+            $this->targets = Target::where('user_id', null)
+                ->where('duration_id', $this->duration->id)
+                ->get();;
         }
     }
 
@@ -89,7 +96,7 @@ class IpcrFacultyLivewire extends Component
             'userType' => 'faculty'
         ]);
     }
-    
+
     public function updated($property)
     {
         $this->validateOnly($property);
@@ -97,12 +104,13 @@ class IpcrFacultyLivewire extends Component
 
     // CONFIGURING OST START ------------>
     // Save / Update OST
-    public function save(){
+    public function save()
+    {
 
         $this->validate();
 
-        if ($this->ost == 'add'){
-            if ($this->selected == 'output'){
+        if ($this->ost == 'add') {
+            if ($this->selected == 'output') {
                 switch (str_replace(url('/'), '', url()->previous())) {
                     case '/ipcr/add/faculty':
                         $this->code = 'CF ';
@@ -125,7 +133,6 @@ class IpcrFacultyLivewire extends Component
                     'code' => $this->code,
                     'output' => $this->output,
                     'funct_id' => $this->funct_id,
-                    'user_id' => Auth::user()->id,
                     'type' => 'ipcr',
                     'user_type' => 'faculty',
                     'duration_id' => $this->duration->id
@@ -134,164 +141,100 @@ class IpcrFacultyLivewire extends Component
                 Suboutput::create([
                     'suboutput' => $this->suboutput,
                     'output_id' => $this->output_id,
-                    'user_id' => Auth::user()->id,
                     'type' => 'ipcr',
                     'user_type' => 'faculty',
                     'duration_id' => $this->duration->id
                 ]);
             } elseif ($this->selected == 'target') {
                 $subputArr = explode(',', $this->subput);
-    
-                if ($subputArr[0] == 'output'){
+
+                if ($subputArr[0] == 'output') {
                     Target::create([
                         'target' => $this->target,
                         'output_id' =>  $subputArr[1],
-                        'user_id' => Auth::user()->id,
                         'type' => 'ipcr',
                         'user_type' => 'faculty',
                         'duration_id' => $this->duration->id
                     ]);
-                } elseif ($subputArr[0] == 'suboutput'){
+                } elseif ($subputArr[0] == 'suboutput') {
                     Target::create([
                         'target' => $this->target,
                         'suboutput_id' =>  $subputArr[1],
-                        'user_id' => Auth::user()->id,
                         'type' => 'ipcr',
                         'user_type' => 'faculty',
                         'duration_id' => $this->duration->id
                     ]);
                 }
-    
             }
 
             session()->flash('message', 'Added Successfully!');
-
-
-        } elseif ($this->ost == 'edit'){
-            if ($this->selected == 'output'){
+        } elseif ($this->ost == 'edit') {
+            if ($this->selected == 'output') {
                 Output::where('id', $this->output_id)->update([
                     'output' => $this->output
                 ]);
-            } elseif ($this->selected == 'suboutput'){
+            } elseif ($this->selected == 'suboutput') {
                 Suboutput::where('id', $this->suboutput_id)->update([
                     'suboutput' => $this->suboutput
                 ]);
-            } elseif ($this->selected == 'target'){
+            } elseif ($this->selected == 'target') {
                 Target::where('id', $this->target_id)->update([
                     'target' => $this->target
                 ]);
             }
-            
+
             session()->flash('message', 'Updated Successfully!');
         }
 
         $this->resetInput();
-        $this->dispatchBrowserEvent('close-modal'); 
+        $this->dispatchBrowserEvent('close-modal');
     }
 
     // When selecting what to edit
-    public function editChanged(){
-        if ($this->selected == 'output'){
+    public function editChanged()
+    {
+        if ($this->selected == 'output') {
             $this->data = Output::find($this->output_id);
             $this->output = $this->data->output;
-        } elseif ($this->selected == 'suboutput'){
+        } elseif ($this->selected == 'suboutput') {
             $this->data = Suboutput::find($this->suboutput_id);
             $this->suboutput = $this->data->suboutput;
-        } elseif ($this->selected == 'target'){
+        } elseif ($this->selected == 'target') {
             $this->data = Target::find($this->target_id);
             $this->target = $this->data->target;
         }
     }
 
     // When choosing add/edit/delete and output/suboutput/target(OST)
-    public function changed(){
+    public function changed()
+    {
         $this->resetInput();
     }
     // <------------ CONFIGURING OST END!
 
-    // CONFIGURING RATING START ----------->
-    public function rating($target_id = null, $rating_id = null){
-        $this->selected = 'rating';
-        $this->rating_id = $rating_id;
-        $this->target_id = $target_id;
-    }
-
-    public function editRating($rating_id){
-        $this->selected = 'rating';
-        $this->rating_id = $rating_id;
-
-        $rating = Rating::find($rating_id);
-
-        $this->accomplishment = $rating->accomplishment;
-        $this->efficiency = $rating->efficiency;
-        $this->quality = $rating->quality;
-        $this->timeliness = $rating->timeliness;
-    }
-
-    public function saveRating($category){
-
-        $this->validate();
-
-        if ($category == 'add') {
-            $number = ($this->efficiency + $this->quality + $this->timeliness) / 3;
-            $average = number_format((float)$number, 2, '.', '');
-
-            Rating::create([
-                'accomplishment' => $this->accomplishment,
-                'efficiency' => $this->efficiency,
-                'quality' => $this->quality,
-                'timeliness' => $this->timeliness,
-                'average' => $average,
-                'remarks' => 'Done',
-                'target_id' => $this->target_id,
-                'type' => 'ipcr',
-                'duration_id' => $this->duration->id,
-                'user_id' => Auth::user()->id
-            ]);
-
-            session()->flash('message', 'Added Successfully!');
-        } elseif ($category == 'edit') {
-            $number = ($this->efficiency + $this->quality + $this->timeliness) / 3;
-            $average = number_format((float)$number, 2, '.', '');
-
-            Rating::where('id', $this->rating_id)->update([
-                'accomplishment' => $this->accomplishment,
-                'efficiency' => $this->efficiency,
-                'quality' => $this->quality,
-                'timeliness' => $this->timeliness,
-                'average' => $average,
-            ]);
-
-            session()->flash('message', 'Updated Successfully!');
-        }
-        
-        $this->resetInput();
-        $this->dispatchBrowserEvent('close-modal'); 
-    }
-    // <------------- CONFIGURING RATING END
-
     // Delete OST-R
-    public function delete(){
+    public function delete()
+    {
 
-        if ($this->selected == 'output'){
+        if ($this->selected == 'output') {
             Output::find($this->output_id)->delete();
-        } elseif ($this->selected == 'suboutput'){
+        } elseif ($this->selected == 'suboutput') {
             Suboutput::find($this->suboutput_id)->delete();
-        } elseif ($this->selected == 'target'){
+        } elseif ($this->selected == 'target') {
             Target::find($this->target_id)->delete();
-        } elseif ($this->selected == 'rating'){
+        } elseif ($this->selected == 'rating') {
             Rating::find($this->rating_id)->delete();
         }
 
         session()->flash('message', 'Deleted Successfully!');
         $this->resetInput();
-        $this->dispatchBrowserEvent('close-modal'); 
+        $this->dispatchBrowserEvent('close-modal');
     }
 
     // SUBMITING OF IPCR START ------------>
-    public function saveIPCR(){
+    public function saveIPCR()
+    {
         Approval::create([
-            'user_id' => Auth::user()->id,
             'superior1_id' => 1,
             'superior1_status' => 1,
             'superior2_id' => 1,
@@ -303,12 +246,13 @@ class IpcrFacultyLivewire extends Component
 
         session()->flash('message', 'Saved Successfully!');
         $this->resetInput();
-        $this->dispatchBrowserEvent('close-modal'); 
+        $this->dispatchBrowserEvent('close-modal');
         return redirect(request()->header('Referer'));
     }
     // <---------------- SUBMITING OF IPCR END
 
-    public function resetInput(){
+    public function resetInput()
+    {
         $this->funct = '';
         $this->output = '';
         $this->suboutput = '';
@@ -332,8 +276,9 @@ class IpcrFacultyLivewire extends Component
         $this->superior2_id = '';
     }
 
-    public function closeModal(){
+    public function closeModal()
+    {
         $this->resetInput();
-        $this->dispatchBrowserEvent('close-modal'); 
+        $this->dispatchBrowserEvent('close-modal');
     }
 }

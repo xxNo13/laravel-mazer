@@ -18,9 +18,9 @@ return new class extends Migration
             $table->string('alloted_budget')->nullable();
             $table->string('responsible')->nullable();
             $table->string('accomplishment');
-            $table->string('efficiency');
-            $table->string('quality');
-            $table->string('timeliness');
+            $table->string('efficiency')->nullable();
+            $table->string('quality')->nullable();
+            $table->string('timeliness')->nullable();
             $table->string('average');
             $table->string('remarks');
             $table->string('type');

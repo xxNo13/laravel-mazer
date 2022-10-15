@@ -55,9 +55,6 @@ class IpcrStaffLivewire extends Component
         'suboutput' => ['required_if:selected,suboutput'],
         'target' => ['required_if:selected,target'],
         'accomplishment' => ['required_if:selected,rating'],
-        'quality' => ['required_if:selected,rating'],
-        'efficiency' => ['required_if:selected,rating'],
-        'timeliness' => ['required_if:selected,rating'],
         'superior1_id' => ['required_if:selected,submit'],
         'superior2_id' => ['required_if:selected,submit'],
     ];
@@ -233,7 +230,17 @@ class IpcrStaffLivewire extends Component
         $this->validate();
 
         if ($category == 'add') {
-            $number = ($this->efficiency + $this->quality + $this->timeliness) / 3;
+            $divisor = 0;
+            if(!$this->efficiency){
+                $divisor++;
+            }
+            if(!$this->quality){
+                $divisor++;
+            }
+            if(!$this->timeliness){
+                $divisor++;
+            }
+            $number = ($this->efficiency + $this->quality + $this->timeliness) / (3 - $divisor);
             $average = number_format((float)$number, 2, '.', '');
 
             Rating::create([

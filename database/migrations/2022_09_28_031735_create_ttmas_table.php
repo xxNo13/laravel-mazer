@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create('ttmas', function (Blueprint $table) {
             $table->id();
             $table->string('subject');
-            $table->foreignId('user_id')->constrained();
+            $table->foreignId('user_id')->onDelete('cascade');
             $table->string('output');
             $table->string('remarks')->nullable();
             $table->integer('head_id');

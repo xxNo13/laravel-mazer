@@ -33,59 +33,17 @@ class TargetchartLivewire extends Component
         foreach($ratings as $rating) {
             if(date('M-d-Y', strtotime($rating->created_at)) == date('M-d-Y')){
                 ++$this->targets[6];
-                $this->targets[5];
-                $this->targets[4];
-                $this->targets[3];
-                $this->targets[2];
-                $this->targets[1];
-                $this->targets[0];
             }elseif(date('M-d-Y', strtotime($rating->created_at)) == date('M-d-Y', strtotime(date('M-d-Y'). '- 1 days'))) {
-                $this->targets[6];
                 ++$this->targets[5];
-                $this->targets[4];
-                $this->targets[3];
-                $this->targets[2];
-                $this->targets[1];
-                $this->targets[0];
             }elseif(date('M-d-Y', strtotime($rating->created_at)) == date('M-d-Y', strtotime(date('M-d-Y'). '- 2 days'))) {
-                $this->targets[6];
-                $this->targets[5];
                 ++$this->targets[4];
-                $this->targets[3];
-                $this->targets[2];
-                $this->targets[1];
-                $this->targets[0];
             }elseif(date('M-d-Y', strtotime($rating->created_at)) == date('M-d-Y', strtotime(date('M-d-Y'). '- 3 days'))) {
-                $this->targets[6];
-                $this->targets[5];
-                $this->targets[4];
                 ++$this->targets[3];
-                $this->targets[2];
-                $this->targets[1];
-                $this->targets[0];
             }elseif(date('M-d-Y', strtotime($rating->created_at)) == date('M-d-Y', strtotime(date('M-d-Y'). '- 4 days'))) {
-                $this->targets[6];
-                $this->targets[5];
-                $this->targets[4];
-                $this->targets[3];
                 ++$this->targets[2];
-                $this->targets[1];
-                $this->targets[0];
             }elseif(date('M-d-Y', strtotime($rating->created_at)) == date('M-d-Y', strtotime(date('M-d-Y'). '- 5 days'))) {
-                $this->targets[6];
-                $this->targets[5];
-                $this->targets[4];
-                $this->targets[3];
-                $this->targets[2];
                 ++$this->targets[1];
-                $this->targets[0];
             }elseif(date('M-d-Y', strtotime($rating->created_at)) == date('M-d-Y', strtotime(date('M-d-Y'). '- 6 days'))) {
-                $this->targets[6];
-                $this->targets[5];
-                $this->targets[4];
-                $this->targets[3];
-                $this->targets[2];
-                $this->targets[1];
                 ++$this->targets[0];
             }
         }
