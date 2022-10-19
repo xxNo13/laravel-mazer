@@ -44,7 +44,7 @@ If you want to check the original template in HTML5 and Bootstrap, [click here](
 
 7. Login credentials
 
-**Email:** user@gmail.com
+**Email:** admin@gmail.com
 
 **Password:** password
 ## Contributing
