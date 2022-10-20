@@ -14,6 +14,9 @@ If you want to check the original template in HTML5 and Bootstrap, [click here](
 2. Install dependencies
     ```bash
     composer install
+    
+    if Class "Barryvdh\DomPDF\ServiceProvider" not found
+    composer require barryvdh/laravel-dompdf
     ```
     And javascript dependencies
     ```bash
