@@ -4228,9 +4228,8 @@ body.theme-dark .accordion-button {
   }
 }
 body.theme-dark .accordion-button:not(.collapsed) {
-  color: #607080;
-  background-color: transparent;
-  border-bottom: 1px solid #607080;
+  color: #3c55ab;
+  background-color: #eceff9;
   box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.125);
 }
 body.theme-dark .accordion-button:not(.collapsed)::after {
