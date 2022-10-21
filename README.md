@@ -7,7 +7,11 @@ If you want to check the original template in HTML5 and Bootstrap, [click here](
 ## Installation
 1. Install dependencies
     ```bash
-    composer update or composer install
+    composer update 
+    
+    #OR
+    
+    composer install
     ```
     And javascript dependencies
     ```bash
