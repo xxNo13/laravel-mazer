@@ -14,6 +14,7 @@ use App\Http\Livewire\IpcrFacultyLivewire;
 use App\Http\Livewire\StandardStaffLivewire;
 use App\Http\Livewire\StandardFacultyLivewire;
 use App\Http\Livewire\TrainingRecommendationLivewire;
+use Laravel\Fortify\Http\Controllers\RegisteredUserController;
 
 /*
 |--------------------------------------------------------------------------
@@ -51,4 +52,8 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
 
     Route::get('/print/{print}', [PDFController::class, 'print'])->name('print');
     Route::get('/view', [PDFController::class, 'view'])->name('view');
+
+    // Registration...
+    Route::get('/register', [RegisteredUserController::class, 'create'])->name('register.user');
+    Route::post('/register', [RegisteredUserController::class, 'store']);
 });
