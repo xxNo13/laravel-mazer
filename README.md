@@ -1,4 +1,3 @@
-![Image](https://raw.githubusercontent.com/zuramai/laravel-mazer/main/screenshot.png)
 <h1 align="center">Mazer + Laravel Jetstream</h1>
 <p align="center">Mazer is a Admin Dashboard Template that can help you develop faster. We bring Mazer with Laravel starter project. It's completely free and you can use it in your projects.</p>
 
@@ -6,14 +5,13 @@
 If you want to check the original template in HTML5 and Bootstrap, [click here](https://github.com/zuramai/mazer) to open template repository.
 
 ## Installation
-1. Clone this project
+1. Install dependencies
     ```bash
-    git clone https://github.com/zuramai/laravel-mazer
-    cd laravel-mazer
-    ```
-2. Install dependencies
-    ```bash
+    composer update
     composer install
+    
+    if Class "Barryvdh\DomPDF\ServiceProvider" not found
+    composer require barryvdh/laravel-dompdf
     ```
     And javascript dependencies
     ```bash
@@ -24,27 +22,27 @@ If you want to check the original template in HTML5 and Bootstrap, [click here](
     npm install && npm run dev
     ```
 
-3. Set up Laravel configurations
+2. Set up Laravel configurations
     ```bash
     copy .env.example .env
     php artisan key:generate
     ```
 
-4. Set your database in .env
+3. Set your database in .env
 
-5. Migrate database
+4. Migrate database
     ```bash
     php artisan migrate --seed
     ```
 
-6. Serve the application
+5. Serve the application
     ```bash
     php artisan serve
     ```
 
 7. Login credentials
 
-**Email:** user@gmail.com
+**Email:** admin@gmail.com
 
 **Password:** password
 ## Contributing

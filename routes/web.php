@@ -13,6 +13,7 @@ use App\Http\Livewire\ForapprovalLivewire;
 use App\Http\Livewire\IpcrFacultyLivewire;
 use App\Http\Livewire\StandardStaffLivewire;
 use App\Http\Livewire\StandardFacultyLivewire;
+use App\Http\Livewire\TrainingRecommendationLivewire;
 
 /*
 |--------------------------------------------------------------------------
@@ -36,6 +37,8 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::get('/ipcr/add/faculty', IpcrFacultyLivewire::class)->name('ipcr.add.faculty');
     // Where Faculty can view their choosen target of IPCR
     Route::get('/ipcr/faculty', FacultyIpcrLivewire::class)->name('ipcr.faculty');
+
+    Route::get('/training-recommendation', TrainingRecommendationLivewire::class)->name('training.recommendation');
 
     Route::get('/ipcr/staff', IpcrStaffLivewire::class)->name('ipcr.staff');
     Route::get('/opcr', OpcrLivewire::class)->name('opcr');
