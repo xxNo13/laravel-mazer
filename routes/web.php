@@ -1,5 +1,6 @@
 <?php
 
+use Laravel\Fortify\Features;
 use App\Http\Livewire\OpcrLivewire;
 use App\Http\Livewire\TtmaLivewire;
 use Illuminate\Support\Facades\Route;
@@ -11,6 +12,7 @@ use App\Http\Livewire\OfficemateLivewire;
 use App\Http\Livewire\FacultyIpcrLivewire;
 use App\Http\Livewire\ForapprovalLivewire;
 use App\Http\Livewire\IpcrFacultyLivewire;
+use App\Http\Livewire\AgencyTargetLivewire;
 use App\Http\Livewire\StandardStaffLivewire;
 use App\Http\Livewire\StandardFacultyLivewire;
 use App\Http\Livewire\TrainingRecommendationLivewire;
@@ -42,10 +44,11 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::get('/training-recommendation', TrainingRecommendationLivewire::class)->name('training.recommendation');
 
     Route::get('/ipcr/staff', IpcrStaffLivewire::class)->name('ipcr.staff');
+    Route::get('/agency/target', AgencyTargetLivewire::class)->name('agency.target');
     Route::get('/opcr', OpcrLivewire::class)->name('opcr');
     Route::get('/standard/staff', StandardStaffLivewire::class)->name('standard.staff');
     Route::get('/standard/faculty', StandardFacultyLivewire::class)->name('standard.faculty');
-    Route::get('/officemates', OfficemateLivewire::class)->name('officemates');
+    Route::get('/subordinates', OfficemateLivewire::class)->name('officemates');
     Route::get('/for-approval', ForapprovalLivewire::class)->name('for-approval');
     Route::get('/ttma', TtmaLivewire::class)->name('ttma');
     Route::get('/configure', ConfigureLivewire::class)->name('configure');
@@ -54,6 +57,15 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::get('/view', [PDFController::class, 'view'])->name('view');
 
     // Registration...
-    Route::get('/register', [RegisteredUserController::class, 'create'])->name('register.user');
-    Route::post('/register', [RegisteredUserController::class, 'store']);
+    $enableViews = config('fortify.views', true);
+    if (Features::enabled(Features::registration())) {
+        if ($enableViews) {
+            Route::get('/register', [RegisteredUserController::class, 'create'])
+                ->middleware(['verified:'.config('fortify.guard')])
+                ->name('register.user');
+        }
+
+        Route::post('/register', [RegisteredUserController::class, 'store'])
+            ->middleware(['verified:'.config('fortify.guard')]);
+    }
 });

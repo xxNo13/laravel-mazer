@@ -17,7 +17,7 @@
         <section class="row">
             <div class="col-12 col-lg-9">
                 <div class="row">
-                    <div class="col-6 col-lg-4 col-md-6">
+                    <div class="col-6">
                         <div class="card">
                             <div class="card-body px-4 py-4-5">
                                 <div class="row">
@@ -30,10 +30,14 @@
                                         class="col-md-9 col-lg-12 col-xl-12 col-xxl-8 text-md-start text-lg-center text-xxl-start">
                                         <h6 class="text-muted font-semibold">Rated Targets</h6>
                                         <h6 class="font-extrabold mb-0">
-                                            @if (isset($approvalIPCR) && $approvalIPCR->superior1_status == 1 && $approvalIPCR->superior2_status == 1)
-                                                {{ count($ratings) }} / {{ count($targets) }}
+                                            @if ((isset($approvalIPCRS) && $approvalIPCRS->superior1_status == 1 && $approvalIPCRS->superior2_status == 1) && (isset($approvalIPCRF) && $approvalIPCRF->superior1_status == 1 && $approvalIPCRF->superior2_status == 1))
+                                                {{ count($ratings) }} / {{ (count($targetsS) + count($targetsF)) }}
+                                            @elseif (isset($approvalIPCRS) && $approvalIPCRS->superior1_status == 1 && $approvalIPCRS->superior2_status == 1)
+                                                {{ count($ratings) }} / {{ count($targetsS) }}
+                                            @elseif(isset($approvalIPCRF) && $approvalIPCRF->superior1_status == 1 && $approvalIPCRF->superior2_status == 1)
+                                                {{ count($ratings) }} / {{ count($targetsF) }}
                                             @else
-                                                Not approved or semester's not started yet.
+                                                Not approved or Semester's not started yet.
                                             @endif
                                         </h6>
                                     </div>
@@ -41,33 +45,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-6 col-lg-4 col-md-6">
-                        <div class="card">
-                            <div class="card-body px-4 py-4-5">
-                                <div class="row">
-                                    <div class="col-md-3 col-lg-12 col-xl-12 col-xxl-4 d-flex justify-content-start ">
-                                        <div class="stats-icon blue mb-2 mx-auto">
-                                            <i class="iconly-boldChart"></i>
-                                        </div>
-                                    </div>
-                                    <div
-                                        class="col-md-9 col-lg-12 col-xl-12 col-xxl-8 text-md-start text-lg-center text-xxl-start">
-                                        <h6 class="text-muted font-semibold">Standards</h6>
-                                        <h6 class="font-extrabold mb-0">
-                                            @if (isset($approvalStandard) &&
-                                                $approvalStandard->superior1_status == 1 &&
-                                                $approvalStandard->superior2_status == 1)
-                                                {{ count($standards) }} / {{ count($targets) }}
-                                            @else
-                                                Not approved or semester's not started yet.
-                                            @endif
-                                        </h6>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-6 mx-auto col-lg-4 col-md-6">
+                    <div class="col-6">
                         <div class="card">
                             <div class="card-body px-4 py-4-5">
                                 <div class="row">
@@ -152,20 +130,42 @@
                     <div class="card-body">
                         @if (isset($recentTargets))
                             @forelse ($recentTargets as $target)
-                                @if ($approvalIPCR && $approvalIPCR->superior1_status == 1 && $approvalIPCR->superior2_status == 1)
+                                @if ((isset($approvalIPCRF) && $approvalIPCRF->superior1_status == 1 && $approvalIPCRF->superior2_status == 1) && (isset($approvalIPCRS) && $approvalIPCRS->superior1_status == 1 && $approvalIPCRS->superior2_status == 1))
                                     <h6 class="text-muted mb-2">
                                         <a
                                             href="
-                                    @if ($target->user_type == 'staff') {{ route('ipcr.staff') }}
-                                    @elseif ($target->user_type == 'faculty')
-                                        {{ route('ipcr.faculty') }} @endif
-                                ">
+                                            @if ($target->user_type == 'staff') {{ route('ipcr.staff') }}
+                                            @elseif ($target->user_type == 'faculty')
+                                            {{ route('ipcr.faculty') }} @endif
+                                        ">
                                             @if ($target->rating)
                                                 <i class="bi bi-check"></i>
                                             @endif
                                             {{ $target->target }}
                                         </a>
                                     </h6>
+                                @elseif (isset($approvalIPCRF) && $approvalIPCRF->superior1_status == 1 && $approvalIPCRF->superior2_status == 1)
+                                    @if ($target->user_type == 'faculty')
+                                        <h6 class="text-muted mb-2">
+                                            <a href="{{ route('ipcr.faculty') }}">
+                                                @if ($target->rating)
+                                                    <i class="bi bi-check"></i>
+                                                @endif
+                                                {{ $target->target }}
+                                            </a>
+                                        </h6>
+                                    @endif
+                                @elseif (isset($approvalIPCRS) && $approvalIPCRS->superior1_status == 1 && $approvalIPCRS->superior2_status == 1)
+                                    @if ($target->user_type == 'staff')
+                                        <h6 class="text-muted mb-2">
+                                            <a href="{{ route('ipcr.faculty') }}">
+                                                @if ($target->rating)
+                                                    <i class="bi bi-check"></i>
+                                                @endif
+                                                {{ $target->target }}
+                                            </a>
+                                        </h6>
+                                    @endif
                                 @elseif($loop->last)
                                     <h6 class="text-muted mb-2">No Data avialable</h6>
                                 @endif

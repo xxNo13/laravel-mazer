@@ -21,7 +21,7 @@
                             <li>
                                 <h6 class="dropdown-header">Notifications</h6>
                             </li>
-                            <li><a class="dropdown-item">No notification available</a></li>
+                            <livewire:notification-livewire />
                         </ul>
                     </li>
                 </ul>

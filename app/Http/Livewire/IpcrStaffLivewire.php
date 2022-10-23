@@ -19,21 +19,21 @@ class IpcrStaffLivewire extends Component
 {
     use WithPagination;
 
-    public string $funct;
+    public string $funct = '';
     public string $selected = 'output';
     public string $ost = 'add';
-    public string $output;
-    public string $suboutput;
-    public string $subput;
+    public string $output = '';
+    public string $suboutput = '';
+    public string $subput = '';
     public $subputArr = [];
-    public string $target;
+    public string $target = '';
     public $accomplishment;
     public $efficiency;
     public $quality;
     public $timeliness;
     public $average;
-    public string $remarks;
-    public string $code;
+    public string $remarks = '';
+    public string $code = '';
     public $funct_id;
     public $number = 1;
     public $output_id;

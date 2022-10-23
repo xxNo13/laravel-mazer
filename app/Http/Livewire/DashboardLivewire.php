@@ -16,22 +16,48 @@ class DashboardLivewire extends Component
 
     public function mount(){
         $this->duration = Duration::orderBy('id', 'DESC')->where('start_date', '<=', date('Y-m-d'))->first();
+        
         if ($this->duration) {
-            $this->approvalIPCR = Approval::orderBy('id', 'DESC')
+            $this->approvalIPCRS = Approval::orderBy('id', 'DESC')
                     ->where('user_id', Auth::user()->id)
+                    ->where('user_type', 'staff')
                     ->where('type', 'ipcr')
                     ->where('duration_id', $this->duration->id)
                     ->first();
             
-            $this->approvalStandard = Approval::orderBy('id', 'DESC')
+            $this->approvalStandardS = Approval::orderBy('id', 'DESC')
                     ->where('user_id', Auth::user()->id)
+                    ->where('user_type', 'staff')
                     ->where('type', 'standard')
                     ->where('duration_id', $this->duration->id)
                     ->first();
-            $this->targets = Target::where('user_id', Auth::user()->id)
-                            ->where('type', 'ipcr')
-                            ->where('duration_id', $this->duration->id)
-                            ->get();
+
+            $this->approvalIPCRF = Approval::orderBy('id', 'DESC')
+                    ->where('user_id', Auth::user()->id)
+                    ->where('user_type', 'faculty')
+                    ->where('type', 'ipcr')
+                    ->where('duration_id', $this->duration->id)
+                    ->first();
+            
+            $this->approvalStandardF = Approval::orderBy('id', 'DESC')
+                    ->where('user_id', Auth::user()->id)
+                    ->where('user_type', 'faculty')
+                    ->where('type', 'standard')
+                    ->where('duration_id', $this->duration->id)
+                    ->first();
+
+            $this->targetsF = Target::where('user_id', Auth::user()->id)
+                        ->where('user_type', 'faculty')
+                        ->where('type', 'ipcr')
+                        ->where('duration_id', $this->duration->id)
+                        ->get();
+                        
+            $this->targetsS = Target::where('user_id', Auth::user()->id)
+                        ->where('user_type', 'staff')
+                        ->where('type', 'ipcr')
+                        ->where('duration_id', $this->duration->id)
+                        ->get();
+                            
             $this->ratings = Rating::where('user_id', Auth::user()->id)
                             ->where('type', 'ipcr')
                             ->where('duration_id', $this->duration->id)

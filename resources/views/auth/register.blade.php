@@ -1,7 +1,7 @@
 <x-app-layout>
     <div id="auth-left">
         <h1 class="auth-title">Sign Up</h1>
-        <p class="auth-subtitle mb-5">Input your data to register to our website.</p>
+        <p class="auth-subtitle mb-5">Input data to register.</p>
         <form action="" method="POST">
             @csrf
             <div class="form-group position-relative has-icon-left mb-4">

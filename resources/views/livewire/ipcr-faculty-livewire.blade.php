@@ -111,8 +111,7 @@
     </section>
 
     {{ $functs->links('components.pagination') }}
-    <x-modals :ost="$ost" :selected="$selected" :users1="$users1" :users2="$users2" :type="$type" :duration="$duration" :userType="$userType" 
-    @if (isset($outputs) && isset($suboutputs) && isset($targets))
-    :outputs="$outputs" :suboutputs="$suboutputs" :targets="$targets"
-    @endif />
+    @if (isset($outputs))
+        <x-modals :ost="$ost" :selected="$selected" :users1="$users1" :users2="$users2" :type="$type" :duration="$duration" :userType="$userType" :outputs="$outputs" :suboutputs="$suboutputs" :targets="$targets" />
+    @endif
 </div>

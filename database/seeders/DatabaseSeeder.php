@@ -19,7 +19,7 @@ class DatabaseSeeder extends Seeder
     {   
         Office::factory()->create([
             'office' => 'HRMO',
-            'buidling' => 'Administration Bldg.'
+            'building' => 'Administration Bldg.'
         ]);
         Office::factory(5)->create();
         AccountType::factory()->create([

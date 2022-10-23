@@ -1,5 +1,5 @@
 <div>
-    @if (isset($selected) && isset($ost) && isset($duration))
+    @if (isset($selected) && isset($ost))
         {{-- Configure Output/Suboutput/Target Modal --}}
         <div wire:ignore.self class="modal fade text-left" id="ConfigureIPCROSTModal" tabindex="-1" role="dialog"
             aria-labelledby="myModalLabel33" aria-hidden="true">
