@@ -44,8 +44,8 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @forelse (Auth::user()->ttmas as $ttma)
-                                @if (!$ttma->remarks && $duration && $ttma->duration_id == $duration->id)
+                            @forelse ($assignments as $ttma)
+                                @if ($duration && $ttma->duration_id == $duration->id)
                                     <tr>
                                         <td>{{ sprintf('%03u', $ttma->id) }}</td>
                                         <td>{{ $ttma->subject }}</td>
@@ -66,6 +66,13 @@
                                 </tr>
                             @endforelse
                         </tbody>
+                        <tfoot>
+                            <div class="hstack">
+                                <div class="ms-auto">
+                                    {{ $assignments->links('components.pagination') }}
+                                </div>
+                            </div>
+                        </tfoot>
                     </table>
                 </div>
             </div>
@@ -158,6 +165,13 @@
                                     </tr>
                                 @endif
                             </tbody>
+                            <tfoot>
+                                <div class="hstack">
+                                    <div class="ms-auto">
+                                        {{ $ttmas->links('components.pagination') }}
+                                    </div>
+                                </div>
+                            </tfoot>
                         </table>
                     </div>
                 </div>
@@ -165,6 +179,5 @@
         @endif
     </section>
 
-    {{ $ttmas->links('components.pagination') }}
     <x-modals :users="$users" />
 </div>

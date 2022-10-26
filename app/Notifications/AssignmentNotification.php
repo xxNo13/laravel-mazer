@@ -10,15 +10,16 @@ use Illuminate\Notifications\Notification;
 class AssignmentNotification extends Notification
 {
     use Queueable;
+    private $assignemnt;
 
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct($assignment)
     {
-        //
+        $this->assignment = $assignment;
     }
 
     /**
@@ -29,7 +30,7 @@ class AssignmentNotification extends Notification
      */
     public function via($notifiable)
     {
-        return ['mail'];
+        return ['database'];
     }
 
     /**
@@ -41,9 +42,20 @@ class AssignmentNotification extends Notification
     public function toMail($notifiable)
     {
         return (new MailMessage)
-                    ->line('The introduction to the notification.')
-                    ->action('Notification Action', url('/'))
-                    ->line('Thank you for using our application!');
+            ->line('The introduction to the notification.')
+            ->action('Notification Action', url('/'))
+            ->line('Thank you for using our application!');
+    }
+
+
+    public function toDatabase($notifiable)
+    {
+        return [
+            'ttma_id' => $this->assignment->id,
+            'subject' => $this->assignment->subject,
+            'output' => $this->assignment->output,
+            'remarks' => $this->assignment->remarks,
+        ];
     }
 
     /**

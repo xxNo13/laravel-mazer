@@ -2,6 +2,12 @@
 
 namespace App\Http;
 
+use App\Http\Middleware\PMO;
+use App\Http\Middleware\HRMO;
+use App\Http\Middleware\Staff;
+use App\Http\Middleware\Faculty;
+use App\Http\Middleware\HeadOorDU;
+use App\Http\Middleware\HeadAgency;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 
 class Kernel extends HttpKernel
@@ -62,5 +68,11 @@ class Kernel extends HttpKernel
         'signed' => \Illuminate\Routing\Middleware\ValidateSignature::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
+        'headagency' => HeadAgency::class,
+        'headoordu' => HeadOorDU::class,
+        'staff' => Staff::class,
+        'faculty' => Faculty::class,
+        'pmo' => PMO::class,
+        'hrmo' => HRMO::class,
     ];
 }

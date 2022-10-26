@@ -10,12 +10,23 @@ class NotificationLivewire extends Component
 {
     public function render()
     {
-        $assignments = Ttma::orderBy('created_at', 'DESC')
-                ->where('user_id', Auth::user()->id)
-                ->get();
-
-        return view('livewire.notification-livewire', [
-            'assignments' => $assignments
+        if(str_replace(url('/'), '', url()->current()) == '/ttma'){
+            Auth::user()->unreadNotifications->markAsRead();
+        }
+        return view('livewire.notification-livewire',[
+            'unreads' => 0
         ]);
+    }
+
+    public function read($id) {
+        foreach (Auth::user()->notifications as $notification)
+        {
+            if ($notification->id == $id)
+            {
+                $notification->markAsRead();
+
+            }
+        }
+        return redirect('/ttma');
     }
 }

@@ -35,37 +35,57 @@ Route::get('/', function () {
 
 Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::get('/dashboard', DashboardLivewire::class)->name('dashboard');
-
-    // Where Head of Agency can add the IPCR for Faculty
-    Route::get('/ipcr/add/faculty', IpcrFacultyLivewire::class)->name('ipcr.add.faculty');
-    // Where Faculty can view their choosen target of IPCR
-    Route::get('/ipcr/faculty', FacultyIpcrLivewire::class)->name('ipcr.faculty');
-
     Route::get('/training-recommendation', TrainingRecommendationLivewire::class)->name('training.recommendation');
-
-    Route::get('/ipcr/staff', IpcrStaffLivewire::class)->name('ipcr.staff');
-    Route::get('/agency/target', AgencyTargetLivewire::class)->name('agency.target');
-    Route::get('/opcr', OpcrLivewire::class)->name('opcr');
-    Route::get('/standard/staff', StandardStaffLivewire::class)->name('standard.staff');
-    Route::get('/standard/faculty', StandardFacultyLivewire::class)->name('standard.faculty');
-    Route::get('/subordinates', OfficemateLivewire::class)->name('officemates');
-    Route::get('/for-approval', ForapprovalLivewire::class)->name('for-approval');
     Route::get('/ttma', TtmaLivewire::class)->name('ttma');
-    Route::get('/configure', ConfigureLivewire::class)->name('configure');
-
     Route::get('/print/{print}', [PDFController::class, 'print'])->name('print');
     Route::get('/view', [PDFController::class, 'view'])->name('view');
 
-    // Registration...
-    $enableViews = config('fortify.views', true);
-    if (Features::enabled(Features::registration())) {
-        if ($enableViews) {
-            Route::get('/register', [RegisteredUserController::class, 'create'])
-                ->middleware(['verified:'.config('fortify.guard')])
-                ->name('register.user');
-        }
 
-        Route::post('/register', [RegisteredUserController::class, 'store'])
-            ->middleware(['verified:'.config('fortify.guard')]);
-    }
+    // Head of Agency Route
+    Route::middleware(['headagency'])->group(function () {
+        // Where Head of Agency can add the IPCR for Faculty
+        Route::get('/ipcr/add/faculty', IpcrFacultyLivewire::class)->name('ipcr.add.faculty');
+        Route::get('/configure', ConfigureLivewire::class)->name('configure');
+    });
+
+    // Head of Office and Delivery Unit Route
+    Route::middleware(['headoordu'])->group(function () {
+        Route::get('/for-approval', ForapprovalLivewire::class)->name('for-approval');
+        Route::get('/opcr', OpcrLivewire::class)->name('opcr');
+        Route::get('/subordinates', OfficemateLivewire::class)->name('officemates');
+    });
+
+    // Staff Route
+    Route::middleware(['staff'])->group(function () {
+        Route::get('/standard/staff', StandardStaffLivewire::class)->name('standard.staff');
+        Route::get('/ipcr/staff', IpcrStaffLivewire::class)->name('ipcr.staff');
+    });
+
+    // Faculty Route
+    Route::middleware(['faculty'])->group(function () {
+        // Where Faculty can view their choosen target of IPCR
+        Route::get('/ipcr/faculty', FacultyIpcrLivewire::class)->name('ipcr.faculty');
+        Route::get('/standard/faculty', StandardFacultyLivewire::class)->name('standard.faculty');
+    });
+
+    // Office PMO Route
+    Route::middleware(['pmo'])->group(function () {
+        Route::get('/agency/target', AgencyTargetLivewire::class)->name('agency.target');
+    });
+
+    // Office HRMO Route
+    Route::middleware(['hrmo'])->group(function () {
+        // Registration...
+        $enableViews = config('fortify.views', true);
+        if (Features::enabled(Features::registration())) {
+            if ($enableViews) {
+                Route::get('/register', [RegisteredUserController::class, 'create'])
+                    ->middleware(['verified:' . config('fortify.guard')])
+                    ->name('register.user');
+            }
+
+            Route::post('/register', [RegisteredUserController::class, 'store'])
+                ->middleware(['verified:' . config('fortify.guard')]);
+        }
+    });
 });
