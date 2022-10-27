@@ -14,8 +14,10 @@
 
 <script>
     window.addEventListener('close-modal', event => {
-        $('#ConfigureIPCROSTModal').modal('hide');
-        $('#ConfigureOPCROSTModal').modal('hide');
+        $('#AddIPCROSTModal').modal('hide');
+        $('#EditIPCROSTModal').modal('hide');
+        $('#AddOPCROSTModal').modal('hide');
+        $('#EditOPCROSTModal').modal('hide');
         $('#DeleteModal').modal('hide');
         $('#AddRatingModal').modal('hide');
         $('#EditRatingModal').modal('hide');

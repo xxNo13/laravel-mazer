@@ -29,10 +29,12 @@
             <div class="hstack mb-3">
                 <h4>{{ $funct->funct }}</h4>
                 @if ((!$approval || ($approval->superior1_status == 2 || $approval->superior2_status == 2)) && ($duration && $duration->start_date <= date('Y-m-d') && $duration->end_date >= date('Y-m-d')))
-                    <button type="button" class="ms-auto btn btn-outline-info" data-bs-toggle="modal"
-                        data-bs-target="#SubmitISOModal" title="Submit Standard" wire:click="submit">
-                        Submit
-                    </button>
+                    @if (isset($targ->standard))
+                        <button type="button" class="ms-auto btn btn-outline-info" data-bs-toggle="modal"
+                            data-bs-target="#SubmitISOModal" title="Submit Standard" wire:click="submit">
+                            Submit
+                        </button>
+                    @endif
                 @endif
             </div>
             @foreach ($funct->outputs as $output)

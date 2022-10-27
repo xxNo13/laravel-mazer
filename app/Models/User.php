@@ -58,6 +58,9 @@ class User extends Authenticatable
     public function outputs(){
         return $this->hasMany(Output::class);
     }
+    public function subFuncts(){
+        return $this->hasMany(SubFunct::class);
+    }
     public function suboutputs(){
         return $this->hasMany(Suboutput::class);
     }

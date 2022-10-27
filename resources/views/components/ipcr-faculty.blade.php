@@ -36,29 +36,120 @@
                 </button>
             </div>
         </div>
+        @php
+            $arrayn = 0;
+        @endphp
         @foreach ($functs as $funct)
+            @php
+                $number = 1;
+            @endphp
             <div class="hstack mb-3">
                 <h4>{{ $funct->funct }}</h4>
             </div>
+            @if ($funct->subFuncts)
+                @foreach ($funct->subFuncts as $sub_funct)
+                    @if (!$sub_funct->user_id &&
+                    $sub_funct->type == 'ipcr' &&
+                    $sub_funct->duration_id == $duration->id &&
+                    $sub_funct->user_type == $user_type)
+                        <h5>{{ $sub_funct->sub_funct }}</h5>
+                        @foreach ($sub_funct->outputs as $output)
+                            @if (!$output->user_id &&
+                                $output->type == 'ipcr' &&
+                                $output->duration_id == $duration->id &&
+                                $output->user_type == $user_type)
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h4 class="card-title">{{ $output->code }} {{ $number++ }} {{ $output->output }}
+                                        </h4>
+                                        <p class="text-subtitle text-muted"></p>
+                                    </div>
+                                    @forelse ($output->suboutputs as $suboutput)
+                                        @if (!$suboutput->user_id &&
+                                            $suboutput->type == 'ipcr' &&
+                                            $suboutput->duration_id == $duration->id &&
+                                            $output->user_type == $user_type)
+                                            <div class="card-body">
+                                                <h6>{{ $suboutput->suboutput }}</h6>
+                                            </div>
+                                            <div class="card-body">
+                                                <div class="d-sm-flex gap-5">
+                                                    @foreach ($suboutput->targets as $target)
+                                                        @if (!$target->user_id &&
+                                                            $target->type == 'ipcr' &&
+                                                            $target->duration_id == $duration->id &&
+                                                            $output->user_type == $user_type)
+                                                            <div class="form-check form-switch">
+                                                                <input class="form-check-input" type="checkbox"
+                                                                    id="{{ $target->target }}{{ $target->id }}"
+                                                                    value="{{ $target->id }}" wire:model="targets.{{ $arrayn++ }}">
+                                                                <label class="form-check-label"
+                                                                    for="{{ $target->target }}{{ $target->id }}">{{ $target->target }}</label>
+                                                            </div>
+                                                        @endif
+                                                    @endforeach
+                                                </div>
+                                            </div>
+                                        @endif
+                                    @empty
+                                        <div class="card-body">
+                                            <div class="d-sm-flex gap-5">
+                                                @foreach ($output->targets as $target)
+                                                    @if (!$target->user_id &&
+                                                        $target->type == 'ipcr' &&
+                                                        $target->duration_id == $duration->id &&
+                                                        $output->user_type == $user_type)
+                                                        <div class="form-check form-switch">
+                                                            <input class="form-check-input" type="checkbox"
+                                                                id="{{ $target->target }}{{ $target->id }}"
+                                                                value="{{ $target->id }}" wire:model="targets.{{ $arrayn++ }}">
+                                                            <label class="form-check-label"
+                                                                for="{{ $target->target }}{{ $target->id }}">{{ $target->target }}</label>
+                                                        </div>
+                                                    @endif
+                                                @endforeach
+                                            </div>
+                                        </div>
+                                    @endforelse
+                                </div>
+                            @endif
+                        @endforeach
+                        <hr>
+                    @endif
+                @endforeach
+            @endif
             @foreach ($funct->outputs as $output)
-                @if (!$output->user_id && $output->type == 'ipcr' && $output->duration_id == $duration->id && $output->user_type == $user_type)
+                @if (!$output->user_id &&
+                    $output->type == 'ipcr' &&
+                    $output->duration_id == $duration->id &&
+                    $output->user_type == $user_type)
                     <div class="card">
                         <div class="card-header">
-                            <h4 class="card-title">{{ $output->code }} {{ $number++ }} {{ $output->output }}</h4>
+                            <h4 class="card-title">{{ $output->code }} {{ $number++ }} {{ $output->output }}
+                            </h4>
                             <p class="text-subtitle text-muted"></p>
                         </div>
                         @forelse ($output->suboutputs as $suboutput)
-                            @if (!$suboutput->user_id && $suboutput->type == 'ipcr' && $suboutput->duration_id == $duration->id && $output->user_type == $user_type)
+                            @if (!$suboutput->user_id &&
+                                $suboutput->type == 'ipcr' &&
+                                $suboutput->duration_id == $duration->id &&
+                                $output->user_type == $user_type)
                                 <div class="card-body">
                                     <h6>{{ $suboutput->suboutput }}</h6>
                                 </div>
                                 <div class="card-body">
                                     <div class="d-sm-flex gap-5">
                                         @foreach ($suboutput->targets as $target)
-                                            @if (!$target->user_id && $target->type == 'ipcr' && $target->duration_id == $duration->id && $output->user_type == $user_type)
+                                            @if (!$target->user_id &&
+                                                $target->type == 'ipcr' &&
+                                                $target->duration_id == $duration->id &&
+                                                $output->user_type == $user_type)
                                                 <div class="form-check form-switch">
-                                                    <input class="form-check-input" type="checkbox" id="{{ $target->target }}{{ $target->id }}" value="{{ $target->id }}" wire:model="targets">
-                                                    <label class="form-check-label" for="{{ $target->target }}{{ $target->id }}">{{ $target->target }}</label>
+                                                    <input class="form-check-input" type="checkbox"
+                                                        id="{{ $target->target }}{{ $target->id }}"
+                                                        value="{{ $target->id }}" wire:model="targets.{{ $arrayn++ }}">
+                                                    <label class="form-check-label"
+                                                        for="{{ $target->target }}{{ $target->id }}">{{ $target->target }}</label>
                                                 </div>
                                             @endif
                                         @endforeach
@@ -69,10 +160,16 @@
                             <div class="card-body">
                                 <div class="d-sm-flex gap-5">
                                     @foreach ($output->targets as $target)
-                                        @if (!$target->user_id && $target->type == 'ipcr' && $target->duration_id == $duration->id && $output->user_type == $user_type)
+                                        @if (!$target->user_id &&
+                                            $target->type == 'ipcr' &&
+                                            $target->duration_id == $duration->id &&
+                                            $output->user_type == $user_type)
                                             <div class="form-check form-switch">
-                                                <input class="form-check-input" type="checkbox" id="{{ $target->target }}{{ $target->id }}" value="{{ $target->id }}" wire:model="targets">
-                                                <label class="form-check-label" for="{{ $target->target }}{{ $target->id }}">{{ $target->target }}</label>
+                                                <input class="form-check-input" type="checkbox"
+                                                    id="{{ $target->target }}{{ $target->id }}"
+                                                    value="{{ $target->id }}" wire:model="targets.{{ $arrayn++ }}">
+                                                <label class="form-check-label"
+                                                    for="{{ $target->target }}{{ $target->id }}">{{ $target->target }}</label>
                                             </div>
                                         @endif
                                     @endforeach

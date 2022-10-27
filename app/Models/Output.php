@@ -13,11 +13,16 @@ class Output extends Model
         'code',
         'output',
         'funct_id',
+        'sub_funct_id',
         'user_id',
         'type',
         'user_type',
         'duration_id'
     ];
+
+    public function subFunct(){
+        return $this->belongsTo(SubFunct::class);
+    }
 
     public function suboutputs(){
         return $this->hasMany(Suboutput::class);

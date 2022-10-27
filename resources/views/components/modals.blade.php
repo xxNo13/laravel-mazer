@@ -1,7 +1,7 @@
 <div>
-    @if (isset($selected) && isset($ost))
-        {{-- Configure Output/Suboutput/Target Modal --}}
-        <div wire:ignore.self class="modal fade text-left" id="ConfigureIPCROSTModal" tabindex="-1" role="dialog"
+    @if (isset($selected))
+        {{-- Add Output/Suboutput/Target Modal --}}
+        <div wire:ignore.self class="modal fade text-left" id="AddIPCROSTModal" tabindex="-1" role="dialog"
             aria-labelledby="myModalLabel33" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
                 <div class="modal-content">
@@ -13,33 +13,14 @@
                     </div>
                     <form wire:submit.prevent="save">
                         <div class="modal-body">
-                            <div class="form-group d-flex justify-content-between">
-                                <div class="form-check form-switch">
-                                    <input wire:change="changed" type="radio" class="form-check-input" id="add"
-                                        value="add" name="ost" wire:model="ost">
-                                    <label class="form-check-label" for="add">
-                                        Add
-                                    </label>
-                                </div>
-                                <div class="form-check form-switch">
-                                    <input wire:change="changed" type="radio" class="form-check-input" id="edit"
-                                        value="edit" name="ost" wire:model="ost">
-                                    <label class="form-check-label" for="edit">
-                                        Edit
-                                    </label>
-                                </div>
-                                <div class="form-check form-switch">
-                                    <input wire:change="changed" type="radio" class="form-check-input" id="target"
-                                        value="delete" name="ost" wire:model="ost">
-                                    <label class="form-check-label" for="target">
-                                        Delete
-                                    </label>
-                                </div>
-                            </div>
-
-                            <hr>
-
                             <div class="mt-3 form-group d-flex justify-content-between">
+                                <div class="form-check form-switch">
+                                    <input wire:change="changed" type="radio" class="form-check-input" id="output"
+                                        value="sub_funct" name="selected" wire:model="selected">
+                                    <label class="form-check-label" for="sub_funct">
+                                        Sub Function
+                                    </label>
+                                </div>
                                 <div class="form-check form-switch">
                                     <input wire:change="changed" type="radio" class="form-check-input" id="output"
                                         value="output" name="selected" wire:model="selected">
@@ -66,7 +47,38 @@
                             <hr>
 
                             <div class="mt-3">
-                                @if ($selected == 'output' && $ost == 'add')
+                                @if ($selected == 'sub_funct')
+                                    <label>Sub Function: </label>
+                                    <div class="form-group">
+                                        <input type="text" placeholder="Sub Function" class="form-control"
+                                            wire:model="sub_funct">
+                                    </div>
+                                @elseif ($selected == 'output')
+                                    <label>Sub Function in Support Function (Optional): </label>
+                                    <div class="form-group">
+                                        <select placeholder="Sub Function" class="form-control"
+                                            wire:model="sub_funct_id">
+                                            <option value="">Select a Sub Function</option>
+                                            @if ($userType == 'faculty')
+                                                @foreach ($subFuncts as $sub_funct)
+                                                    @if ($sub_funct->type == 'ipcr' && $sub_funct->duration_id == $duration->id && $sub_funct->user_type == $userType)
+                                                        <option value="{{ $sub_funct->id }}">
+                                                            {{ $sub_funct->sub_funct }}</option>
+                                                    @endif
+                                                @endforeach
+                                            @else
+                                                @foreach (Auth::user()->subFuncts as $sub_funct)
+                                                    @if ($sub_funct->type == 'ipcr' && $sub_funct->duration_id == $duration->id && $sub_funct->user_type == $userType)
+                                                        <option value="{{ $sub_funct->id }}">{{ $sub_funct->sub_funct }}
+                                                        </option>
+                                                    @endif
+                                                @endforeach
+                                            @endif
+                                        </select>
+                                        @error('output_id')
+                                            <p class="text-danger">{{ $message }}</p>
+                                        @enderror
+                                    </div>
                                     <label>Output: </label>
                                     <div class="form-group">
                                         <input type="text" placeholder="Output" class="form-control" name="output"
@@ -75,68 +87,7 @@
                                             <p class="text-danger">{{ $message }}</p>
                                         @enderror
                                     </div>
-                                @elseif ($selected == 'output' && $ost == 'edit')
-                                    <label>Output: </label>
-                                    <div class="form-group">
-                                        <select placeholder="Output" class="form-control" wire:model="output_id"
-                                            wire:change="editChanged" required>
-                                            <option value="">Select an output</option>
-                                            @if ($userType == 'faculty')
-                                                @foreach ($outputs as $output)
-                                                    <option value="{{ $output->id }}">{{ $output->code }}
-                                                        {{ $output->output }}
-                                                    </option>
-                                                @endforeach
-                                            @else
-                                                @foreach (Auth::user()->outputs as $output)
-                                                    @if ($output->type == 'ipcr' && $output->duration_id == $duration->id && $output->user_type == $userType)
-                                                        <option value="{{ $output->id }}">{{ $output->code }}
-                                                            {{ $output->output }}
-                                                        </option>
-                                                    @endif
-                                                @endforeach
-                                            @endif
-                                        </select>
-                                        @error('output')
-                                            <p class="text-danger">{{ $message }}</p>
-                                        @enderror
-                                    </div>
-
-                                    <label>Output: </label>
-                                    <div class="form-group">
-                                        <input type="text" placeholder="Output" class="form-control"
-                                            name="output" wire:model="output">
-                                        @error('output')
-                                            <p class="text-danger">{{ $message }}</p>
-                                        @enderror
-                                    </div>
-                                @elseif ($selected == 'output' && $ost == 'delete')
-                                    <label>Output: </label>
-                                    <div class="form-group">
-                                        <select placeholder="Output" class="form-control" wire:model="output_id"
-                                            required>
-                                            <option value="">Select an output</option>
-                                            @if ($userType == 'faculty')
-                                                @foreach ($outputs as $output)
-                                                    <option value="{{ $output->id }}">{{ $output->code }}
-                                                        {{ $output->output }}
-                                                    </option>
-                                                @endforeach
-                                            @else
-                                                @foreach (Auth::user()->outputs as $output)
-                                                    @if ($output->type == 'ipcr' && $output->duration_id == $duration->id && $output->user_type == $userType)
-                                                        <option value="{{ $output->id }}">{{ $output->code }}
-                                                            {{ $output->output }}
-                                                        </option>
-                                                    @endif
-                                                @endforeach
-                                            @endif
-                                        </select>
-                                        @error('output')
-                                            <p class="text-danger">{{ $message }}</p>
-                                        @enderror
-                                    </div>
-                                @elseif ($selected == 'suboutput' && $ost == 'add')
+                                @elseif ($selected == 'suboutput')
                                     <label>Output: </label>
                                     <div class="form-group">
                                         <select placeholder="Output" class="form-control" wire:model="output_id"
@@ -176,78 +127,11 @@
                                             <p class="text-danger">{{ $message }}</p>
                                         @enderror
                                     </div>
-                                @elseif ($selected == 'suboutput' && $ost == 'edit')
-                                    <label>Suboutput: </label>
-                                    <div class="form-group">
-                                        <select placeholder="Suboutput" class="form-control"
-                                            wire:model="suboutput_id" wire:change="editChanged" required>
-                                            <option value="">Select a suboutput</option>
-                                            @if ($userType == 'faculty')
-                                                @foreach ($suboutputs as $suboutput)
-                                                    <option value="{{ $suboutput->id }}">
-                                                        {{ $suboutput->output->code }}
-                                                        {{ $suboutput->output->output }} - {{ $suboutput->suboutput }}
-                                                    </option>
-                                                @endforeach
-                                            @else
-                                                @foreach (Auth::user()->suboutputs as $suboutput)
-                                                    @if ($suboutput->type == 'ipcr' && $suboutput->duration_id == $duration->id && $suboutput->user_type == $userType)
-                                                        <option value="{{ $suboutput->id }}">
-                                                            {{ $suboutput->output->code }}
-                                                            {{ $suboutput->output->output }} -
-                                                            {{ $suboutput->suboutput }}
-                                                        </option>
-                                                    @endif
-                                                @endforeach
-                                            @endif
-                                        </select>
-                                        @error('suboutput')
-                                            <p class="text-danger">{{ $message }}</p>
-                                        @enderror
-                                    </div>
-
-                                    <label>Suboutput: </label>
-                                    <div class="form-group">
-                                        <input type="text" placeholder="Suboutput" class="form-control"
-                                            name="suboutput" wire:model="suboutput">
-                                        @error('suboutput')
-                                            <p class="text-danger">{{ $message }}</p>
-                                        @enderror
-                                    </div>
-                                @elseif ($selected == 'suboutput' && $ost == 'delete')
-                                    <label>Suboutput: </label>
-                                    <div class="form-group">
-                                        <select placeholder="Suboutput" class="form-control" required
-                                            wire:model="suboutput_id">
-                                            <option value="">Select a suboutput</option>
-                                            @if ($userType == 'faculty')
-                                                @foreach ($suboutputs as $suboutput)
-                                                    <option value="{{ $suboutput->id }}">
-                                                        {{ $suboutput->output->code }}
-                                                        {{ $suboutput->output->output }} - {{ $suboutput->suboutput }}
-                                                    </option>
-                                                @endforeach
-                                            @else
-                                                @foreach (Auth::user()->suboutputs as $suboutput)
-                                                    @if ($suboutput->type == 'ipcr' && $suboutput->duration_id == $duration->id && $suboutput->user_type == $userType)
-                                                        <option value="{{ $suboutput->id }}">
-                                                            {{ $suboutput->output->code }}
-                                                            {{ $suboutput->output->output }} -
-                                                            {{ $suboutput->suboutput }}
-                                                        </option>
-                                                    @endif
-                                                @endforeach
-                                            @endif
-                                        </select>
-                                        @error('suboutput')
-                                            <p class="text-danger">{{ $message }}</p>
-                                        @enderror
-                                    </div>
-                                @elseif ($selected == 'target' && $ost == 'add')
+                                @elseif ($selected == 'target')
                                     <label>Output/Suboutput: </label>
                                     <div class="form-group">
-                                        <select placeholder="Output/Suboutput" class="form-control"
-                                            wire:model="subput" required>
+                                        <select placeholder="Output/Suboutput" class="form-control" wire:model="subput"
+                                            required>
                                             <option value="">Select an/a output/suboutput</option>
                                             @if ($userType == 'faculty')
                                                 @foreach ($outputs as $output)
@@ -301,75 +185,67 @@
                                             <p class="text-danger">{{ $message }}</p>
                                         @enderror
                                     </div>
-                                @elseif ($selected == 'target' && $ost == 'edit')
-                                    <label>Target: </label>
+                                @endif
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-light-secondary" wire:click="closeModal">
+                                <i class="bx bx-x d-block d-sm-none"></i>
+                                <span class="d-none d-sm-block">Close</span>
+                            </button>
+                            <button type="submit" wire:loading.attr="disabled" class="btn btn-primary ml-1">
+                                <i class="bx bx-check d-block d-sm-none"></i>
+                                <span class="d-none d-sm-block">Save</span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        {{-- Edit Output/Suboutput/Target Modal --}}
+        <div wire:ignore.self class="modal fade text-left" id="EditIPCROSTModal" tabindex="-1" role="dialog"
+            aria-labelledby="myModalLabel33" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title" id="myModalLabel33">Edit Output/Suboutput/Target</h4>
+                        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                            <i data-feather="x"></i>
+                        </button>
+                    </div>
+                    <form wire:submit.prevent="update">
+                        <div class="modal-body">
+                            <div class="mt-3">
+                                @if ($selected == 'sub_funct')
+                                    <label>Sub Function: </label>
                                     <div class="form-group">
-                                        <select placeholder="Target" class="form-control" wire:model="target_id"
-                                            required wire:change="editChanged">
-                                            <option value="">Select a Target</option>
-                                            @if ($userType == 'faculty')
-                                                @foreach ($targets as $target)
-                                                    <option value="{{ $target->id }}">
-                                                        @if ($target->output)
-                                                            {{ $target->output->code }} {{ $target->output->output }}
-                                                            -
-                                                        @elseif ($target->suboutput)
-                                                            {{ $target->suboutput->output->code }}
-                                                            {{ $target->suboutput->output->output }} -
-                                                            {{ $target->suboutput->suboutput }} -
-                                                        @endif
-                                                        {{ $target->target }}
-                                                    </option>
-                                                @endforeach
-                                            @else
-                                                @foreach (Auth::user()->targets as $target)
-                                                    <option value="{{ $target->id }}">
-                                                        @if ($target->output)
-                                                            {{ $target->output->code }} {{ $target->output->output }}
-                                                            -
-                                                        @elseif ($target->suboutput)
-                                                            {{ $target->suboutput->output->code }}
-                                                            {{ $target->suboutput->output->output }} -
-                                                            {{ $target->suboutput->suboutput }} -
-                                                        @endif
-                                                        {{ $target->target }}
-                                                    </option>
-                                                @endforeach
-                                            @endif
-                                        </select>
-                                        @error('target')
+                                        <input type="text" placeholder="Sub Function" class="form-control"
+                                            wire:model="sub_funct">
+                                    </div>
+                                @elseif ($selected == 'output')
+                                    <label>Output: </label>
+                                    <div class="form-group">
+                                        <input type="text" placeholder="Output" class="form-control" name="output"
+                                            wire:model="output">
+                                        @error('output')
                                             <p class="text-danger">{{ $message }}</p>
                                         @enderror
                                     </div>
-
+                                @elseif ($selected == 'suboutput')
+                                    <label>Suboutput: </label>
+                                    <div class="form-group">
+                                        <input type="text" placeholder="Suboutput" class="form-control"
+                                            name="suboutput" wire:model="suboutput">
+                                        @error('suboutput')
+                                            <p class="text-danger">{{ $message }}</p>
+                                        @enderror
+                                    </div>
+                                @elseif ($selected == 'target')
                                     <label>Target: </label>
                                     <div class="form-group">
                                         <input type="text" placeholder="Target" class="form-control"
                                             name="target" wire:model="target">
-                                        @error('target')
-                                            <p class="text-danger">{{ $message }}</p>
-                                        @enderror
-                                    </div>
-                                @elseif ($selected == 'target' && $ost == 'delete')
-                                    <label>Target: </label>
-                                    <div class="form-group">
-                                        <select placeholder="Target" class="form-control" wire:model="target_id"
-                                            required>
-                                            <option value="">Select a target</option>
-                                            @foreach ($targets as $target)
-                                                <option value="{{ $target->id }}">
-                                                    @if ($target->output)
-                                                        {{ $target->output->code }} {{ $target->output->output }}
-                                                        -
-                                                    @elseif ($target->suboutput)
-                                                        {{ $target->suboutput->output->code }}
-                                                        {{ $target->suboutput->output->output }} -
-                                                        {{ $target->suboutput->suboutput }} -
-                                                    @endif
-                                                    {{ $target->target }}
-                                                </option>
-                                            @endforeach
-                                        </select>
                                         @error('target')
                                             <p class="text-danger">{{ $message }}</p>
                                         @enderror
@@ -382,31 +258,18 @@
                                 <i class="bx bx-x d-block d-sm-none"></i>
                                 <span class="d-none d-sm-block">Close</span>
                             </button>
-                            @if ($ost == 'add')
-                                <button type="submit" wire:loading.attr="disabled" class="btn btn-primary ml-1">
-                                    <i class="bx bx-check d-block d-sm-none"></i>
-                                    <span class="d-none d-sm-block">Save</span>
-                                </button>
-                            @elseif ($ost == 'edit')
-                                <button type="submit" wire:loading.attr="disabled" class="btn btn-success ml-1">
-                                    <i class="bx bx-check d-block d-sm-none"></i>
-                                    <span class="d-none d-sm-block">Update</span>
-                                </button>
-                            @elseif ($ost == 'delete')
-                                <button type="submit" wire:loading.attr="disabled" class="btn btn-danger ml-1"
-                                    data-bs-target="#DeleteModal" data-bs-toggle="modal">
-                                    <i class="bx bx-check d-block d-sm-none"></i>
-                                    <span class="d-none d-sm-block">Delete</span>
-                                </button>
-                            @endif
+                            <button type="submit" wire:loading.attr="disabled" class="btn btn-primary ml-1">
+                                <i class="bx bx-check d-block d-sm-none"></i>
+                                <span class="d-none d-sm-block">Save</span>
+                            </button>
                         </div>
                     </form>
                 </div>
             </div>
         </div>
 
-        {{-- Configure Output/Suboutput/Target Modal --}}
-        <div wire:ignore.self class="modal fade text-left" id="ConfigureOPCROSTModal" tabindex="-1" role="dialog"
+        {{-- Add Output/Suboutput/Target Modal --}}
+        <div wire:ignore.self class="modal fade text-left" id="AddOPCROSTModal" tabindex="-1" role="dialog"
             aria-labelledby="myModalLabel33" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
                 <div class="modal-content">
@@ -418,50 +281,31 @@
                     </div>
                     <form wire:submit.prevent="save">
                         <div class="modal-body">
-                            <div class="form-group d-flex justify-content-between">
-                                <div class="form-check form-switch">
-                                    <input wire:change="changed" type="radio" class="form-check-input"
-                                        id="add" value="add" name="ost" wire:model="ost">
-                                    <label class="form-check-label" for="add">
-                                        Add
-                                    </label>
-                                </div>
-                                <div class="form-check form-switch">
-                                    <input wire:change="changed" type="radio" class="form-check-input"
-                                        id="edit" value="edit" name="ost" wire:model="ost">
-                                    <label class="form-check-label" for="edit">
-                                        Edit
-                                    </label>
-                                </div>
-                                <div class="form-check form-switch">
-                                    <input wire:change="changed" type="radio" class="form-check-input"
-                                        id="target" value="delete" name="ost" wire:model="ost">
-                                    <label class="form-check-label" for="target">
-                                        Delete
-                                    </label>
-                                </div>
-                            </div>
-
-                            <hr>
-
                             <div class="mt-3 form-group d-flex justify-content-between">
                                 <div class="form-check form-switch">
-                                    <input wire:change="changed" type="radio" class="form-check-input"
-                                        id="output" value="output" name="selected" wire:model="selected">
+                                    <input wire:change="changed" type="radio" class="form-check-input" id="output"
+                                        value="sub_funct" name="selected" wire:model="selected">
+                                    <label class="form-check-label" for="sub_funct">
+                                        Sub Function
+                                    </label>
+                                </div>
+                                <div class="form-check form-switch">
+                                    <input wire:change="changed" type="radio" class="form-check-input" id="output"
+                                        value="output" name="selected" wire:model="selected">
                                     <label class="form-check-label" for="output">
                                         Output
                                     </label>
                                 </div>
                                 <div class="form-check form-switch">
-                                    <input wire:change="changed" type="radio" class="form-check-input"
-                                        id="suboutput" value="suboutput" name="selected" wire:model="selected">
+                                    <input wire:change="changed" type="radio" class="form-check-input" id="suboutput"
+                                        value="suboutput" name="selected" wire:model="selected">
                                     <label class="form-check-label" for="suboutput">
                                         Suboutput
                                     </label>
                                 </div>
                                 <div class="form-check form-switch">
-                                    <input wire:change="changed" type="radio" class="form-check-input"
-                                        id="target" value="target" name="selected" wire:model="selected">
+                                    <input wire:change="changed" type="radio" class="form-check-input" id="target"
+                                        value="target" name="selected" wire:model="selected">
                                     <label class="form-check-label" for="target">
                                         Target
                                     </label>
@@ -471,61 +315,38 @@
                             <hr>
 
                             <div class="mt-3">
-                                @if ($selected == 'output' && $ost == 'add')
-                                    <label>Output: </label>
+                                @if ($selected == 'sub_funct')
+                                    <label>Sub Function: </label>
                                     <div class="form-group">
-                                        <input type="text" placeholder="Output" class="form-control"
-                                            name="output" wire:model="output">
-                                        @error('output')
-                                            <p class="text-danger">{{ $message }}</p>
-                                        @enderror
+                                        <input type="text" placeholder="Sub Function" class="form-control"
+                                            wire:model="sub_funct">
                                     </div>
-                                @elseif ($selected == 'output' && $ost == 'edit')
-                                    <label>Output: </label>
+                                @elseif ($selected == 'output')
+                                    <label>Sub Function in Support Function (Optional): </label>
                                     <div class="form-group">
-                                        <select placeholder="Output" class="form-control" wire:model="output_id"
-                                            required wire:change="editChanged">
-                                            <option value="">Select an output</option>
-                                            @foreach (Auth::user()->outputs as $output)
-                                                @if ($output->type == 'opcr' && $output->duration_id == $duration->id && $output->user_type == $userType)
-                                                    <option value="{{ $output->id }}">{{ $output->code }}
-                                                        {{ $output->output }}
+                                        <select placeholder="Sub Function" class="form-control"
+                                            wire:model="sub_funct_id">
+                                            <option value="">Select a Sub Function</option>
+                                            @foreach (Auth::user()->subFuncts as $sub_funct)
+                                                @if ($sub_funct->type == 'opcr' && $sub_funct->duration_id == $duration->id && $sub_funct->user_type == $userType)
+                                                    <option value="{{ $sub_funct->id }}">{{ $sub_funct->sub_funct }}
                                                     </option>
                                                 @endif
                                             @endforeach
                                         </select>
-                                        @error('output')
+                                        @error('output_id')
                                             <p class="text-danger">{{ $message }}</p>
                                         @enderror
                                     </div>
-
                                     <label>Output: </label>
                                     <div class="form-group">
-                                        <input type="text" placeholder="Output" class="form-control"
-                                            name="output" wire:model="output">
+                                        <input type="text" placeholder="Output" class="form-control" name="output"
+                                            wire:model="output">
                                         @error('output')
                                             <p class="text-danger">{{ $message }}</p>
                                         @enderror
                                     </div>
-                                @elseif ($selected == 'output' && $ost == 'delete')
-                                    <label>Output: </label>
-                                    <div class="form-group">
-                                        <select placeholder="Output" class="form-control" wire:model="output_id"
-                                            required>
-                                            <option value="">Select an output</option>
-                                            @foreach (Auth::user()->outputs as $output)
-                                                @if ($output->type == 'opcr' && $output->duration_id == $duration->id && $output->user_type == $userType)
-                                                    <option value="{{ $output->id }}">{{ $output->code }}
-                                                        {{ $output->output }}
-                                                    </option>
-                                                @endif
-                                            @endforeach
-                                        </select>
-                                        @error('output')
-                                            <p class="text-danger">{{ $message }}</p>
-                                        @enderror
-                                    </div>
-                                @elseif ($selected == 'suboutput' && $ost == 'add')
+                                @elseif ($selected == 'suboutput')
                                     <label>Output: </label>
                                     <div class="form-group">
                                         <select placeholder="Output" class="form-control" wire:model="output_id"
@@ -542,7 +363,7 @@
                                                 @endforelse
                                             @endforeach
                                         </select>
-                                        @error('output')
+                                        @error('output_id')
                                             <p class="text-danger">{{ $message }}</p>
                                         @enderror
                                     </div>
@@ -554,59 +375,11 @@
                                             <p class="text-danger">{{ $message }}</p>
                                         @enderror
                                     </div>
-                                @elseif ($selected == 'suboutput' && $ost == 'edit')
-                                    <label>Suboutput: </label>
-                                    <div class="form-group">
-                                        <select placeholder="Suboutput" class="form-control" required
-                                            wire:model="suboutput_id" wire:change="editChanged">
-                                            <option value="">Select a suboutput</option>
-                                            @foreach (Auth::user()->suboutputs as $suboutput)
-                                                @if ($suboutput->type == 'opcr' && $suboutput->duration_id == $duration->id && $suboutput->user_type == $userType)
-                                                    <option value="{{ $suboutput->id }}">
-                                                        {{ $suboutput->output->code }}
-                                                        {{ $suboutput->output->output }} - {{ $suboutput->suboutput }}
-                                                    </option>
-                                                @endif
-                                            @endforeach
-                                        </select>
-                                        @error('suboutput')
-                                            <p class="text-danger">{{ $message }}</p>
-                                        @enderror
-                                    </div>
-
-                                    <label>Suboutput: </label>
-                                    <div class="form-group">
-                                        <input type="text" placeholder="Suboutput" class="form-control"
-                                            name="suboutput" wire:model="suboutput">
-                                        @error('suboutput')
-                                            <p class="text-danger">{{ $message }}</p>
-                                        @enderror
-                                    </div>
-                                @elseif ($selected == 'suboutput' && $ost == 'delete')
-                                    <label>Suboutput: </label>
-                                    <div class="form-group">
-                                        <select placeholder="Suboutput" class="form-control" required
-                                            wire:model="suboutput_id">
-                                            <option value="">Select a suboutput</option>
-                                            @foreach (Auth::user()->suboutputs as $suboutput)
-                                                @if ($suboutput->type == 'opcr' && $suboutput->duration_id == $duration->id && $suboutput->user_type == $userType)
-                                                    <option value="{{ $suboutput->id }}">
-                                                        {{ $suboutput->output->code }}
-                                                        {{ $suboutput->output->output }} -
-                                                        {{ $suboutput->suboutput }}
-                                                    </option>
-                                                @endif
-                                            @endforeach
-                                        </select>
-                                        @error('suboutput')
-                                            <p class="text-danger">{{ $message }}</p>
-                                        @enderror
-                                    </div>
-                                @elseif ($selected == 'target' && $ost == 'add')
+                                @elseif ($selected == 'target')
                                     <label>Output/Suboutput: </label>
                                     <div class="form-group">
-                                        <select placeholder="Output/Suboutput" class="form-control" required
-                                            wire:model="subput">
+                                        <select placeholder="Output/Suboutput" class="form-control" wire:model="subput"
+                                            required>
                                             <option value="">Select an/a output/suboutput</option>
                                             @foreach (Auth::user()->outputs as $output)
                                                 @forelse ($output->suboutputs as $suboutput)
@@ -641,65 +414,67 @@
                                             <p class="text-danger">{{ $message }}</p>
                                         @enderror
                                     </div>
-                                @elseif ($selected == 'target' && $ost == 'edit')
-                                    <label>Target: </label>
+                                @endif
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-light-secondary" wire:click="closeModal">
+                                <i class="bx bx-x d-block d-sm-none"></i>
+                                <span class="d-none d-sm-block">Close</span>
+                            </button>
+                            <button type="submit" wire:loading.attr="disabled" class="btn btn-primary ml-1">
+                                <i class="bx bx-check d-block d-sm-none"></i>
+                                <span class="d-none d-sm-block">Save</span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        {{-- Edit Output/Suboutput/Target Modal --}}
+        <div wire:ignore.self class="modal fade text-left" id="EditOPCROSTModal" tabindex="-1" role="dialog"
+            aria-labelledby="myModalLabel33" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title" id="myModalLabel33">Edit Output/Suboutput/Target</h4>
+                        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                            <i data-feather="x"></i>
+                        </button>
+                    </div>
+                    <form wire:submit.prevent="update">
+                        <div class="modal-body">
+                            <div class="mt-3">
+                                @if ($selected == 'sub_funct')
+                                    <label>Sub Function: </label>
                                     <div class="form-group">
-                                        <select placeholder="Target" class="form-control" wire:model="target_id"
-                                            required wire:change="editChanged">
-                                            <option value="">Select a Target</option>
-                                            @foreach (Auth::user()->targets as $target)
-                                                @if ($target->type == 'opcr' && $target->duration_id == $duration->id && $target->user_type == $userType)
-                                                    <option value="{{ $target->id }}">
-                                                        @if ($target->output)
-                                                            {{ $target->output->code }}
-                                                            {{ $target->output->output }}
-                                                            -
-                                                        @elseif ($target->suboutput)
-                                                            {{ $target->suboutput->output->code }}
-                                                            {{ $target->suboutput->output->output }} -
-                                                            {{ $target->suboutput->suboutput }} -
-                                                        @endif
-                                                        {{ $target->target }}
-                                                    </option>
-                                                @endif
-                                            @endforeach
-                                        </select>
-                                        @error('target_id')
+                                        <input type="text" placeholder="Sub Function" class="form-control"
+                                            wire:model="sub_funct">
+                                    </div>
+                                @elseif ($selected == 'output')
+                                    <label>Output: </label>
+                                    <div class="form-group">
+                                        <input type="text" placeholder="Output" class="form-control" name="output"
+                                            wire:model="output">
+                                        @error('output')
                                             <p class="text-danger">{{ $message }}</p>
                                         @enderror
                                     </div>
-
+                                @elseif ($selected == 'suboutput')
+                                    <label>Suboutput: </label>
+                                    <div class="form-group">
+                                        <input type="text" placeholder="Suboutput" class="form-control"
+                                            name="suboutput" wire:model="suboutput">
+                                        @error('suboutput')
+                                            <p class="text-danger">{{ $message }}</p>
+                                        @enderror
+                                    </div>
+                                @elseif ($selected == 'target')
                                     <label>Target: </label>
                                     <div class="form-group">
                                         <input type="text" placeholder="Target" class="form-control"
                                             name="target" wire:model="target">
-                                        @error('target')
-                                            <p class="text-danger">{{ $message }}</p>
-                                        @enderror
-                                    </div>
-                                @elseif ($selected == 'target' && $ost == 'delete')
-                                    <label>Target: </label>
-                                    <div class="form-group">
-                                        <select placeholder="Target" class="form-control" wire:model="target_id"
-                                            required>
-                                            <option value="">Select a target</option>
-                                            @foreach (Auth::user()->targets as $target)
-                                                @if ($target->type == 'opcr' && $target->duration_id == $duration->id && $target->user_type == $userType)
-                                                    <option value="{{ $target->id }}">
-                                                        @if ($target->output)
-                                                            {{ $target->output->code }}
-                                                            {{ $target->output->output }}
-                                                            -
-                                                        @elseif ($target->suboutput)
-                                                            {{ $target->suboutput->output->code }}
-                                                            {{ $target->suboutput->output->output }} -
-                                                            {{ $target->suboutput->suboutput }} -
-                                                        @endif
-                                                        {{ $target->target }}
-                                                    </option>
-                                                @endif
-                                            @endforeach
-                                        </select>
                                         @error('target')
                                             <p class="text-danger">{{ $message }}</p>
                                         @enderror
@@ -712,23 +487,10 @@
                                 <i class="bx bx-x d-block d-sm-none"></i>
                                 <span class="d-none d-sm-block">Close</span>
                             </button>
-                            @if ($ost == 'add')
-                                <button type="submit" wire:loading.attr="disabled" class="btn btn-primary ml-1">
-                                    <i class="bx bx-check d-block d-sm-none"></i>
-                                    <span class="d-none d-sm-block">Save</span>
-                                </button>
-                            @elseif ($ost == 'edit')
-                                <button type="submit" wire:loading.attr="disabled" class="btn btn-success ml-1">
-                                    <i class="bx bx-check d-block d-sm-none"></i>
-                                    <span class="d-none d-sm-block">Update</span>
-                                </button>
-                            @elseif ($ost == 'delete')
-                                <button type="submit" wire:loading.attr="disabled" class="btn btn-danger ml-1"
-                                    data-bs-target="#DeleteModal" data-bs-toggle="modal">
-                                    <i class="bx bx-check d-block d-sm-none"></i>
-                                    <span class="d-none d-sm-block">Delete</span>
-                                </button>
-                            @endif
+                            <button type="submit" wire:loading.attr="disabled" class="btn btn-primary ml-1">
+                                <i class="bx bx-check d-block d-sm-none"></i>
+                                <span class="d-none d-sm-block">Save</span>
+                            </button>
                         </div>
                     </form>
                 </div>
@@ -1352,8 +1114,7 @@
                         </div>
                         <label>Building: </label>
                         <div class="form-group">
-                            <input type="text" placeholder="Building" class="form-control"
-                                wire:model="building">
+                            <input type="text" placeholder="Building" class="form-control" wire:model="building">
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -1390,8 +1151,7 @@
                         </div>
                         <label>Building: </label>
                         <div class="form-group">
-                            <input type="text" placeholder="Building" class="form-control"
-                                wire:model="building">
+                            <input type="text" placeholder="Building" class="form-control" wire:model="building">
                         </div>
                     </div>
                     <div class="modal-footer">

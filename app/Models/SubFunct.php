@@ -5,19 +5,20 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Funct extends Model
+class SubFunct extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'funct'
+        'sub_funct',
+        'funct_id',
+        'user_id',
+        'type',
+        'user_type',
+        'duration_id'
     ];
 
-    public function outputs() {
+    public function outputs(){
         return $this->hasMany(Output::class);
-    }
-
-    public function subFuncts() {
-        return $this->hasMany(SubFunct::class);
     }
 }

@@ -13,13 +13,11 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('outputs', function (Blueprint $table) {
+        Schema::create('sub_functs', function (Blueprint $table) {
             $table->id();
-            $table->string('code');
-            $table->string('output');
+            $table->string('sub_funct');
             $table->string('type');
             $table->string('user_type');
-            $table->foreignId('sub_funct_id')->onDelete('cascade')->nullable();
             $table->foreignId('funct_id')->onDelete('cascade')->nullable();
             $table->foreignId('user_id')->onDelete('cascade')->nullable();
             $table->foreignId('duration_id')->onDelete('cascade');
@@ -34,6 +32,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('outputs');
+        Schema::dropIfExists('sub_functs');
     }
 };

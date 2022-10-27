@@ -4,6 +4,7 @@ namespace App\Http\Livewire;
 
 use App\Models\User;
 use App\Models\Funct;
+use App\Models\Target;
 use Livewire\Component;
 use App\Models\Approval;
 use App\Models\Duration;
@@ -39,6 +40,7 @@ class StandardStaffLivewire extends Component
     public $users2;
     public $approval;
     public $duration;
+    public $targ;
 
     protected $rules = [
         'superior1_id' => ['required_if:selected,submit'],
@@ -59,6 +61,11 @@ class StandardStaffLivewire extends Component
                     ->where('type', 'standard')
                     ->where('duration_id', $this->duration->id)
                     ->where('user_type', 'staff')
+                    ->first();
+            $this->targ = Target::where('user_id', Auth::user()->id)
+                    ->where('type', 'ipcr')
+                    ->where('user_type', 'staff')
+                    ->where('duration_id', $this->duration->id)
                     ->first();
         }
     }

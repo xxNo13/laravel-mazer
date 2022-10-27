@@ -11,6 +11,7 @@ use App\Models\Target;
 use Livewire\Component;
 use App\Models\Approval;
 use App\Models\Duration;
+use App\Models\SubFunct;
 use App\Models\Suboutput;
 use Livewire\WithPagination;
 use Illuminate\Support\Facades\Auth;
@@ -19,27 +20,17 @@ class IpcrFacultyLivewire extends Component
 {
     use WithPagination;
 
-    public string $funct = '';
-    public string $selected = 'output';
-    public string $ost = 'add';
-    public string $output = '';
-    public string $suboutput = '';
-    public string $subput = '';
-    public $subputArr = [];
-    public string $target = '';
-    public string $accomplishment = '';
-    public $efficiency = '';
-    public $quality = '';
-    public $timeliness = '';
-    public $average;
-    public string $remarks = '';
-    public string $code = '';
+    public $selected = 'output';
+    public $output;
+    public $suboutput;
+    public $subput;
+    public $target;
+    public $code;
     public $funct_id;
     public $number = 1;
     public $output_id;
     public $suboutput_id;
     public $target_id;
-    public $data;
     public $rating_id;
     public $superior1_id;
     public $superior2_id;
@@ -48,9 +39,13 @@ class IpcrFacultyLivewire extends Component
     public $approval;
     public $type = 'IPCR';
     public $duration;
-    public $outputs = '';
-    public $suboutputs = '';
-    public $targets = '';
+    public $outputs;
+    public $suboutputs;
+    public $targets;
+    public $sub_funct;
+    public $sub_funct_id;
+    public $subFuncts;
+    public $targ;
 
     // protected $paginationTheme = 'bootstrap';
     protected $rules = [
@@ -77,6 +72,11 @@ class IpcrFacultyLivewire extends Component
                 ->where('duration_id', $this->duration->id)
                 ->where('user_type', 'faculty')
                 ->first();
+            $this->targ = Target::where('user_id', null)
+                ->where('type', 'ipcr')
+                ->where('user_type', 'faculty')
+                ->where('duration_id', $this->duration->id)
+                ->first();
         }
     }
 
@@ -93,6 +93,9 @@ class IpcrFacultyLivewire extends Component
             $this->targets = Target::where('user_id', null)
                 ->where('duration_id', $this->duration->id)
                 ->get();
+            $this->subFuncts = SubFunct::where('user_id', null)
+                ->where('duration_id', $this->duration->id)
+                ->get();
         }
 
         return view('livewire.ipcr-faculty-livewire', [
@@ -100,7 +103,8 @@ class IpcrFacultyLivewire extends Component
             'userType' => 'faculty',
             'outputs' => $this->outputs,
             'suboutputs' => $this->suboutputs,
-            'targets' => $this->targets
+            'targets' => $this->targets,
+            'subFuncts' => $this->subFuncts,
         ]);
     }
 
@@ -110,14 +114,55 @@ class IpcrFacultyLivewire extends Component
     }
 
     // CONFIGURING OST START ------------>
+    public function select($selected, $id = null){
+        $this->selected = $selected;
+
+        if($id) {
+            switch($selected){
+                case 'sub_funct':
+                    $this->sub_funct_id = $id;
+                    $sub_funct = SubFunct::where('id', $this->sub_funct_id)->first();
+                    $this->sub_funct = $sub_funct->sub_funct;
+                    break;
+                case 'output':
+                    $this->output_id = $id;
+                    $output = Output::where('id', $this->output_id)->first();
+                    $this->output = $output->output;
+                    break;
+                case 'suboutput':
+                    $this->suboutput_id = $id;
+                    $suboutput = Suboutput::where('id', $this->suboutput_id)->first();
+                    $this->suboutput = $suboutput->suboutput;
+                    break;
+                case 'target':
+                    $this->target_id = $id;
+                    $target = Target::where('id', $this->target_id)->first();
+                    $this->target = $target->target;
+                    break;
+
+                default:
+                    dd($selected);
+                    break;
+            }
+        }
+    }
     // Save / Update OST
     public function save()
     {
-
         $this->validate();
+        $selected = $this->selected;
 
-        if ($this->ost == 'add') {
-            if ($this->selected == 'output') {
+        switch($selected){
+            case 'sub_funct':
+                SubFunct::create([
+                    'sub_funct' => $this->sub_funct,
+                    'funct_id' => 3,
+                    'type' => 'ipcr',
+                    'user_type' => 'faculty',
+                    'duration_id' => $this->duration->id
+                ]);
+                break;
+            case 'output':
                 switch (str_replace(url('/'), '', url()->previous())) {
                     case '/ipcr/add/faculty':
                         $this->code = 'CF ';
@@ -136,6 +181,17 @@ class IpcrFacultyLivewire extends Component
                         $this->funct_id = 0;
                         break;
                 };
+                if($this->sub_funct_id){
+                    Output::create([
+                        'code' => $this->code,
+                        'output' => $this->output,
+                        'sub_funct_id' => $this->sub_funct_id,
+                        'type' => 'ipcr',
+                        'user_type' => 'faculty',
+                        'duration_id' => $this->duration->id
+                    ]);
+                    break;
+                }
                 Output::create([
                     'code' => $this->code,
                     'output' => $this->output,
@@ -144,7 +200,8 @@ class IpcrFacultyLivewire extends Component
                     'user_type' => 'faculty',
                     'duration_id' => $this->duration->id
                 ]);
-            } elseif ($this->selected == 'suboutput') {
+                break;
+            case 'suboutput':
                 Suboutput::create([
                     'suboutput' => $this->suboutput,
                     'output_id' => $this->output_id,
@@ -152,10 +209,11 @@ class IpcrFacultyLivewire extends Component
                     'user_type' => 'faculty',
                     'duration_id' => $this->duration->id
                 ]);
-            } elseif ($this->selected == 'target') {
+                break;
+            case 'target':
                 $subputArr = explode(',', $this->subput);
-
-                if ($subputArr[0] == 'output') {
+    
+                if ($subputArr[0] == 'output'){
                     Target::create([
                         'target' => $this->target,
                         'output_id' =>  $subputArr[1],
@@ -163,7 +221,7 @@ class IpcrFacultyLivewire extends Component
                         'user_type' => 'faculty',
                         'duration_id' => $this->duration->id
                     ]);
-                } elseif ($subputArr[0] == 'suboutput') {
+                } elseif ($subputArr[0] == 'suboutput'){
                     Target::create([
                         'target' => $this->target,
                         'suboutput_id' =>  $subputArr[1],
@@ -172,44 +230,53 @@ class IpcrFacultyLivewire extends Component
                         'duration_id' => $this->duration->id
                     ]);
                 }
-            }
+                break;
 
-            session()->flash('message', 'Added Successfully!');
-        } elseif ($this->ost == 'edit') {
-            if ($this->selected == 'output') {
-                Output::where('id', $this->output_id)->update([
-                    'output' => $this->output
-                ]);
-            } elseif ($this->selected == 'suboutput') {
-                Suboutput::where('id', $this->suboutput_id)->update([
-                    'suboutput' => $this->suboutput
-                ]);
-            } elseif ($this->selected == 'target') {
-                Target::where('id', $this->target_id)->update([
-                    'target' => $this->target
-                ]);
-            }
-
-            session()->flash('message', 'Updated Successfully!');
+            default:
+                dd($selected);
+                break;
         }
 
+        session()->flash('message', 'Added Successfully!');
         $this->resetInput();
-        $this->dispatchBrowserEvent('close-modal');
+        $this->dispatchBrowserEvent('close-modal'); 
     }
 
-    // When selecting what to edit
-    public function editChanged()
-    {
-        if ($this->selected == 'output') {
-            $this->data = Output::find($this->output_id);
-            $this->output = $this->data->output;
-        } elseif ($this->selected == 'suboutput') {
-            $this->data = Suboutput::find($this->suboutput_id);
-            $this->suboutput = $this->data->suboutput;
-        } elseif ($this->selected == 'target') {
-            $this->data = Target::find($this->target_id);
-            $this->target = $this->data->target;
+    public function update(){
+        $this->validate();
+
+        $selected = $this->selected;
+
+        switch($selected){
+            case 'sub_funct':
+                SubFunct::where('id', $this->sub_funct_id)->update([
+                    'sub_funct' => $this->sub_funct
+                ]);
+                break;
+            case 'output':
+                Output::where('id', $this->output_id)->update([
+                    'output' => $this->output,
+                ]);
+                break;
+            case 'suboutput':
+                Suboutput::where('id', $this->suboutput_id)->update([
+                    'suboutput' => $this->suboutput,
+                ]);
+                break;
+            case 'target':
+                Target::where('id', $this->target_id)->update([
+                    'target' => $this->target,
+                ]);
+                break;
+
+            default:
+                dd($selected);
+                break;
         }
+
+        session()->flash('message', 'Updated Successfully!');
+        $this->resetInput();
+        $this->dispatchBrowserEvent('close-modal'); 
     }
 
     // When choosing add/edit/delete and output/suboutput/target(OST)
@@ -259,17 +326,10 @@ class IpcrFacultyLivewire extends Component
 
     public function resetInput()
     {
-        $this->funct = '';
         $this->output = '';
         $this->suboutput = '';
         $this->subput = '';
         $this->target = '';
-        $this->accomplishment = '';
-        $this->quality = '';
-        $this->efficiency = '';
-        $this->timeliness = '';
-        $this->average;
-        $this->remarks = '';
         $this->code = '';
         $this->funct_id = '';
         $this->number = 1;
@@ -280,6 +340,8 @@ class IpcrFacultyLivewire extends Component
         $this->rating_id = '';
         $this->superior1_id = '';
         $this->superior2_id = '';
+        $this->sub_funct = '';
+        $this->sub_funct_id = '';
     }
 
     public function closeModal()
