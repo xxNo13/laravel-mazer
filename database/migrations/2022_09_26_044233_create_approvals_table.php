@@ -18,8 +18,10 @@ return new class extends Migration
             $table->foreignId('user_id')->onDelete('cascade')->nullable();
             $table->integer('superior1_id')->nullable();
             $table->smallInteger('superior1_status')->nullable();
+            $table->date('superior1_date')->nullable();
             $table->integer('superior2_id')->nullable();
             $table->smallInteger('superior2_status')->nullable();
+            $table->date('superior2_date')->nullable();
             $table->string('type');
             $table->string('user_type');
             $table->smallInteger('added_id')->nullable();

@@ -6,60 +6,78 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>IPCR - {{ Auth::user()->name }}</title>
     <style>
-        @page { 
-            margin: 100px 50px 110px 50px; 
+        @page {
+            margin: 100px 50px 110px 50px;
         }
-        #header { 
-            position: relative; 
-            left: 0px; 
-            top: -50px; 
-            right: 0px; 
+
+        #header {
+            position: relative;
+            left: 0px;
+            top: -50px;
+            right: 0px;
             text-align: center;
         }
-        #footer { 
-            position: fixed; 
-            left: 0px; bottom: 
-            -100px; right: 0px;  
+
+        #footer {
+            position: fixed;
+            left: 0px;
+            bottom:
+                -100px;
+            right: 0px;
             text-align: center;
         }
+
         * {
             font-size: 8px;
             font-family: Arial, Helvetica, sans-serif;
         }
+
         .top-table {
             width: 95%;
             margin: 10rem auto 4rem auto;
             border-collapse: collapse;
         }
+
         .main-table {
             width: 100%;
             border-collapse: collapse;
         }
-        .main-table td{
+
+        .main-table td {
             border: 1px solid black;
         }
-        th, .bordered {
+
+        th,
+        .bordered {
             border: 1px solid black;
         }
-        td, th {
+
+        td,
+        th {
             padding: 5px;
             text-align: center;
         }
+
         .bold {
             font-weight: bold;
         }
+
         .border-right {
             border-right: 1px solid black;
         }
+
         .border-bottom {
             border-bottom: 1px solid black;
         }
+
         .text-end {
             text-align: end;
         }
+
         .text-start {
             text-align: start;
         }
+
         .text-center {
             text-align: center;
         }
@@ -68,19 +86,21 @@
 
 <body>
     <div id="header">
-        <img src="{{ public_path("images/logo/header.jpg") }}">
+        <img src="{{ public_path('images/logo/header.jpg') }}">
     </div>
     <div id="footer">
-        <img src="{{ public_path("images/logo/footer.jpg") }}">
+        <img src="{{ public_path('images/logo/footer.jpg') }}">
     </div>
     <div>
-        <p style="font-size: 10px;">I, Milbourne Villegas, Student of IOC, commit to deliver and agree to be rated on the attainment of the following targets in accordance with the indicated measures for the period 2022.</p>
+        <p style="font-size: 10px;">I, {{ Auth::user()->name }}, Student of IOC, commit to deliver and agree to be rated
+            on the attainment of the following targets in accordance with the indicated measures for the period 2022.
+        </p>
     </div>
     <div style="margin-top: 1rem; float: right;">
         <div style="text-align: center;">
             <p>______________________</p>
             <p>(Employee's Signature)</p>
-            <p>Date: ________________</p>
+            <p>Date: <u>{{ date('m-d-Y') }}</u></p>
         </div>
     </div>
     <table class="top-table">
@@ -96,10 +116,10 @@
         </thead>
         <tbody>
             <tr>
-                <td colspan="2" rowspan="5" class="bordered">Rich Johnfrill Lacia</td>
-                <td rowspan="5" class="bordered">August 13, 2022</td>
-                <td colspan="2" rowspan="5" class="bordered">Harly Dave Batoon</td>
-                <td rowspan="5" class="bordered">August 13, 2022</td>
+                <td colspan="2" rowspan="5" class="bordered">{{ $superior1->name }}</td>
+                <td rowspan="5" class="bordered">{{ $approval->superior1_date }}</td>
+                <td colspan="2" rowspan="5" class="bordered">{{ $superior2->name }}</td>
+                <td rowspan="5" class="bordered">{{ $approval->superior2_date }}</td>
                 <td class="bold">Q</td>
                 <td class="border-right">Quality</td>
                 <td class="bold">5</td>
@@ -131,214 +151,165 @@
             </tr>
         </tbody>
     </table>
+
     <table class="main-table bordered">
-        <thead>
-            <tr>
-                <th rowspan="2" colspan="2">Core Function 40%</th>
-                <th rowspan="2">Success Indicator (Target + Measure)</th>
-                <th rowspan="2">Actual Accomplishment</th>
-                <th colspan="4">Rating</th>
-                <th rowspan="2">Remarks</th>
-            </tr>
-            <tr>
-                <th>Q</th>
-                <th>E</th>
-                <th>T</th>
-                <th>A</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td rowspan="2">CF 1</td>
-                <td rowspan="2">Core Function 1</td>
-                <td>Target 1</td>
-                <td>Accomplishment 1</td>
-                <td>5</td>
-                <td>5</td>
-                <td>5</td>
-                <td>5</td>
-                <td>Done</td>
-            </tr>
-            <tr>
-                <td>Target 2</td>
-                <td>Accomplishment 2</td>
-                <td>5</td>
-                <td>5</td>
-                <td>5</td>
-                <td>5</td>
-                <td>Done</td>
-            </tr>
-            <tr>
-                <td>CF 2</td>
-                <td>Core Function 2</td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-            </tr>
-            <tr>
-                <td colspan="2">Suboutput 1</td>
-                <td>Target 1</td>
-                <td>Accomplishment 1</td>
-                <td>5</td>
-                <td>5</td>
-                <td>5</td>
-                <td>5</td>
-                <td>Done</td>
-            </tr>
-            <tr>
-                <td colspan="7" class="text-end">Total Core Function</td>
-                <td>15</td>
-                <td></td>
-            </tr>
-            <tr>
-                <td colspan="3" class="text-start"><b>Rated by:</b> Rich Johnfrill Lacia</td>
-                <td class="text-start"><b>Date:</b> August 13, 2022</td>
-                <td colspan="4" class="text-start"><b>Rated by:</b> Harly Dave Batoon</td>
-                <td class="text-start"><b>Date:</b> August 13, 2022</td>
-            </tr>
-        </tbody>
-        <thead>
-            <tr>
-                <th rowspan="2" colspan="2">Strategic Function 30%</th>
-                <th rowspan="2">Success Indicator (Target + Measure)</th>
-                <th rowspan="2">Actual Accomplishment</th>
-                <th colspan="4">Rating</th>
-                <th rowspan="2">Remarks</th>
-            </tr>
-            <tr>
-                <th>Q</th>
-                <th>E</th>
-                <th>T</th>
-                <th>A</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td rowspan="2">CF 1</td>
-                <td rowspan="2">Core Function 1</td>
-                <td>Target 1</td>
-                <td>Accomplishment 1</td>
-                <td>5</td>
-                <td>5</td>
-                <td>5</td>
-                <td>5</td>
-                <td>Done</td>
-            </tr>
-            <tr>
-                <td>Target 2</td>
-                <td>Accomplishment 2</td>
-                <td>5</td>
-                <td>5</td>
-                <td>5</td>
-                <td>5</td>
-                <td>Done</td>
-            </tr>
-            <tr>
-                <td>CF 2</td>
-                <td>Core Function 2</td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-            </tr>
-            <tr>
-                <td colspan="2">Suboutput 1</td>
-                <td>Target 1</td>
-                <td>Accomplishment 1</td>
-                <td>5</td>
-                <td>5</td>
-                <td>5</td>
-                <td>5</td>
-                <td>Done</td>
-            </tr>
-            <tr>
-                <td colspan="7" class="text-end">Total Strategic Function</td>
-                <td>15</td>
-                <td></td>
-            </tr>
-            <tr>
-                <td colspan="3" class="text-start"><b>Rated by:</b> Rich Johnfrill Lacia</td>
-                <td class="text-start"><b>Date:</b> August 13, 2022</td>
-                <td colspan="4" class="text-start"><b>Rated by:</b> Harly Dave Batoon</td>
-                <td class="text-start"><b>Date:</b> August 13, 2022</td>
-            </tr>
-        </tbody>
-        <thead>
-            <tr>
-                <th rowspan="2" colspan="2">Support Function 30%</th>
-                <th rowspan="2">Success Indicator (Target + Measure)</th>
-                <th rowspan="2">Actual Accomplishment</th>
-                <th colspan="4">Rating</th>
-                <th rowspan="2">Remarks</th>
-            </tr>
-            <tr>
-                <th>Q</th>
-                <th>E</th>
-                <th>T</th>
-                <th>A</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td rowspan="2">CF 1</td>
-                <td rowspan="2">Core Function 1</td>
-                <td>Target 1</td>
-                <td>Accomplishment 1</td>
-                <td>5</td>
-                <td>5</td>
-                <td>5</td>
-                <td>5</td>
-                <td>Done</td>
-            </tr>
-            <tr>
-                <td>Target 2</td>
-                <td>Accomplishment 2</td>
-                <td>5</td>
-                <td>5</td>
-                <td>5</td>
-                <td>5</td>
-                <td>Done</td>
-            </tr>
-            <tr>
-                <td>CF 2</td>
-                <td>Core Function 2</td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-            </tr>
-            <tr>
-                <td colspan="2">Suboutput 1</td>
-                <td>Target 1</td>
-                <td>Accomplishment 1</td>
-                <td>5</td>
-                <td>5</td>
-                <td>5</td>
-                <td>5</td>
-                <td>Done</td>
-            </tr>
-            <tr>
-                <td colspan="7" class="text-end">Total Support Function</td>
-                <td>15</td>
-                <td></td>
-            </tr>
-            <tr>
-                <td colspan="3" class="text-start"><b>Rated by:</b> Rich Johnfrill Lacia</td>
-                <td class="text-start"><b>Date:</b> August 13, 2022</td>
-                <td colspan="4" class="text-start"><b>Rated by:</b> Harly Dave Batoon</td>
-                <td class="text-start"><b>Date:</b> August 13, 2022</td>
-            </tr>
-        </tbody>
+        @php
+            $totalCF = 0;
+            $totalSTF = 0;
+            $totalSF = 0;
+        @endphp
+        @foreach ($functs as $funct)
+            <thead>
+                <tr>
+                    <th rowspan="2" colspan="2">
+                        {{ $funct->funct }}
+                        @switch(strtolower($funct->funct))
+                            @case('core function')
+                                {{ $core }}%
+                                @break
+
+                            @case('strategic function')
+                                {{ $strategic }}%
+                                @break
+
+                            @case('support function')
+                                {{ $support }}%
+                                @break
+                        @endswitch
+                    </th>
+                    <th rowspan="2">Success Indicator (Target + Measure)</th>
+                    <th rowspan="2">Actual Accomplishment</th>
+                    <th colspan="4">Rating</th>
+                    <th rowspan="2">Remarks</th>
+                </tr>
+                <tr>
+                    <th>Q</th>
+                    <th>E</th>
+                    <th>T</th>
+                    <th>A</th>
+                </tr>
+            </thead>
+            <tbody>
+                @php
+                    $number = 0;
+                    $total = 0;
+                @endphp
+                @foreach ($funct->outputs as $output)
+                    @php
+                        $boolOutput = true;
+                    @endphp
+                    @if ($output->user_id == Auth::user()->id && $output->type == 'ipcr' && $output->duration_id == $duration->id && $output->user_type == $userType)
+                        @forelse ($output->suboutputs as $suboutput)
+                            @if ($suboutput->user_id == Auth::user()->id &&
+                            $suboutput->type == 'ipcr' &&
+                            $suboutput->duration_id == $duration->id && $output->user_type == $userType)
+                                @if ($boolOutput)
+                                    @php
+                                        $boolOutput = false
+                                    @endphp
+                                    <tr>
+                                        <td>{{ $output->code }} {{ ++$number }}</td>
+                                        <td>{{ $output->output }}</td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                @endif
+                                <tr>
+                                    <td colspan="2" rowspan="{{ count($suboutput->targets)+1 }}">{{ $suboutput->suboutput }}</td>
+                                    @foreach ($suboutput->targets as $target)
+                                        @if ($target->user_id == Auth::user()->id && $target->type == 'ipcr' && $target->duration_id == $duration->id && $output->user_type == $userType)
+                                            <tr>
+                                                <td>{{ $target->target }}</td>
+                                                @if ($target->rating)
+                                                    <td>{{ $target->rating->accomplishment }}</td>
+                                                    <td>{{ $target->rating->quality }}</td>
+                                                    <td>{{ $target->rating->efficiency }}</td>
+                                                    <td>{{ $target->rating->timeliness }}</td>
+                                                    <td>{{ $target->rating->average }}</td>
+                                                    <td>{{ $target->rating->remarks }}</td>
+                                                    @php
+                                                        $total += $target->rating->average
+                                                    @endphp
+                                                @else
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td>
+                                                @endif
+                                            </tr>
+                                        @endif
+                                    @endforeach
+                                </tr>
+                            @endif
+                        @empty
+                            <tr>
+                                <td rowspan="{{ count($output->targets)+1 }}">{{ $output->code }} {{ ++$number }}</td>
+                                <td rowspan="{{ count($output->targets)+1 }}">{{ $output->output }}</td>
+                                @foreach ($output->targets as $target)
+                                    @if ($target->user_id == Auth::user()->id && $target->type == 'ipcr' && $target->duration_id == $duration->id && $output->user_type == $userType)
+                                        <tr>
+                                            <td>{{ $target->target }}</td>
+                                            @if ($target->rating)
+                                                <td>{{ $target->rating->accomplishment }}</td>
+                                                <td>{{ $target->rating->quality }}</td>
+                                                <td>{{ $target->rating->efficiency }}</td>
+                                                <td>{{ $target->rating->timeliness }}</td>
+                                                <td>{{ $target->rating->average }}</td>
+                                                <td>{{ $target->rating->remarks }}</td>
+                                                @php
+                                                    $total += $target->rating->average
+                                                @endphp
+                                            @else
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                            @endif
+                                        </tr>
+                                    @endif
+                                @endforeach
+                            </tr>
+                        @endforelse
+                    @endif
+                @endforeach
+                <tr>
+                    <td colspan="7" class="text-end">Total {{ $funct->funct }}</td>
+                    <td>
+                        {{ $total }}
+                        @switch(strtolower($funct->funct))
+                            @case('core function')
+                                @php
+                                    $totalCF = $total;
+                                @endphp
+                                @break
+                            @case('strategic function')
+                                @php
+                                    $totalSTF = $total;
+                                @endphp
+                                @break
+                            @case('support function')
+                                @php
+                                    $totalSF = $total;
+                                @endphp
+                                @break
+                            @default
+                                
+                        @endswitch
+                    </td>
+                    <td></td>
+                </tr>
+            </tbody>
+        @endforeach
+
         <tfoot>
             <tr>
                 <th colspan="3">Category</th>
@@ -409,7 +380,8 @@
                 <td colspan="2"></td>
                 <td colspan="2">Staisfactory</td>
                 <td rowspan="3"></td>
-                <td rowspan="3" colspan="4" class="text-start">Comments and Recommendations for Development Purposes:</td>
+                <td rowspan="3" colspan="4" class="text-start">Comments and Recommendations for Development
+                    Purposes:</td>
             </tr>
             <tr>
                 <td colspan="2"></td>

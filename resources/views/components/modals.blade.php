@@ -145,7 +145,6 @@
                                             @if ($userType == 'faculty')
                                                 @foreach ($outputs as $output)
                                                     @forelse ($output->targets as $target)
-                                                        
                                                     @empty
                                                         <option value="{{ $output->id }}">{{ $output->code }}
                                                             {{ $output->output }}
@@ -155,7 +154,6 @@
                                             @else
                                                 @foreach (Auth::user()->outputs as $output)
                                                     @forelse ($output->targets as $target)
-                                                        
                                                     @empty
                                                         @if ($output->type == 'ipcr' && $output->duration_id == $duration->id && $output->user_type == $userType)
                                                             <option value="{{ $output->id }}">{{ $output->code }}
@@ -254,7 +252,6 @@
                                             @if ($userType == 'faculty')
                                                 @foreach ($outputs as $output)
                                                     @forelse ($output->suboutputs as $suboutput)
-                                                        
                                                     @empty
                                                         <option value="output, {{ $output->id }}">
                                                             {{ $output->code }}
@@ -310,19 +307,35 @@
                                         <select placeholder="Target" class="form-control" wire:model="target_id"
                                             required wire:change="editChanged">
                                             <option value="">Select a Target</option>
-                                            @foreach ($targets as $target)
-                                                <option value="{{ $target->id }}">
-                                                    @if ($target->output)
-                                                        {{ $target->output->code }} {{ $target->output->output }}
-                                                        -
-                                                    @elseif ($target->suboutput)
-                                                        {{ $target->suboutput->output->code }}
-                                                        {{ $target->suboutput->output->output }} -
-                                                        {{ $target->suboutput->suboutput }} -
-                                                    @endif
-                                                    {{ $target->target }}
-                                                </option>
-                                            @endforeach
+                                            @if ($userType == 'faculty')
+                                                @foreach ($targets as $target)
+                                                    <option value="{{ $target->id }}">
+                                                        @if ($target->output)
+                                                            {{ $target->output->code }} {{ $target->output->output }}
+                                                            -
+                                                        @elseif ($target->suboutput)
+                                                            {{ $target->suboutput->output->code }}
+                                                            {{ $target->suboutput->output->output }} -
+                                                            {{ $target->suboutput->suboutput }} -
+                                                        @endif
+                                                        {{ $target->target }}
+                                                    </option>
+                                                @endforeach
+                                            @else
+                                                @foreach (Auth::user()->targets as $target)
+                                                    <option value="{{ $target->id }}">
+                                                        @if ($target->output)
+                                                            {{ $target->output->code }} {{ $target->output->output }}
+                                                            -
+                                                        @elseif ($target->suboutput)
+                                                            {{ $target->suboutput->output->code }}
+                                                            {{ $target->suboutput->output->output }} -
+                                                            {{ $target->suboutput->suboutput }} -
+                                                        @endif
+                                                        {{ $target->target }}
+                                                    </option>
+                                                @endforeach
+                                            @endif
                                         </select>
                                         @error('target')
                                             <p class="text-danger">{{ $message }}</p>
@@ -1582,4 +1595,51 @@
             </div>
         </div>
     </div>
+
+    @if (isset($userType))
+        {{-- Print Modal --}}
+        <div wire:ignore.self class="modal fade text-left" id="PrintModal" tabindex="-1" role="dialog"
+            aria-labelledby="myModalLabel33" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title" id="myModalLabel33">Print</h4>
+                        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                            <i data-feather="x"></i>
+                        </button>
+                    </div>
+                    <form action="/view?userType={{ $userType }}" method="POST">
+                        @csrf
+                        <div class="modal-body">
+                            <label>Core Funtion %: </label>
+                            <div class="form-group">
+                                <input type="text" placeholder="Core Funtion" class="form-control"
+                                    name="core">
+                            </div>
+                            <label>Strategic Funtion %: </label>
+                            <div class="form-group">
+                                <input type="text" placeholder="Strategic Funtion" class="form-control"
+                                    name="strategic">
+                            </div>
+                            <label>Support Funtion %: </label>
+                            <div class="form-group">
+                                <input type="text" placeholder="Support Funtion" class="form-control"
+                                    name="support">
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-light-secondary" wire:click="closeModal">
+                                <i class="bx bx-x d-block d-sm-none"></i>
+                                <span class="d-none d-sm-block">Close</span>
+                            </button>
+                            <button type="submit" class="btn btn-primary ml-1">
+                                <i class="bx bx-check d-block d-sm-none"></i>
+                                <span class="d-none d-sm-block">Save</span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    @endif
 </div>

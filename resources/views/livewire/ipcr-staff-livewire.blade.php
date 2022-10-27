@@ -39,9 +39,9 @@
                         Submit
                     </button>
                 @elseif ($approval && $approval->superior1_status == 1 && $approval->superior2_status == 1)
-                    <a href="/print/ipcr" type="button" class="ms-auto btn icon btn-primary" title="Print IPCR">
+                    <button type="button" class="ms-auto btn icon btn-primary" title="Print IPCR" data-bs-toggle="modal" data-bs-target="#PrintModal">
                         <i class="bi bi-printer"></i>
-                    </a>
+                    </button>
                 @endif
             </div>
             @foreach ($funct->outputs as $output)

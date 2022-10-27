@@ -2,6 +2,7 @@
 
 namespace App\Http\Livewire;
 
+use Carbon\Carbon;
 use App\Models\User;
 use App\Models\Funct;
 use Livewire\Component;
@@ -111,10 +112,12 @@ class ForapprovalLivewire extends Component
         if ($approval->superior1_id == Auth::user()->id){
             Approval::where('id', $id)->update([
                 'superior1_status' => 1,
+                'superior1_date' => Carbon::now(),
             ]);
         } elseif ($approval->superior2_id == Auth::user()->id){
             Approval::where('id', $id)->update([
                 'superior2_status' => 1,
+                'superior2_date' => Carbon::now(),
             ]);
         }
 
@@ -130,10 +133,12 @@ class ForapprovalLivewire extends Component
         if ($approval->superior1_id == Auth::user()->id){
             Approval::where('id', $id)->update([
                 'superior1_status' => 2,
+                'superior1_date' => Carbon::now(),
             ]);
         } elseif ($approval->superior2_id == Auth::user()->id){
             Approval::where('id', $id)->update([
                 'superior2_status' => 2,
+                'superior2_date' => Carbon::now(),
             ]);
         }
 
