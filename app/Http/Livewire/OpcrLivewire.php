@@ -12,7 +12,9 @@ use App\Models\Approval;
 use App\Models\Duration;
 use App\Models\SubFunct;
 use App\Models\Suboutput;
+use App\Models\Percentage;
 use Livewire\WithPagination;
+use App\Models\SuppPercentage;
 use Illuminate\Support\Facades\Auth;
 
 class OpcrLivewire extends Component
@@ -49,6 +51,12 @@ class OpcrLivewire extends Component
     public $responsible;
     public $duration;
     public $targ;
+    public $subFuncts;
+    public $percentage;
+    public $core;
+    public $strategic;
+    public $support;
+    public $supp = [];
 
     // protected $paginationTheme = 'bootstrap';
     protected $rules = [
@@ -60,13 +68,17 @@ class OpcrLivewire extends Component
         'accomplishment' => ['required_if:selected,rating'],
         'superior1_id' => ['required_if:selected,submit'],
         'superior2_id' => ['required_if:selected,submit'],
+        'core' => ['required_if:selected,percentage'],
+        'strategic' => ['required_if:selected,percentage'],
+        'support' => ['required_if:selected,percentage'],
     ];
 
-    public function mount(){
-        $this->users1 = User::whereHas('account_types', function(\Illuminate\Database\Eloquent\Builder $query) {
+    public function mount()
+    {
+        $this->users1 = User::whereHas('account_types', function (\Illuminate\Database\Eloquent\Builder $query) {
             return $query->where('account_type', 'like', "%head%");
         })->where('id', '!=', Auth::user()->id)->get();
-        $this->users2 = User::whereHas('account_types', function(\Illuminate\Database\Eloquent\Builder $query) {
+        $this->users2 = User::whereHas('account_types', function (\Illuminate\Database\Eloquent\Builder $query) {
             return $query->where('account_type', 'like', "%head%");
         })->where('id', '!=', Auth::user()->id)->get();
         $this->duration = Duration::orderBy('id', 'DESC')->where('start_date', '<=', date('Y-m-d'))->first();
@@ -81,6 +93,16 @@ class OpcrLivewire extends Component
                 ->where('user_type', 'office')
                 ->where('duration_id', $this->duration->id)
                 ->first();
+            $this->subFuncts = SubFunct::where('user_id', Auth::user()->id)
+                ->where('type', 'opcr')
+                ->where('user_type', 'office')
+                ->where('duration_id', $this->duration->id)
+                ->get();
+            $this->percentage = Percentage::where('user_id', Auth::user()->id)
+                ->where('type', 'opcr')
+                ->where('userType', 'office')
+                ->where('duration_id', $this->duration->id)
+                ->first();
         }
     }
 
@@ -93,19 +115,20 @@ class OpcrLivewire extends Component
             'userType' => 'office'
         ]);
     }
-    
-    
+
+
     public function updated($property)
     {
         $this->validateOnly($property);
     }
 
     // CONFIGURING OST START ------------>
-    public function select($selected, $id = null){
+    public function select($selected, $id = null)
+    {
         $this->selected = $selected;
 
-        if($id) {
-            switch($selected){
+        if ($id) {
+            switch ($selected) {
                 case 'sub_funct':
                     $this->sub_funct_id = $id;
                     $sub_funct = SubFunct::where('id', $this->sub_funct_id)->first();
@@ -135,11 +158,12 @@ class OpcrLivewire extends Component
     }
 
     // Save / Update OST
-    public function save(){
+    public function save()
+    {
         $this->validate();
         $selected = $this->selected;
 
-        switch($selected){
+        switch ($selected) {
             case 'sub_funct':
                 SubFunct::create([
                     'sub_funct' => $this->sub_funct,
@@ -169,7 +193,7 @@ class OpcrLivewire extends Component
                         $this->funct_id = 0;
                         break;
                 };
-                if($this->sub_funct_id){
+                if ($this->sub_funct_id) {
                     Output::create([
                         'code' => $this->code,
                         'output' => $this->output,
@@ -203,8 +227,8 @@ class OpcrLivewire extends Component
                 break;
             case 'target':
                 $subputArr = explode(',', $this->subput);
-    
-                if ($subputArr[0] == 'output'){
+
+                if ($subputArr[0] == 'output') {
                     Target::create([
                         'target' => $this->target,
                         'output_id' =>  $subputArr[1],
@@ -213,7 +237,7 @@ class OpcrLivewire extends Component
                         'user_type' => 'office',
                         'duration_id' => $this->duration->id
                     ]);
-                } elseif ($subputArr[0] == 'suboutput'){
+                } elseif ($subputArr[0] == 'suboutput') {
                     Target::create([
                         'target' => $this->target,
                         'suboutput_id' =>  $subputArr[1],
@@ -232,15 +256,16 @@ class OpcrLivewire extends Component
 
         session()->flash('message', 'Added Successfully!');
         $this->resetInput();
-        $this->dispatchBrowserEvent('close-modal'); 
+        $this->dispatchBrowserEvent('close-modal');
     }
 
-    public function update(){
+    public function update()
+    {
         $this->validate();
 
         $selected = $this->selected;
 
-        switch($selected){
+        switch ($selected) {
             case 'sub_funct':
                 SubFunct::where('id', $this->sub_funct_id)->update([
                     'sub_funct' => $this->sub_funct
@@ -269,23 +294,26 @@ class OpcrLivewire extends Component
 
         session()->flash('message', 'Updated Successfully!');
         $this->resetInput();
-        $this->dispatchBrowserEvent('close-modal'); 
+        $this->dispatchBrowserEvent('close-modal');
     }
 
     // When choosing add/edit/delete and output/suboutput/target(OST)
-    public function changed(){
+    public function changed()
+    {
         $this->resetInput();
     }
     // <------------ CONFIGURING OST END!
 
     // CONFIGURING RATING START ----------->
-    public function rating($target_id = null, $rating_id = null){
+    public function rating($target_id = null, $rating_id = null)
+    {
         $this->selected = 'rating';
         $this->rating_id = $rating_id;
         $this->target_id = $target_id;
     }
 
-    public function editRating($rating_id){
+    public function editRating($rating_id)
+    {
         $this->selected = 'rating';
         $this->rating_id = $rating_id;
 
@@ -299,19 +327,20 @@ class OpcrLivewire extends Component
         $this->timeliness = $rating->timeliness;
     }
 
-    public function saveRating($category){
+    public function saveRating($category)
+    {
 
         $this->validate();
 
         if ($category == 'add') {
-            $divisor= 0;
-            if(!$this->efficiency){
+            $divisor = 0;
+            if (!$this->efficiency) {
                 $divisor++;
             }
-            if(!$this->quality){
+            if (!$this->quality) {
                 $divisor++;
             }
-            if(!$this->timeliness){
+            if (!$this->timeliness) {
                 $divisor++;
             }
             $number = ($this->efficiency + $this->quality + $this->timeliness) / (3 - $divisor);
@@ -334,14 +363,14 @@ class OpcrLivewire extends Component
 
             session()->flash('message', 'Added Successfully!');
         } elseif ($category == 'edit') {
-            $divisor= 0;
-            if(!$this->efficiency){
+            $divisor = 0;
+            if (!$this->efficiency) {
                 $divisor++;
             }
-            if(!$this->quality){
+            if (!$this->quality) {
                 $divisor++;
             }
-            if(!$this->timeliness){
+            if (!$this->timeliness) {
                 $divisor++;
             }
             $number = ($this->efficiency + $this->quality + $this->timeliness) / (3 - $divisor);
@@ -359,23 +388,37 @@ class OpcrLivewire extends Component
 
             session()->flash('message', 'Updated Successfully!');
         }
-        
+
         $this->resetInput();
-        $this->dispatchBrowserEvent('close-modal'); 
+        $this->dispatchBrowserEvent('close-modal');
     }
     // <------------- CONFIGURING RATING END
 
     // Delete OST-R
     public function delete(){
 
-        if ($this->selected == 'output'){
-            Output::find($this->output_id)->delete();
-        } elseif ($this->selected == 'suboutput'){
-            Suboutput::find($this->suboutput_id)->delete();
-        } elseif ($this->selected == 'target'){
-            Target::find($this->target_id)->delete();
-        } elseif ($this->selected == 'rating'){
-            Rating::find($this->rating_id)->delete();
+        $selected = $this->selected;
+
+        switch($selected){
+            case 'sub_funct':
+                SubFunct::find($this->sub_funct_id)->delete();
+                break;
+            case 'output':
+                Output::find($this->output_id)->delete();
+                break;
+            case 'suboutput':
+                Suboutput::find($this->suboutput_id)->delete();
+                break;
+            case 'target':
+                Target::find($this->target_id)->delete();
+                break;
+            case 'rating':
+                Rating::find($this->rating_id)->delete();
+                break;
+            default:
+                dd($selected);
+                break;
+
         }
 
         session()->flash('message', 'Deleted Successfully!');
@@ -384,23 +427,26 @@ class OpcrLivewire extends Component
     }
 
     // SUBMITING OF OPCR START ------------>
-    public function submit(){
+    public function submit()
+    {
         $this->selected = 'submit';
     }
-    
-    public function changeUser(){
-        if($this->superior1_id != ''){
-            $this->users2 = User::whereHas('account_types', function(\Illuminate\Database\Eloquent\Builder $query) {
-            return $query->where('account_type', 'like', "%head%");
-        })->where('id', '!=', $this->superior1_id)->where('id', '!=', Auth::user()->id)->get();
-        } elseif ($this->superior2_id != ''){
-            $this->users1 = User::whereHas('account_types', function(\Illuminate\Database\Eloquent\Builder $query) {
-            return $query->where('account_type', 'like', "%head%");
-        })->where('id', '!=', $this->superior2_id)->where('id', '!=', Auth::user()->id)->get();
+
+    public function changeUser()
+    {
+        if ($this->superior1_id != '') {
+            $this->users2 = User::whereHas('account_types', function (\Illuminate\Database\Eloquent\Builder $query) {
+                return $query->where('account_type', 'like', "%head%");
+            })->where('id', '!=', $this->superior1_id)->where('id', '!=', Auth::user()->id)->get();
+        } elseif ($this->superior2_id != '') {
+            $this->users1 = User::whereHas('account_types', function (\Illuminate\Database\Eloquent\Builder $query) {
+                return $query->where('account_type', 'like', "%head%");
+            })->where('id', '!=', $this->superior2_id)->where('id', '!=', Auth::user()->id)->get();
         }
     }
 
-    public function submitISO(){
+    public function submitISO()
+    {
 
         $this->validate();
 
@@ -415,12 +461,110 @@ class OpcrLivewire extends Component
 
         session()->flash('message', 'Submitted Successfully!');
         $this->resetInput();
-        $this->dispatchBrowserEvent('close-modal'); 
+        $this->dispatchBrowserEvent('close-modal');
         return redirect(request()->header('Referer'));
     }
-    // <---------------- SUBMITING OF oPCR END
+    // <---------------- SUBMITING OF OPCR END
+    // Configuring Percentage ------------------->
+    public function savePercent()
+    {
+        $this->selected = 'percentage';
+        $this->validate();
 
-    public function resetInput(){
+        $percentage = Percentage::create([
+            'core' => $this->core,
+            'strategic' => $this->strategic,
+            'support' => $this->support,
+            'type' => 'opcr',
+            'userType' => 'office',
+            'user_id' => Auth::user()->id,
+            'duration_id' => $this->duration->id
+        ]);
+
+        foreach ($this->subFuncts as $subFunct) {
+            SuppPercentage::create([
+                'name' => $subFunct->sub_funct,
+                'percent' => $this->supp[$subFunct->id],
+                'percentage_id' => $percentage->id,
+                'user_id' => Auth::user()->id,
+                'duration_id' => $this->duration->id
+            ]);
+        }
+
+        session()->flash('message', 'Added Successfully!');
+        $this->resetInput();
+        $this->dispatchBrowserEvent('close-modal');
+        return redirect(request()->header('Referer'));
+    }
+
+    public function updatePercent()
+    {
+        $this->selected = 'percentage';
+        $this->validate();
+
+        Percentage::where('id', $this->percentage->id)->update([
+            'core' => $this->core,
+            'strategic' => $this->strategic,
+            'support' => $this->support,
+        ]);
+
+        $suppPercentage = SuppPercentage::where('percentage_id', $this->percentage->id)
+            ->where('user_id', Auth::user()->id)
+            ->where('duration_id', $this->duration->id)
+            ->get();
+
+        foreach ($this->subFuncts as $subFunct) {
+            foreach ($suppPercentage as $supp) {
+                if ($subFunct->sub_funct == $supp->name) {
+                    SuppPercentage::where('id', $supp->id)->update([
+                        'percent' => $this->supp[$subFunct->id],
+                    ]);
+                    break;
+                }
+            }
+        }
+
+        session()->flash('message', 'Updated Successfully!');
+        $this->resetInput();
+        $this->dispatchBrowserEvent('close-modal');
+        return redirect(request()->header('Referer'));
+    }
+
+    public function deletePercentage()
+    {
+        Percentage::where('id', $this->percentage->id)->delete();
+
+        SuppPercentage::where('percentage_id', $this->percentage->id)->delete();
+
+        session()->flash('message', 'Updated Successfully!');
+        $this->resetInput();
+        $this->dispatchBrowserEvent('close-modal');
+        return redirect(request()->header('Referer'));
+    }
+
+    public function percent()
+    {
+        $this->core = $this->percentage->core;
+        $this->strategic = $this->percentage->strategic;
+        $this->support = $this->percentage->support;
+
+        $suppPercentage = SuppPercentage::where('percentage_id', $this->percentage->id)
+            ->where('user_id', Auth::user()->id)
+            ->where('duration_id', $this->duration->id)
+            ->get();
+
+        foreach ($this->subFuncts as $subFunct) {
+            foreach ($suppPercentage as $supp) {
+                if ($subFunct->sub_funct == $supp->name) {
+                    $this->supp[$subFunct->id] = $supp->percent;
+                    break;
+                }
+            }
+        }
+    }
+    // <------------------- Percetage Configure End
+    public function resetInput()
+    {
         $this->output = '';
         $this->suboutput = '';
         $this->subput = '';
@@ -444,8 +588,9 @@ class OpcrLivewire extends Component
         $this->responsible = '';
     }
 
-    public function closeModal(){
+    public function closeModal()
+    {
         $this->resetInput();
-        $this->dispatchBrowserEvent('close-modal'); 
+        $this->dispatchBrowserEvent('close-modal');
     }
 }

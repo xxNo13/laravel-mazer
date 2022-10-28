@@ -34,6 +34,9 @@
         $('#AddDurationModal').modal('hide');
         $('#EditDurationModal').modal('hide');
         $('#ResetIPCRModal').modal('hide');
+        $('#AddPercentageModal').modal('hide');
+        $('#EditPercentageModal').modal('hide');
+        $('#DeletePercentageModal').modal('hide');
     });
 </script>
 

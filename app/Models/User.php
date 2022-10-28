@@ -82,4 +82,7 @@ class User extends Authenticatable
     public function account_types(){
         return $this->belongsToMany(AccountType::class, 'account_type_user');
     }
+    public function percentage(){
+        return $this->hasOne(Percentage::class);
+    }
 }

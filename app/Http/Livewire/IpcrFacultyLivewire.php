@@ -287,22 +287,35 @@ class IpcrFacultyLivewire extends Component
     // <------------ CONFIGURING OST END!
 
     // Delete OST-R
-    public function delete()
-    {
+    public function delete(){
 
-        if ($this->selected == 'output') {
-            Output::find($this->output_id)->delete();
-        } elseif ($this->selected == 'suboutput') {
-            Suboutput::find($this->suboutput_id)->delete();
-        } elseif ($this->selected == 'target') {
-            Target::find($this->target_id)->delete();
-        } elseif ($this->selected == 'rating') {
-            Rating::find($this->rating_id)->delete();
+        $selected = $this->selected;
+
+        switch($selected){
+            case 'sub_funct':
+                SubFunct::find($this->sub_funct_id)->delete();
+                break;
+            case 'output':
+                Output::find($this->output_id)->delete();
+                break;
+            case 'suboutput':
+                Suboutput::find($this->suboutput_id)->delete();
+                break;
+            case 'target':
+                Target::find($this->target_id)->delete();
+                break;
+            case 'rating':
+                Rating::find($this->rating_id)->delete();
+                break;
+            default:
+                dd($selected);
+                break;
+
         }
 
         session()->flash('message', 'Deleted Successfully!');
         $this->resetInput();
-        $this->dispatchBrowserEvent('close-modal');
+        $this->dispatchBrowserEvent('close-modal'); 
     }
 
     // SUBMITING OF IPCR START ------------>

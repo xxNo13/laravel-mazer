@@ -34,6 +34,17 @@
                         data-bs-target="#AddIPCROSTModal" title="Add Output/Suboutput/Target">
                         Add OST
                     </button>
+                    @if (!$percentage)
+                        <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal"
+                            data-bs-target="#AddPercentageModal" title="Add Percentage">
+                            Add Percentage
+                        </button>
+                    @else
+                        <button type="button" class="btn btn-outline-success" data-bs-toggle="modal"
+                            data-bs-target="#EditPercentageModal" title="Edit Percentage" wire:click="percent">
+                            Edit Percentage
+                        </button>
+                    @endif
                     @if ($targ)
                         <button type="button" class="btn btn-outline-info" data-bs-toggle="modal"
                             data-bs-target="#SubmitISOModal" title="Save IPCR" wire:click="submit">
@@ -731,5 +742,5 @@
 
     {{ $functs->links('components.pagination') }}
     <x-modals :selected="$selected" :users1="$users1" :users2="$users2" :type="$type" :duration="$duration"
-        :userType="$userType" />
+        :userType="$userType" :subFuncts="$subFuncts" :percentage="$percentage" />
 </div>

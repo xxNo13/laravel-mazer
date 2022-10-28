@@ -36,6 +36,17 @@
                                 data-bs-target="#ResetIPCRModal" title="Configure Output/Suboutput/Target">
                                 Reset IPCR
                             </button>
+                            @if (!$percentage)
+                                <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal"
+                                    data-bs-target="#AddPercentageModal" title="Add Percentage">
+                                    Add Percentage
+                                </button>
+                            @else
+                                <button type="button" class="btn btn-outline-success" data-bs-toggle="modal"
+                                    data-bs-target="#EditPercentageModal" title="Edit Percentage" wire:click="percent">
+                                    Edit Percentage
+                                </button>
+                            @endif
                             <button type="button" class="btn btn-outline-info" data-bs-toggle="modal"
                                 data-bs-target="#SubmitISOModal" title="Save IPCR" wire:click="submit">
                                 Submit
@@ -656,5 +667,5 @@
     </section>
 
     {{ $functs->links('components.pagination') }}
-    <x-modals :users1="$users1" :users2="$users2" :type="$type" />
+    <x-modals :users1="$users1" :users2="$users2" :type="$type" :subFuncts="$subFuncts" :percentage="$percentage" />
 </div>

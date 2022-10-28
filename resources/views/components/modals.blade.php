@@ -1402,4 +1402,157 @@
             </div>
         </div>
     @endif
+
+    {{-- Add Percentage Modal --}}
+    <div wire:ignore.self class="modal fade text-left" id="AddPercentageModal" tabindex="-1" role="dialog"
+        aria-labelledby="myModalLabel33" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="myModalLabel33">Add Percentage</h4>
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                        <i data-feather="x"></i>
+                    </button>
+                </div>
+                <form wire:submit.prevent="savePercent">
+                    <div class="modal-body">
+                        <label>Core Function %: </label>
+                        <div class="form-group">
+                            <input type="text" placeholder="Core Function" class="form-control"
+                                wire:model="core">
+                        </div>
+                        <label>Strategic Function %: </label>
+                        <div class="form-group">
+                            <input type="text" placeholder="Strategic Function" class="form-control"
+                                wire:model="strategic">
+                        </div>
+                        <label>Support Function %: </label>
+                        <div class="form-group">
+                            <input type="text" placeholder="Support Function" class="form-control"
+                                wire:model="support">
+                        </div>
+                        @if (isset($subFuncts))
+                            <div class="d-flex gap-3" style="height: 100%;">
+                                <div class="vr"></div>
+                                
+                                <div class="">
+                                    @foreach ($subFuncts as $sub_funct)
+                                        <label>{{ $sub_funct->sub_funct }} %: </label>
+                                        <div class="form-group">
+                                            <input type="text" placeholder="Support Function" class="form-control"
+                                                wire:model="supp.{{ $sub_funct->id }}">
+                                        </div>
+                                    @endforeach
+                                </div>
+                            </div>
+                        @endif
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-light-secondary" wire:click="closeModal">
+                            <i class="bx bx-x d-block d-sm-none"></i>
+                            <span class="d-none d-sm-block">Close</span>
+                        </button>
+                        <button type="submit" wire:loading.attr="disabled" class="btn btn-primary ml-1">
+                            <i class="bx bx-check d-block d-sm-none"></i>
+                            <span class="d-none d-sm-block">Save</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    {{-- Edit Percentage Modal --}}
+    <div wire:ignore.self class="modal fade text-left" id="EditPercentageModal" tabindex="-1" role="dialog"
+        aria-labelledby="myModalLabel33" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="myModalLabel33">Edit Percentage</h4>
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                        <i data-feather="x"></i>
+                    </button>
+                </div>
+                <form wire:submit.prevent="updatePercent">
+                    <div class="modal-body">
+                        <label>Core Function %: </label>
+                        <div class="form-group">
+                            <input type="text" placeholder="Core Function" class="form-control"
+                                wire:model="core">
+                        </div>
+                        <label>Strategic Function %: </label>
+                        <div class="form-group">
+                            <input type="text" placeholder="Strategic Function" class="form-control"
+                                wire:model="strategic">
+                        </div>
+                        <label>Support Function %: </label>
+                        <div class="form-group">
+                            <input type="text" placeholder="Support Function" class="form-control"
+                                wire:model="support">
+                        </div>
+                        @if (isset($subFuncts))
+                            <div class="d-flex gap-3" style="height: 100%;">
+                                <div class="vr"></div>
+                                
+                                <div class="">
+                                    @foreach ($subFuncts as $sub_funct)
+                                        <label>{{ $sub_funct->sub_funct }} %: </label>
+                                        <div class="form-group">
+                                            <input type="text" placeholder="Support Function" class="form-control"
+                                                wire:model="supp.{{ $sub_funct->id }}">
+                                        </div>
+                                    @endforeach
+                                </div>
+                            </div>
+                        @endif
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" data-bs-target="#DeletePercentageModal" data-bs-toggle="modal">
+                            <i class="bx bx-x d-block d-sm-none"></i>
+                            <span class="d-none d-sm-block">Delete</span>
+                        </button>
+                        <button type="button" class="btn btn-light-secondary" wire:click="closeModal">
+                            <i class="bx bx-x d-block d-sm-none"></i>
+                            <span class="d-none d-sm-block">Close</span>
+                        </button>
+                        <button type="submit" wire:loading.attr="disabled" class="btn btn-primary ml-1">
+                            <i class="bx bx-check d-block d-sm-none"></i>
+                            <span class="d-none d-sm-block">Save</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    {{-- Delete Percentage Modal --}}
+    <div wire:ignore.self class="modal fade text-left" id="DeletePercentageModal" tabindex="-1" role="dialog"
+        aria-labelledby="myModalLabel33" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="myModalLabel33">Delete Modal</h4>
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                        <i data-feather="x"></i>
+                    </button>
+                </div>
+                <form wire:submit.prevent="deletePercentage">
+                    <div class="modal-body">
+                        <p>You sure you want to delete?</p>
+                        <p>Can't recover data once you delete it!</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-light-secondary" wire:click="closeModal">
+                            <i class="bx bx-x d-block d-sm-none"></i>
+                            <span class="d-none d-sm-block">Close</span>
+                        </button>
+                        <button type="submit" wire:loading.attr="disabled" class="btn btn-danger ml-1">
+                            <i class="bx bx-check d-block d-sm-none"></i>
+                            <span class="d-none d-sm-block">Delete</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 </div>

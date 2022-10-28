@@ -13,6 +13,8 @@ use App\Models\Approval;
 use App\Models\Duration;
 use App\Models\SubFunct;
 use App\Models\Suboutput;
+use App\Models\Percentage;
+use App\Models\SuppPercentage;
 use Livewire\WithPagination;
 use Illuminate\Support\Facades\Auth;
 
@@ -48,6 +50,12 @@ class IpcrStaffLivewire extends Component
     public $type = 'IPCR';
     public $duration;
     public $targ;
+    public $subFuncts;
+    public $percentage;
+    public $core;
+    public $strategic;
+    public $support;
+    public $supp = [];
 
     // protected $paginationTheme = 'bootstrap';
     protected $rules = [
@@ -59,6 +67,9 @@ class IpcrStaffLivewire extends Component
         'accomplishment' => ['required_if:selected,rating'],
         'superior1_id' => ['required_if:selected,approval'],
         'superior2_id' => ['required_if:selected,approval'],
+        'core' => ['required_if:selected,percentage'],
+        'strategic' => ['required_if:selected,percentage'],
+        'support' => ['required_if:selected,percentage'],
     ];
 
     public function mount(){
@@ -81,6 +92,16 @@ class IpcrStaffLivewire extends Component
                 ->where('user_type', 'staff')
                 ->where('duration_id', $this->duration->id)
                 ->first();
+            $this->subFuncts = SubFunct::where('user_id', Auth::user()->id)
+                ->where('type', 'ipcr')
+                ->where('user_type', 'staff')
+                ->where('duration_id', $this->duration->id)
+                ->get();
+            $this->percentage = Percentage::where('user_id', Auth::user()->id)
+                ->where('type', 'ipcr')
+                ->where('userType', 'staff')
+                ->where('duration_id', $this->duration->id)
+                ->first();
         }
     }
 
@@ -90,7 +111,7 @@ class IpcrStaffLivewire extends Component
 
         return view('livewire.ipcr-staff-livewire', [
             'functs' => $functs,
-            'userType' => 'staff'
+            'userType' => 'staff',
         ]);
     }
     
@@ -427,6 +448,101 @@ class IpcrStaffLivewire extends Component
     }
     // <---------------- SUBMITING OF IPCR END
 
+
+    // Configuring Percentage ------------------->
+    public function savePercent(){
+        $this->selected = 'percentage';
+        $this->validate();
+
+        $percentage = Percentage::create([
+            'core' => $this->core,
+            'strategic' => $this->strategic,
+            'support' => $this->support,
+            'type' => 'ipcr',
+            'userType' => 'staff',
+            'user_id' => Auth::user()->id,
+            'duration_id' => $this->duration->id
+        ]);
+
+        foreach ($this->subFuncts as $subFunct) {
+            SuppPercentage::create([
+                'name' => $subFunct->sub_funct,
+                'percent' => $this->supp[$subFunct->id],
+                'percentage_id' => $percentage->id,
+                'user_id' => Auth::user()->id,
+                'duration_id' => $this->duration->id
+            ]);
+        }
+
+        session()->flash('message', 'Added Successfully!');
+        $this->resetInput();
+        $this->dispatchBrowserEvent('close-modal'); 
+        return redirect(request()->header('Referer'));
+    }
+
+    public function updatePercent(){
+        $this->selected = 'percentage';
+        $this->validate();
+
+        Percentage::where('id', $this->percentage->id)->update([
+            'core' => $this->core,
+            'strategic' => $this->strategic,
+            'support' => $this->support,
+        ]);
+
+        $suppPercentage = SuppPercentage::where('percentage_id', $this->percentage->id)
+            ->where('user_id', Auth::user()->id)
+            ->where('duration_id', $this->duration->id)
+            ->get();
+            
+        foreach($this->subFuncts as $subFunct) {
+            foreach($suppPercentage as $supp) {
+                if($subFunct->sub_funct == $supp->name) {
+                    SuppPercentage::where('id', $supp->id)->update([
+                        'percent' => $this->supp[$subFunct->id],
+                    ]);
+                    break;
+                }
+            }
+        }
+
+        session()->flash('message', 'Updated Successfully!');
+        $this->resetInput();
+        $this->dispatchBrowserEvent('close-modal'); 
+        return redirect(request()->header('Referer'));
+    }
+
+    public function deletePercentage() {
+        Percentage::where('id', $this->percentage->id)->delete();
+
+        SuppPercentage::where('percentage_id', $this->percentage->id)->delete();
+
+        session()->flash('message', 'Updated Successfully!');
+        $this->resetInput();
+        $this->dispatchBrowserEvent('close-modal'); 
+        return redirect(request()->header('Referer'));
+    }
+
+    public function percent(){
+        $this->core = $this->percentage->core;
+        $this->strategic = $this->percentage->strategic;
+        $this->support = $this->percentage->support;
+
+        $suppPercentage = SuppPercentage::where('percentage_id', $this->percentage->id)
+                ->where('user_id', Auth::user()->id)
+                ->where('duration_id', $this->duration->id)
+                ->get();
+
+        foreach($this->subFuncts as $subFunct) {
+            foreach($suppPercentage as $supp) {
+                if($subFunct->sub_funct == $supp->name) {
+                    $this->supp[$subFunct->id] = $supp->percent;
+                    break;
+                }
+            }
+        } 
+    }
+    // <------------------- Percetage Configure End
     public function resetInput(){
         $this->output = '';
         $this->suboutput = '';
