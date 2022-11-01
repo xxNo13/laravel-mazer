@@ -8,6 +8,7 @@ use App\Models\Funct;
 use Livewire\Component;
 use App\Models\Approval;
 use App\Models\Duration;
+use App\Models\Percentage;
 use Livewire\WithPagination;
 use Illuminate\Support\Facades\Auth;
 
@@ -19,20 +20,37 @@ class ForapprovalLivewire extends Component
     public $category = '';
     public $user_id = '';
     public $url = '';
-    public $user_type = '';
+    public $userType = '';
     public $approval;
     public $search;
     public $duration;
 
     protected  $queryString = ['search'];
 
-    public function viewed($user_id, $category, $url, $user_type){
+    public function viewed($user_id, $category, $url, $userType){
         $this->user_id = $user_id;
         $this->category = $category;
         $this->url = $url;
         $this->view = true;
-        $this->user_type = $user_type;
-        $this->approval = Approval::orderBy('id', 'DESC')->where('user_id', $user_id)->where('type', $category)->where('duration_id', $this->duration->id)->first();
+        $this->userType = $userType;
+        $this->approval = Approval::orderBy('id', 'DESC')
+                ->where('user_id', $user_id)
+                ->where('type', $category)
+                ->where('duration_id', $this->duration->id)
+                ->first();
+        if ($category == 'standard') {
+            $this->percentage = Percentage::where('user_id', $user_id)
+                ->where('type', 'ipcr')
+                ->where('userType', $userType)
+                ->where('duration_id', $this->duration->id)
+                ->first();
+        } else {
+            $this->percentage = Percentage::where('user_id', $user_id)
+                ->where('type', $category)
+                ->where('userType', $userType)
+                ->where('duration_id', $this->duration->id)
+                ->first();
+        }
     }
 
     public function mount(){
@@ -50,7 +68,9 @@ class ForapprovalLivewire extends Component
                 'url' => $this->url,
                 'approval' => $this->approval,
                 'duration' => $this->duration,
-                'user_type' => $this->user_type
+                'userType' => $this->userType,
+                'percentage' => $this->percentage,
+                'number' => 1
             ]);
         } elseif ($this->view && $this->category == 'opcr'){
             $functs = Funct::all();
@@ -61,7 +81,9 @@ class ForapprovalLivewire extends Component
                 'url' => $this->url,
                 'approval' => $this->approval,
                 'duration' => $this->duration,
-                'user_type' => $this->user_type
+                'userType' => $this->userType,
+                'percentage' => $this->percentage,
+                'number' => 1
             ]);
         } elseif ($this->view && $this->category == 'standard'){
             $functs = Funct::all();
@@ -72,7 +94,9 @@ class ForapprovalLivewire extends Component
                 'url' => $this->url,
                 'approval' => $this->approval,
                 'duration' => $this->duration,
-                'user_type' => $this->user_type
+                'userType' => $this->userType,
+                'percentage' => $this->percentage,
+                'number' => 1
             ]);
         } else {
             $search = $this->search;
@@ -154,7 +178,7 @@ class ForapprovalLivewire extends Component
         $this->user_id = '';
         $this->url = '';
         $this->approval = '';
-        $this->user_type = '';
+        $this->userType = '';
     }
 
     public function closeModal(){

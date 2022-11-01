@@ -6,6 +6,8 @@ use App\Models\User;
 use App\Models\Funct;
 use Livewire\Component;
 use App\Models\Duration;
+use App\Models\SubFunct;
+use App\Models\Percentage;
 use Livewire\WithPagination;
 
 class OfficemateLivewire extends Component
@@ -13,23 +15,33 @@ class OfficemateLivewire extends Component
     use WithPagination;
 
     public $view = false;
-    public $user_id = '';
-    public $url = '';
-    public $search = '';
+    public $user_id;
+    public $url;
+    public $search;
     public $duration;
-    public $user_type = '';
+    public $userType;
+    public $perentage;
 
     protected  $queryString = ['search'];
 
-    public function viewed($user_id, $url, $user_type){
+    public function viewed($user_id, $url, $userType){
         $this->user_id = $user_id;
         $this->url = $url;
         $this->view = true;
-        $this->user_type = $user_type;
+        $this->userType = $userType;
+
+        if ($this->duration) {
+            $this->percentage = Percentage::where('user_id', $user_id)
+                ->where('type', 'ipcr')
+                ->where('userType', $userType)
+                ->where('duration_id', $this->duration->id)
+                ->first();
+        }
     }
 
     public function mount(){
         $this->duration = Duration::orderBy('id', 'DESC')->where('start_date', '<=', date('Y-m-d'))->first();
+        
     }
 
     public function updated($property)
@@ -49,7 +61,9 @@ class OfficemateLivewire extends Component
                 'user' => $user,
                 'url' => $this->url,
                 'duration' => $this->duration,
-                'user_type' => $this->user_type
+                'userType' => $this->userType,
+                'percentage' => $this->percentage,
+                'number' => 1
             ]);
         } else {
             $search = $this->search;

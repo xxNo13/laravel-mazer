@@ -68,29 +68,292 @@
         @endif
 
         @foreach ($functs as $funct)
-            <div class="hstack mb-3">
-                <h4>{{ $funct->funct }}</h4>
+            <div class="hstack mb-3 gap-2">
+                <h4>
+                    {{ $funct->funct }}
+                    @if ($percentage)
+                        @switch($funct->funct)
+                            @case('Core Function')
+                                {{ $percentage->core }}%
+                                @break
+                            @case('Strategic Function')
+                                {{ $percentage->strategic }}%
+                                @break
+                            @case('Support Function')
+                                {{ $percentage->support }}%
+                                @break
+                        @endswitch
+                    @endif
+                </h4>
             </div>
+            @if ($funct->subFuncts)
+                @foreach ($funct->subFuncts as $subFunct)
+                    @if ($subFunct->user_id == $user_id &&
+                        $subFunct->type == 'opcr' &&
+                        $subFunct->duration_id == $duration->id &&
+                        $subFunct->user_type == $userType)
+                        <div>
+                            <h5>
+                                {{ $subFunct->sub_funct }}
+                                @foreach ($percentage->supports as $support)
+                                    @if ($support->name == $subFunct->sub_funct)
+                                        {{ $support->percent }}%
+                                    @endif
+                                @endforeach
+                            </h5>
+                            @foreach ($subFunct->outputs as $output)
+                                @if ($output->user_id == $user_id &&
+                                    $output->type == 'opcr' &&
+                                    $output->duration_id == $duration->id &&
+                                    $output->user_type == $userType)
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <h4 class="card-title">
+                                                {{ $output->code }} {{ $number++ }}
+                                                {{ $output->output }}
+                                            </h4>
+                                            <p class="text-subtitle text-muted"></p>
+                                        </div>
+                                        @forelse ($output->suboutputs as $suboutput)
+                                            @if ($suboutput->user_id == $user_id &&
+                                                $suboutput->type == 'opcr' &&
+                                                $suboutput->duration_id == $duration->id &&
+                                                $output->user_type == $userType)
+                                                <div class="card-body">
+                                                    <h6>
+                                                        {{ $suboutput->suboutput }}
+                                                    </h6>
+                                                </div>
+                                                <div class="card-body">
+                                                    <div class="accordion accordion-flush"
+                                                        id="{{ str_replace(' ', '', $suboutput->suboutput) }}{{ $suboutput->id }}">
+                                                        <div class="d-sm-flex">
+                                                            @foreach ($suboutput->targets as $target)
+                                                                @if ($target->user_id == $user_id &&
+                                                                    $target->type == 'opcr' &&
+                                                                    $target->duration_id == $duration->id &&
+                                                                    $output->user_type == $userType)
+                                                                    <div wire:ignore.self
+                                                                        class="accordion-button collapsed gap-2"
+                                                                        type="button" data-bs-toggle="collapse"
+                                                                        data-bs-target="#{{ str_replace(' ', '', $target->target) }}{{ $target->id }}"
+                                                                        aria-expanded="true"
+                                                                        aria-controls="{{ str_replace(' ', '', $target->target) }}{{ $target->id }}"
+                                                                        role="button">
+                                                                        @if ($target->rating)
+                                                                            <span class="my-auto">
+                                                                                <i class="bi bi-check2"></i>
+                                                                            </span>
+                                                                        @endif
+                                                                        {{ $target->target }}
+                                                                    </div>  
+                                                                @endif
+                                                            @endforeach
+                                                        </div>
+
+                                                        @foreach ($suboutput->targets as $target)
+                                                            @if ($target->user_id == $user_id &&
+                                                                $target->type == 'opcr' &&
+                                                                $target->duration_id == $duration->id &&
+                                                                $output->user_type == $userType)
+                                                                <div wire:ignore.self
+                                                                    id="{{ str_replace(' ', '', $target->target) }}{{ $target->id }}"
+                                                                    class="accordion-collapse collapse"
+                                                                    aria-labelledby="flush-headingOne"
+                                                                    data-bs-parent="#{{ str_replace(' ', '', $suboutput->suboutput) }}{{ $suboutput->id }}">
+                                                                    <div class="accordion-body table-responsive">
+                                                                        <table class="table table-lg text-center">
+                                                                            <thead>
+                                                                                <tr>
+                                                                                    <td rowspan="2">Alloted Budget</td>
+                                                                                    <td rowspan="2">Responsible Office/Person</td>
+                                                                                    <td rowspan="2">Actual Accomplishment</td>
+                                                                                    <td colspan="4">Rating</td>
+                                                                                    <td rowspan="2">Remarks</td>
+                                                                                </tr>
+                                                                                <tr>
+                                                                                    <td>E</td>
+                                                                                    <td>Q</td>
+                                                                                    <td>T</td>
+                                                                                    <td>A</td>
+                                                                                </tr>
+                                                                            </thead>
+                                                                            <tbody>
+                                                                                @if ($target->rating)
+                                                                                    <tr>
+                                                                                        <td>{{ $target->rating->alloted_budget }}</td>
+                                                                                        <td>{{ $target->rating->responsible }}</td>
+                                                                                        <td>{{ $target->rating->accomplishment }}</td>
+                                                                                        <td>
+                                                                                            @if ($target->rating->efficiency)
+                                                                                                {{ $target->rating->efficiency }}
+                                                                                            @else
+                                                                                                NR
+                                                                                            @endif
+                                                                                        </td>
+                                                                                        <td>
+                                                                                            @if ($target->rating->quality)
+                                                                                                {{ $target->rating->quality }}
+                                                                                            @else
+                                                                                                NR
+                                                                                            @endif
+                                                                                        </td>
+                                                                                        <td>
+                                                                                            @if ($target->rating->timeliness)
+                                                                                                {{ $target->rating->timeliness }}
+                                                                                            @else
+                                                                                                NR
+                                                                                            @endif
+                                                                                        </td>
+                                                                                        <td>{{ $target->rating->average }}</td>
+                                                                                        <td>{{ $target->rating->remarks }}</td>
+                                                                                    </tr>
+                                                                                @endif
+                                                                            </tbody>
+                                                                        </table>
+                                                                    </div>
+                                                                </div>
+                                                            @endif
+                                                        @endforeach
+                                                    </div>
+                                                </div>
+                                            @endif
+                                        @empty
+                                            <div class="card-body">
+                                                <div class="accordion accordion-flush"
+                                                    id="{{ str_replace(' ', '', $output->output) }}{{ $output->id }}">
+                                                    <div class="d-sm-flex">
+                                                        @foreach ($output->targets as $target)
+                                                            @if ($target->user_id == $user_id &&
+                                                                $target->type == 'opcr' &&
+                                                                $target->duration_id == $duration->id &&
+                                                                $output->user_type == $userType)
+                                                                <div wire:ignore.self
+                                                                    class="accordion-button collapsed gap-2"
+                                                                    type="button" data-bs-toggle="collapse"
+                                                                    data-bs-target="#{{ str_replace(' ', '', $target->target) }}{{ $target->id }}"
+                                                                    aria-expanded="true"
+                                                                    aria-controls="{{ str_replace(' ', '', $target->target) }}{{ $target->id }}"
+                                                                    role="button">
+                                                                    @if ($target->rating)
+                                                                        <span class="my-auto">
+                                                                            <i class="bi bi-check2"></i>
+                                                                        </span>
+                                                                    @endif
+                                                                    {{ $target->target }}
+                                                                </div>
+                                                            @endif
+                                                        @endforeach
+                                                    </div>
+
+                                                    @foreach ($output->targets as $target)
+                                                        @if ($target->user_id == $user_id &&
+                                                            $target->type == 'opcr' &&
+                                                            $target->duration_id == $duration->id &&
+                                                            $output->user_type == $userType)
+                                                            <div wire:ignore.self
+                                                                id="{{ str_replace(' ', '', $target->target) }}{{ $target->id }}"
+                                                                class="accordion-collapse collapse"
+                                                                aria-labelledby="flush-headingOne"
+                                                                data-bs-parent="#{{ str_replace(' ', '', $output->output) }}{{ $output->id }}">
+                                                                <div class="accordion-body table-responsive">
+                                                                    <table class="table table-lg text-center">
+                                                                        <thead>
+                                                                            <tr>
+                                                                                <td rowspan="2">Alloted Budget</td>
+                                                                                <td rowspan="2">Responsible Office/Person</td>
+                                                                                <td rowspan="2">Actual Accomplishment</td>
+                                                                                <td colspan="4">Rating</td>
+                                                                                <td rowspan="2">Remarks</td>
+                                                                            </tr>
+                                                                            <tr>
+                                                                                <td>E</td>
+                                                                                <td>Q</td>
+                                                                                <td>T</td>
+                                                                                <td>A</td>
+                                                                            </tr>
+                                                                        </thead>
+                                                                        <tbody>
+                                                                            @if ($target->rating)
+                                                                                <tr>
+                                                                                    <td>{{ $target->rating->alloted_budget }}</td>
+                                                                                    <td>{{ $target->rating->responsible }}</td>
+                                                                                    <td>{{ $target->rating->accomplishment }}</td>
+                                                                                    <td>
+                                                                                        @if ($target->rating->efficiency)
+                                                                                            {{ $target->rating->efficiency }}
+                                                                                        @else
+                                                                                            NR
+                                                                                        @endif
+                                                                                    </td>
+                                                                                    <td>
+                                                                                        @if ($target->rating->quality)
+                                                                                            {{ $target->rating->quality }}
+                                                                                        @else
+                                                                                            NR
+                                                                                        @endif
+                                                                                    </td>
+                                                                                    <td>
+                                                                                        @if ($target->rating->timeliness)
+                                                                                            {{ $target->rating->timeliness }}
+                                                                                        @else
+                                                                                            NR
+                                                                                        @endif
+                                                                                    </td>
+                                                                                    <td>{{ $target->rating->average }}</td>
+                                                                                    <td>{{ $target->rating->remarks }}</td>
+                                                                                </tr>
+                                                                            @endif
+                                                                        </tbody>
+                                                                    </table>
+                                                                </div>
+                                                            </div>
+                                                        @endif
+                                                    @endforeach
+                                                </div>
+                                            </div>
+                                        @endforelse
+                                    </div>
+                                @endif
+                            @endforeach
+                        </div>
+                        <hr>
+                    @endif
+                @endforeach
+            @endif
             @foreach ($funct->outputs as $output)
-                @if ($output->user_id == $user_id && $output->type == 'opcr' && $output->duration_id == $duration->id && $output->user_type == $user_type)
+                @if ($output->user_id == $user_id &&
+                    $output->type == 'opcr' &&
+                    $output->duration_id == $duration->id &&
+                    $output->user_type == $userType)
                     <div class="card">
                         <div class="card-header">
-                            <h4 class="card-title">{{ $output->code }} {{ $output->output }}</h4>
+                            <h4 class="card-title">
+                                {{ $output->code }} {{ $number++ }} {{ $output->output }}
+                            </h4>
                             <p class="text-subtitle text-muted"></p>
                         </div>
                         @forelse ($output->suboutputs as $suboutput)
-                            @if ($suboutput->user_id == $user_id && $suboutput->type == 'opcr' && $suboutput->duration_id == $duration->id && $output->user_type == $user_type)
+                            @if ($suboutput->user_id == $user_id &&
+                                $suboutput->type == 'opcr' &&
+                                $suboutput->duration_id == $duration->id &&
+                                $output->user_type == $userType)
                                 <div class="card-body">
-                                    <h6>{{ $suboutput->suboutput }}</h6>
+                                    <h6>
+                                        {{ $suboutput->suboutput }}
+                                    </h6>
                                 </div>
                                 <div class="card-body">
                                     <div class="accordion accordion-flush"
                                         id="{{ str_replace(' ', '', $suboutput->suboutput) }}{{ $suboutput->id }}">
                                         <div class="d-sm-flex">
                                             @foreach ($suboutput->targets as $target)
-                                                @if ($target->user_id == $user_id && $target->type == 'opcr' && $target->duration_id == $duration->id && $output->user_type == $user_type)
-                                                    <div class="accordion-button collapsed gap-2" type="button"
-                                                        data-bs-toggle="collapse"
+                                                @if ($target->user_id == $user_id &&
+                                                    $target->type == 'opcr' &&
+                                                    $target->duration_id == $duration->id &&
+                                                    $output->user_type == $userType)
+                                                    <div wire:ignore.self class="accordion-button collapsed gap-2"
+                                                        type="button" data-bs-toggle="collapse"
                                                         data-bs-target="#{{ str_replace(' ', '', $target->target) }}{{ $target->id }}"
                                                         aria-expanded="true"
                                                         aria-controls="{{ str_replace(' ', '', $target->target) }}{{ $target->id }}"
@@ -107,8 +370,12 @@
                                         </div>
 
                                         @foreach ($suboutput->targets as $target)
-                                            @if ($target->user_id == $user_id && $target->type == 'opcr' && $target->duration_id == $duration->id && $output->user_type == $user_type)
-                                                <div id="{{ str_replace(' ', '', $target->target) }}{{ $target->id }}"
+                                            @if ($target->user_id == $user_id &&
+                                                $target->type == 'opcr' &&
+                                                $target->duration_id == $duration->id &&
+                                                $output->user_type == $userType)
+                                                <div wire:ignore.self
+                                                    id="{{ str_replace(' ', '', $target->target) }}{{ $target->id }}"
                                                     class="accordion-collapse collapse"
                                                     aria-labelledby="flush-headingOne"
                                                     data-bs-parent="#{{ str_replace(' ', '', $suboutput->suboutput) }}{{ $suboutput->id }}">
@@ -116,6 +383,8 @@
                                                         <table class="table table-lg text-center">
                                                             <thead>
                                                                 <tr>
+                                                                    <td rowspan="2">Alloted Budget</td>
+                                                                    <td rowspan="2">Responsible Office/Person</td>
                                                                     <td rowspan="2">Actual Accomplishment</td>
                                                                     <td colspan="4">Rating</td>
                                                                     <td rowspan="2">Remarks</td>
@@ -130,10 +399,30 @@
                                                             <tbody>
                                                                 @if ($target->rating)
                                                                     <tr>
+                                                                        <td>{{ $target->rating->alloted_budget }}</td>
+                                                                        <td>{{ $target->rating->responsible }}</td>
                                                                         <td>{{ $target->rating->accomplishment }}</td>
-                                                                        <td>{{ $target->rating->efficiency }}</td>
-                                                                        <td>{{ $target->rating->quality }}</td>
-                                                                        <td>{{ $target->rating->timeliness }}</td>
+                                                                        <td>
+                                                                            @if ($target->rating->efficiency)
+                                                                                {{ $target->rating->efficiency }}
+                                                                            @else
+                                                                                NR
+                                                                            @endif
+                                                                        </td>
+                                                                        <td>
+                                                                            @if ($target->rating->quality)
+                                                                                {{ $target->rating->quality }}
+                                                                            @else
+                                                                                NR
+                                                                            @endif
+                                                                        </td>
+                                                                        <td>
+                                                                            @if ($target->rating->timeliness)
+                                                                                {{ $target->rating->timeliness }}
+                                                                            @else
+                                                                                NR
+                                                                            @endif
+                                                                        </td>
                                                                         <td>{{ $target->rating->average }}</td>
                                                                         <td>{{ $target->rating->remarks }}</td>
                                                                     </tr>
@@ -153,9 +442,12 @@
                                     id="{{ str_replace(' ', '', $output->output) }}{{ $output->id }}">
                                     <div class="d-sm-flex">
                                         @foreach ($output->targets as $target)
-                                            @if ($target->user_id == $user_id && $target->type == 'opcr' && $target->duration_id == $duration->id && $output->user_type == $user_type)
-                                                <div class="accordion-button collapsed gap-2" type="button"
-                                                    data-bs-toggle="collapse"
+                                            @if ($target->user_id == $user_id &&
+                                                $target->type == 'opcr' &&
+                                                $target->duration_id == $duration->id &&
+                                                $output->user_type == $userType)
+                                                <div wire:ignore.self class="accordion-button collapsed gap-2"
+                                                    type="button" data-bs-toggle="collapse"
                                                     data-bs-target="#{{ str_replace(' ', '', $target->target) }}{{ $target->id }}"
                                                     aria-expanded="true"
                                                     aria-controls="{{ str_replace(' ', '', $target->target) }}{{ $target->id }}"
@@ -172,14 +464,20 @@
                                     </div>
 
                                     @foreach ($output->targets as $target)
-                                        @if ($target->user_id == $user_id && $target->type == 'opcr' && $target->duration_id == $duration->id && $output->user_type == $user_type)
-                                            <div id="{{ str_replace(' ', '', $target->target) }}{{ $target->id }}"
+                                        @if ($target->user_id == $user_id &&
+                                            $target->type == 'opcr' &&
+                                            $target->duration_id == $duration->id &&
+                                            $output->user_type == $userType)
+                                            <div wire:ignore.self
+                                                id="{{ str_replace(' ', '', $target->target) }}{{ $target->id }}"
                                                 class="accordion-collapse collapse" aria-labelledby="flush-headingOne"
                                                 data-bs-parent="#{{ str_replace(' ', '', $output->output) }}{{ $output->id }}">
                                                 <div class="accordion-body table-responsive">
                                                     <table class="table table-lg text-center">
                                                         <thead>
                                                             <tr>
+                                                                <td rowspan="2">Alloted Budget</td>
+                                                                <td rowspan="2">Responsible Office/Person</td>
                                                                 <td rowspan="2">Actual Accomplishment</td>
                                                                 <td colspan="4">Rating</td>
                                                                 <td rowspan="2">Remarks</td>
@@ -194,10 +492,30 @@
                                                         <tbody>
                                                             @if ($target->rating)
                                                                 <tr>
+                                                                    <td>{{ $target->rating->alloted_budget }}</td>
+                                                                    <td>{{ $target->rating->responsible }}</td>
                                                                     <td>{{ $target->rating->accomplishment }}</td>
-                                                                    <td>{{ $target->rating->efficiency }}</td>
-                                                                    <td>{{ $target->rating->quality }}</td>
-                                                                    <td>{{ $target->rating->timeliness }}</td>
+                                                                    <td>
+                                                                        @if ($target->rating->efficiency)
+                                                                            {{ $target->rating->efficiency }}
+                                                                        @else
+                                                                            NR
+                                                                        @endif
+                                                                    </td>
+                                                                    <td>
+                                                                        @if ($target->rating->quality)
+                                                                            {{ $target->rating->quality }}
+                                                                        @else
+                                                                            NR
+                                                                        @endif
+                                                                    </td>
+                                                                    <td>
+                                                                        @if ($target->rating->timeliness)
+                                                                            {{ $target->rating->timeliness }}
+                                                                        @else
+                                                                            NR
+                                                                        @endif
+                                                                    </td>
                                                                     <td>{{ $target->rating->average }}</td>
                                                                     <td>{{ $target->rating->remarks }}</td>
                                                                 </tr>

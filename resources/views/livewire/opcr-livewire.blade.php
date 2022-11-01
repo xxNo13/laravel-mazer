@@ -27,7 +27,22 @@
     <section class="section pt-3">
         @foreach ($functs as $funct)
             <div class="hstack mb-3 gap-2">
-                <h4>{{ $funct->funct }}</h4>
+                <h4>
+                    {{ $funct->funct }}
+                    @if ($percentage)
+                        @switch($funct->funct)
+                            @case('Core Function')
+                                {{ $percentage->core }}%
+                                @break
+                            @case('Strategic Function')
+                                {{ $percentage->strategic }}%
+                                @break
+                            @case('Support Function')
+                                {{ $percentage->support }}%
+                                @break
+                        @endswitch
+                    @endif
+                </h4>
                 @if ((!$approval || ($approval->superior1_status == 2 || $approval->superior2_status == 2)) &&
                     ($duration && $duration->start_date <= date('Y-m-d') && $duration->end_date >= date('Y-m-d')))
                     <button type="button" class="ms-auto btn btn-outline-secondary" data-bs-toggle="modal"
@@ -75,6 +90,13 @@
                                     </div>
                                 @endif
                                 {{ $subFunct->sub_funct }}
+                                @if ($percentage)
+                                    @foreach ($percentage->supports as $support)
+                                        @if ($support->name == $subFunct->sub_funct)
+                                            {{ $support->percent }}%
+                                        @endif
+                                    @endforeach
+                                @endif
                             </h5>
                             @foreach ($subFunct->outputs as $output)
                                 @if ($output->user_id == Auth::user()->id &&

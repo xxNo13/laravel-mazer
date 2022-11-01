@@ -9,6 +9,7 @@ use Livewire\Component;
 use App\Models\Approval;
 use App\Models\Duration;
 use App\Models\Standard;
+use App\Models\Percentage;
 use Livewire\WithPagination;
 use Illuminate\Support\Facades\Auth;
 
@@ -67,6 +68,11 @@ class StandardFacultyLivewire extends Component
                     ->where('user_type', 'faculty')
                     ->where('duration_id', $this->duration->id)
                     ->first();
+            $this->percentage = Percentage::where('user_id', Auth::user()->id)
+                ->where('type', 'ipcr')
+                ->where('userType', 'faculty')
+                ->where('duration_id', $this->duration->id)
+                ->first();
         }
     }
 

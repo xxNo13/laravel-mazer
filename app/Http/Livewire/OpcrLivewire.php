@@ -586,6 +586,7 @@ class OpcrLivewire extends Component
         $this->superior2_id = '';
         $this->alloted_budget = '';
         $this->responsible = '';
+        $this->sub_funct_id = '';
     }
 
     public function closeModal()
