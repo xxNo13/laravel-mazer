@@ -72,12 +72,21 @@ class FacultyIpcrLivewire extends Component
                     ->where('duration_id', $this->duration->id)
                     ->first();
             $this->approval = Approval::orderBy('id', 'DESC')
+                    ->where('name', 'approval')
+                    ->where('user_id', Auth::user()->id)
+                    ->where('type', 'ipcr')
+                    ->where('duration_id', $this->duration->id)
+                    ->where('user_type', 'faculty')
+                    ->first();
+            $this->assess = Approval::orderBy('id', 'DESC')
+                    ->where('name', 'assess')
                     ->where('user_id', Auth::user()->id)
                     ->where('type', 'ipcr')
                     ->where('duration_id', $this->duration->id)
                     ->where('user_type', 'faculty')
                     ->first();
             $this->approveFaculty = Approval::orderBy('id', 'DESC')
+                ->where('name', 'approval')
                 ->where('user_id', null)
                 ->where('type', 'ipcr')
                 ->where('duration_id', $this->duration->id)
@@ -498,6 +507,27 @@ class FacultyIpcrLivewire extends Component
         $this->validate();
 
         Approval::create([
+            'name' => 'approval',
+            'user_id' => Auth::user()->id,
+            'superior1_id' => $this->superior1_id,
+            'superior2_id' => $this->superior2_id,
+            'type' => 'ipcr',
+            'user_type' => 'faculty',
+            'duration_id' => $this->duration->id
+        ]);
+
+        session()->flash('message', 'Submitted Successfully!');
+        $this->resetInput();
+        $this->dispatchBrowserEvent('close-modal'); 
+        return redirect(request()->header('Referer'));
+    }
+
+    public function assessISO(){
+
+        $this->validate();
+
+        Approval::create([
+            'name' => 'assess',
             'user_id' => Auth::user()->id,
             'superior1_id' => $this->superior1_id,
             'superior2_id' => $this->superior2_id,

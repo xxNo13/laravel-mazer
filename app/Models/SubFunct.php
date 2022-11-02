@@ -21,4 +21,8 @@ class SubFunct extends Model
     public function outputs(){
         return $this->hasMany(Output::class);
     }
+
+    public function funct(){
+        return $this->belongsTo(Funct::class);
+    }
 }

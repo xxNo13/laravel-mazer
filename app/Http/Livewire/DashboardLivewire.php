@@ -19,6 +19,7 @@ class DashboardLivewire extends Component
         
         if ($this->duration) {
             $this->approvalIPCRS = Approval::orderBy('id', 'DESC')
+                    ->where('name', 'approval')
                     ->where('user_id', Auth::user()->id)
                     ->where('user_type', 'staff')
                     ->where('type', 'ipcr')
@@ -26,6 +27,7 @@ class DashboardLivewire extends Component
                     ->first();
             
             $this->approvalStandardS = Approval::orderBy('id', 'DESC')
+                    ->where('name', 'approval')
                     ->where('user_id', Auth::user()->id)
                     ->where('user_type', 'staff')
                     ->where('type', 'standard')
@@ -33,6 +35,7 @@ class DashboardLivewire extends Component
                     ->first();
 
             $this->approvalIPCRF = Approval::orderBy('id', 'DESC')
+                    ->where('name', 'approval')
                     ->where('user_id', Auth::user()->id)
                     ->where('user_type', 'faculty')
                     ->where('type', 'ipcr')
@@ -40,6 +43,7 @@ class DashboardLivewire extends Component
                     ->first();
             
             $this->approvalStandardF = Approval::orderBy('id', 'DESC')
+                    ->where('name', 'approval')
                     ->where('user_id', Auth::user()->id)
                     ->where('user_type', 'faculty')
                     ->where('type', 'standard')

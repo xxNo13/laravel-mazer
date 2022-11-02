@@ -42,7 +42,7 @@
                     <hr class="w-100">
                     <span class="mx-3">
                         <i class="bi bi-check-circle-fill fs-1"></i>
-                        <p>Assign of OPCR</p>
+                        <p>Assign of IPCR</p>
                     </span>
                     <hr class="w-100">
                     <span class="mx-3">

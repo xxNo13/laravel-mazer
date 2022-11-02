@@ -73,8 +73,15 @@
                             </button>
                         @endif
                     @endif
-                @elseif ($approval && $approval->superior1_status == 1 && $approval->superior2_status == 1)
-                    <a href="/print/ipcr" type="button" class="ms-auto btn icon btn-primary" title="Print IPCR">
+                @elseif (($approval && $approval->superior1_status == 1 && $approval->superior2_status == 1) && 
+                (!$assess || ($assess->superior1_status == 2 || $assess->superior2_status == 2)) &&
+                ($duration && $duration->start_date <= date('Y-m-d') && $duration->end_date >= date('Y-m-d')))
+                    <button type="button" class="ms-auto btn btn-outline-info" data-bs-toggle="modal"
+                        data-bs-target="#AssessISOModal" title="Save IPCR" wire:click="submit">
+                        Submit
+                    </button>
+                @elseif (($approval && $approval->superior1_status == 1 && $approval->superior2_status == 1) && ($assess && $assess->superior1_status == 1 && $assess->superior2_status == 1))
+                    <a href="/print/{{ 'ipcr' }}?userType=faculty" target="_blank" class="ms-auto btn icon btn-primary" title="Print IPCR">
                         <i class="bi bi-printer"></i>
                     </a>
                 @endif

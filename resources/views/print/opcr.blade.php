@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>IPCR - {{ Auth::user()->name }}</title>
+    <title>OPCR - {{ Auth::user()->name }}</title>
     <style>
         @page {
             margin: 100px 50px 110px 50px;
@@ -181,6 +181,8 @@
                         @endswitch
                     </th>
                     <th rowspan="2">Success Indicator (Target + Measure)</th>
+                    <th rowspan="2">Alloted Budget</th>
+                    <th rowspan="2">Responsible Office/Person</th>
                     <th rowspan="2">Actual Accomplishment</th>
                     <th colspan="4">Rating</th>
                     <th rowspan="2">Remarks</th>
@@ -200,7 +202,7 @@
                     @foreach ($funct->subFuncts as $subFunct)
                         @if ($subFunct->user_id == Auth::user()->id &&
                             $subFunct->user_type == $userType  &&
-                            $subFunct->type == 'ipcr' &&
+                            $subFunct->type == 'opcr' &&
                             $subFunct->duration_id == $duration->id)
                             @php
                                 $total = 0;
@@ -217,19 +219,19 @@
                                         @endif
                                     @endforeach
                                 </td>
-                                <td colspan="7">
+                                <td colspan="9">
 
                                 </td>
                             </tr>
                             @foreach ($subFunct->outputs as $output)
                                 @if ($output->user_id == Auth::user()->id &&
                                     $output->user_type == $userType  &&
-                                    $output->type == 'ipcr' &&
+                                    $output->type == 'opcr' &&
                                     $output->duration_id == $duration->id)
                                     @forelse ($output->suboutputs as $suboutput)
                                         @if ($suboutput->user_id == Auth::user()->id &&
                                         $suboutput->user_type == $userType  &&
-                                        $suboutput->type == 'ipcr' &&
+                                        $suboutput->type == 'opcr' &&
                                         $suboutput->duration_id == $duration->id)
                                             <tr>
                                                 <td>
@@ -238,7 +240,7 @@
                                                 <td>
                                                     {{ $output->output }}
                                                 </td>
-                                                <td colspan="7"></td>
+                                                <td colspan="9"></td>
                                             </tr>
                                             <tr>
                                                 <td colspan="2" rowspan="{{ count($suboutput->targets) }}">
@@ -251,10 +253,12 @@
                                                 @foreach ($suboutput->targets as $target)
                                                     @if ($target->user_id == Auth::user()->id &&
                                                         $target->user_type == $userType  &&
-                                                        $target->type == 'ipcr' &&
+                                                        $target->type == 'opcr' &&
                                                         $target->duration_id == $duration->id)
                                                         @if ($first)
                                                             <td>{{ $target->target }}</td>
+                                                            <td>{{ $target->rating->alloted_budget }}</td>
+                                                            <td>{{ $target->rating->responsible }}</td>
                                                             <td>{{ $target->rating->accomplishment }}</td>
                                                             <td>
                                                                 @if ($target->rating->efficiency)
@@ -285,6 +289,8 @@
                                                         @else
                                                             <tr>
                                                                 <td>{{ $target->target }}</td>
+                                                                <td>{{ $target->rating->alloted_budget }}</td>
+                                                                <td>{{ $target->rating->responsible }}</td>
                                                                 <td>{{ $target->rating->accomplishment }}</td>
                                                                 <td>
                                                                     @if ($target->rating->efficiency)
@@ -351,10 +357,12 @@
                                             @foreach ($output->targets as $target)
                                                 @if ($target->user_id == Auth::user()->id &&
                                                     $target->user_type == $userType  &&
-                                                    $target->type == 'ipcr' &&
+                                                    $target->type == 'opcr' &&
                                                     $target->duration_id == $duration->id)
                                                     @if ($first)
                                                         <td>{{ $target->target }}</td>
+                                                        <td>{{ $target->rating->alloted_budget }}</td>
+                                                        <td>{{ $target->rating->responsible }}</td>
                                                         <td>{{ $target->rating->accomplishment }}</td>
                                                         <td>
                                                             @if ($target->rating->efficiency)
@@ -385,6 +393,8 @@
                                                     @else
                                                         <tr>
                                                             <td>{{ $target->target }}</td>
+                                                            <td>{{ $target->rating->alloted_budget }}</td>
+                                                            <td>{{ $target->rating->responsible }}</td>
                                                             <td>{{ $target->rating->accomplishment }}</td>
                                                             <td>
                                                                 @if ($target->rating->efficiency)
@@ -439,12 +449,12 @@
                                 @endif
                             @endforeach
                             <tr>
-                                <td colspan="7" class="text-end">Total {{ $subFunct->sub_funct }}</td>
+                                <td colspan="9" class="text-end">Total {{ $subFunct->sub_funct }}</td>
                                 <td>{{ $total }}</td>
                                 <td></td>
                             </tr>
                             <tr>
-                                <td colspan="7" class="text-end">Total / {{ $numberSubF }} x {{ $percent }}% x {{ $percentage->support }}%</td>
+                                <td colspan="9" class="text-end">Total / {{ $numberSubF }} x {{ $percent }}% x {{ $percentage->support }}%</td>
                                 <td>
                                     {{ (($total/$numberSubF)*($percent/100))*($percentage->support/100) }}
                                     @php
@@ -456,7 +466,7 @@
                         @endif
                         @if ($loop->last)
                             <tr>
-                                <td colspan="7" class="text-end">
+                                <td colspan="9" class="text-end">
                                     Total {{ $funct->funct }} (
                                     @foreach ($percentage->supports as $support)
                                         @if ($loop->last)
@@ -476,12 +486,12 @@
                 @foreach ($funct->outputs as $output)
                     @if ($output->user_id == Auth::user()->id &&
                         $output->user_type == $userType  &&
-                        $output->type == 'ipcr' &&
+                        $output->type == 'opcr' &&
                         $output->duration_id == $duration->id)
                         @forelse ($output->suboutputs as $suboutput)
                             @if ($suboutput->user_id == Auth::user()->id &&
                             $suboutput->user_type == $userType  &&
-                            $suboutput->type == 'ipcr' &&
+                            $suboutput->type == 'opcr' &&
                             $suboutput->duration_id == $duration->id)
                                 <tr>
                                     <td>
@@ -490,7 +500,7 @@
                                     <td>
                                         {{ $output->output }}
                                     </td>
-                                    <td colspan="7"></td>
+                                    <td colspan="9"></td>
                                 </tr>
                                 <tr>
                                     <td colspan="2" rowspan="{{ count($suboutput->targets) }}">
@@ -503,10 +513,12 @@
                                     @foreach ($suboutput->targets as $target)
                                         @if ($target->user_id == Auth::user()->id &&
                                             $target->user_type == $userType  &&
-                                            $target->type == 'ipcr' &&
+                                            $target->type == 'opcr' &&
                                             $target->duration_id == $duration->id)
                                             @if ($first)
                                                 <td>{{ $target->target }}</td>
+                                                <td>{{ $target->rating->alloted_budget }}</td>
+                                                <td>{{ $target->rating->responsible }}</td>
                                                 <td>{{ $target->rating->accomplishment }}</td>
                                                 <td>
                                                     @if ($target->rating->efficiency)
@@ -537,6 +549,8 @@
                                             @else
                                                 <tr>
                                                     <td>{{ $target->target }}</td>
+                                                    <td>{{ $target->rating->alloted_budget }}</td>
+                                                    <td>{{ $target->rating->responsible }}</td>
                                                     <td>{{ $target->rating->accomplishment }}</td>
                                                     <td>
                                                         @if ($target->rating->efficiency)
@@ -602,10 +616,12 @@
                                 @foreach ($output->targets as $target)
                                     @if ($target->user_id == Auth::user()->id &&
                                         $target->user_type == $userType  &&
-                                        $target->type == 'ipcr' &&
+                                        $target->type == 'opcr' &&
                                         $target->duration_id == $duration->id)
                                         @if ($first)
                                             <td>{{ $target->target }}</td>
+                                            <td>{{ $target->rating->alloted_budget }}</td>
+                                            <td>{{ $target->rating->responsible }}</td>
                                             <td>{{ $target->rating->accomplishment }}</td>
                                             <td>
                                                 @if ($target->rating->efficiency)
@@ -636,6 +652,8 @@
                                         @else
                                             <tr>
                                                 <td>{{ $target->target }}</td>
+                                                <td>{{ $target->rating->alloted_budget }}</td>
+                                                <td>{{ $target->rating->responsible }}</td>
                                                 <td>{{ $target->rating->accomplishment }}</td>
                                                 <td>
                                                     @if ($target->rating->efficiency)
@@ -692,7 +710,7 @@
                 @switch($funct->funct)
                     @case('Core Function')
                         <tr>
-                            <td colspan="7" class="text-end">
+                            <td colspan="9" class="text-end">
                                 Total {{ $funct->funct }}
                             </td>
                             <td>{{ $totalCF }}</td>
@@ -701,7 +719,7 @@
                         @break
                     @case('Strategic Function')
                         <tr>
-                            <td colspan="7" class="text-end">
+                            <td colspan="9" class="text-end">
                                 Total {{ $funct->funct }}
                             </td>
                             <td>{{ $totalSTF }}</td>
@@ -714,14 +732,14 @@
 
         <tfoot>
             <tr>
-                <th colspan="3">Category</th>
+                <th colspan="5">Category</th>
                 <th>Average</th>
                 <th colspan="3">MFO (tot. no.)</th>
                 <th>Percentage</th>
                 <th>Total</th>
             </tr>
             <tr>
-                <td colspan="3" class="text-start">Core Function</td>
+                <td colspan="5" class="text-start">Core Function</td>
                 <td style="border-right: none;">{{ $totalCF }}</td>
                 <td style="border-right: none; border-left: none;">/</td>
                 <td style="border-right: none; border-left: none;">{{ $numberCF }}</td>
@@ -736,7 +754,7 @@
                 </td>
             </tr>
             <tr>
-                <td colspan="3" class="text-start">Strategic Function</td>
+                <td colspan="5" class="text-start">Strategic Function</td>
                 <td style="border-right: none;">{{ $totalSTF }}</td>
                 <td style="border: none;">/</td>
                 <td style="border: none;">{{ $numberSTF }}</td>
@@ -751,7 +769,7 @@
                 </td>
             </tr>
             <tr>
-                <td colspan="3" class="text-start">Support Function</td>
+                <td colspan="5" class="text-start">Support Function</td>
                 <td style="border-right: none;">0</td>
                 <td style="border-right: none; border-left: none;">/</td>
                 <td style="border-right: none; border-left: none;">{{ $numberCF }}</td>
@@ -761,17 +779,17 @@
             </tr>
             <tr>
                 <td colspan="2"></td>
-                <td colspan="6" class="text-start">Total/Final Overall Rating</td>
+                <td colspan="8" class="text-start">Total/Final Overall Rating</td>
                 <td>{{ $total = $total1+$total2+$total3 }}</td>
             </tr>
             <tr>
                 <td colspan="2"></td>
-                <td colspan="6" class="text-start">Final Average Rating</td>
+                <td colspan="8" class="text-start">Final Average Rating</td>
                 <td>{{ $total = $total1+$total2+$total3 }}</td>
             </tr>
             <tr>
                 <td colspan="2"></td>
-                <td colspan="6" class="text-start">Adjectival Rating</td>
+                <td colspan="8" class="text-start">Adjectival Rating</td>
                 <td>
                     @if ($total == 5)
                         Outstanding
@@ -788,11 +806,11 @@
             </tr>
             
             <tr>
-                <td colspan="4" class="text-start">Discussed with:</td>
+                <td colspan="6" class="text-start">Discussed with:</td>
                 <td colspan="5" class="text-start">Assessed by:</td>
             </tr>
             <tr>
-                <td colspan="2">
+                <td colspan="4">
                     <p><u>{{ Auth::user()->name }}</u></p>
                     <p>{{ Auth::user()->title }}</p>
                 </td>

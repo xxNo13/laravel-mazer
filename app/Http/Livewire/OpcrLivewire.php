@@ -84,6 +84,13 @@ class OpcrLivewire extends Component
         $this->duration = Duration::orderBy('id', 'DESC')->where('start_date', '<=', date('Y-m-d'))->first();
         if ($this->duration) {
             $this->approval = Approval::orderBy('id', 'DESC')
+                ->where('name', 'approval')
+                ->where('user_id', Auth::user()->id)
+                ->where('type', 'opcr')
+                ->where('duration_id', $this->duration->id)
+                ->first();
+            $this->assess = Approval::orderBy('id', 'DESC')
+                ->where('name', 'assess')
                 ->where('user_id', Auth::user()->id)
                 ->where('type', 'opcr')
                 ->where('duration_id', $this->duration->id)
@@ -451,6 +458,28 @@ class OpcrLivewire extends Component
         $this->validate();
 
         Approval::create([
+            'name' => 'approval',
+            'user_id' => Auth::user()->id,
+            'superior1_id' => $this->superior1_id,
+            'superior2_id' => $this->superior2_id,
+            'type' => 'opcr',
+            'user_type' => 'office',
+            'duration_id' => $this->duration->id
+        ]);
+
+        session()->flash('message', 'Submitted Successfully!');
+        $this->resetInput();
+        $this->dispatchBrowserEvent('close-modal');
+        return redirect(request()->header('Referer'));
+    }
+
+    public function assessISO()
+    {
+
+        $this->validate();
+
+        Approval::create([
+            'name' => 'assess',
             'user_id' => Auth::user()->id,
             'superior1_id' => $this->superior1_id,
             'superior2_id' => $this->superior2_id,

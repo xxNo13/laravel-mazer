@@ -965,6 +965,56 @@
                 </div>
             </div>
         </div>
+
+        {{-- Assess IPCR/Standard/OPCR Modal --}}
+        <div wire:ignore.self class="modal fade text-left" id="AssessISOModal" tabindex="-1" role="dialog"
+            aria-labelledby="myModalLabel33" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title" id="myModalLabel33">Save IPCR</h4>
+                        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                            <i data-feather="x"></i>
+                        </button>
+                    </div>
+
+                    <form wire:submit.prevent="assessISO">
+                        <div class="modal-body">
+                            <label>Head/Leader/Superior 1: </label>
+                            <div class="form-group">
+                                <select placeholder="Head/Leader/Superior 1" class="form-control"
+                                    wire:model="superior1_id" wire:change="changeUser">
+                                    <option value="">Select First Head/Leader/Superior</option>
+                                    @foreach ($users1 as $user)
+                                        <option value="{{ $user->id }}">{{ $user->name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <label>Head/Leader/Superior 2: </label>
+                            <div class="form-group">
+                                <select placeholder="Head/Leader/Superior 2" class="form-control"
+                                    wire:model="superior2_id" wire:change="changeUser">
+                                    <option value="">Select Second Head/Leader/Superior</option>
+                                    @foreach ($users2 as $user)
+                                        <option value="{{ $user->id }}">{{ $user->name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-light-secondary" wire:click="closeModal">
+                                <i class="bx bx-x d-block d-sm-none"></i>
+                                <span class="d-none d-sm-block">Close</span>
+                            </button>
+                            <button type="submit" wire:loading.attr="disabled" class="btn btn-primary ml-1">
+                                <i class="bx bx-check d-block d-sm-none"></i>
+                                <span class="d-none d-sm-block">Submit</span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
     @endif
 
     @if (isset($users))

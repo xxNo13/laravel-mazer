@@ -10,6 +10,7 @@ class Approval extends Model
     use HasFactory;
 
     protected $fillable = [
+        'name',
         'user_id',
         'superior1_id',
         'superior1_status',

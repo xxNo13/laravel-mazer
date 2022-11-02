@@ -67,6 +67,7 @@ class IpcrFacultyLivewire extends Component
         $this->duration = Duration::orderBy('id', 'DESC')->where('start_date', '<=', date('Y-m-d'))->first();
         if ($this->duration) {
             $this->approval = Approval::orderBy('id', 'DESC')
+                ->where('name', 'approval')
                 ->where('added_id', Auth::user()->id)
                 ->where('type', 'ipcr')
                 ->where('duration_id', $this->duration->id)
@@ -322,6 +323,7 @@ class IpcrFacultyLivewire extends Component
     public function saveIPCR()
     {
         Approval::create([
+            'name' => 'approval',
             'added_id' => Auth::user()->id,
             'superior1_status' => 1,
             'superior2_status' => 1,

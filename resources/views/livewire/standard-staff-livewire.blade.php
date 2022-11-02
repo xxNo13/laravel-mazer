@@ -53,6 +53,10 @@
                             Submit
                         </button>
                     @endif
+                @elseif (($approval && ($approval->superior1_status == 1 && $approval->superior2_status == 1)))
+                    <a href="/print/{{ 'standard' }}?userType=staff" target="_blank" class="ms-auto btn icon btn-primary" title="Print IPCR">
+                        <i class="bi bi-printer"></i>
+                    </a>
                 @endif
             </div>
             @if ($funct->subFuncts)

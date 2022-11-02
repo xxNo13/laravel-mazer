@@ -18,6 +18,7 @@ class UserSeeder extends Seeder
     {
         $user = User::create([
             'name' => 'Admin',
+            'title' => 'Boss Amo Manager',
             'email' => 'admin@gmail.com',
             'email_verified_at' => now(),
             'office_id' => 1,

@@ -24,6 +24,7 @@
         $('#AddStandardModal').modal('hide');
         $('#EditStandardModal').modal('hide');
         $('#SubmitISOModal').modal('hide');
+        $('#AssessISOModal').modal('hide');
         $('#AddTTMAModal').modal('hide');
         $('#EditTTMAModal').modal('hide');
         $('#DoneModal').modal('hide');

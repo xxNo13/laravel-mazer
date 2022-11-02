@@ -6,6 +6,7 @@
                 <th>EMAIL</th>
                 <th>ACCOUNT TYPE</th>
                 <th>OFFICE</th>
+                <th>PURPOSE</th>
                 <th>TYPE</th>
                 <th>ACTION</th>
             </tr>
@@ -27,6 +28,7 @@
                         @endforeach
                     </td>
                     <td>{{ $approval->user->office->office }}, {{ $approval->user->office->building }}</td>
+                    <td>{{ $approval->name }}</td>
                     <td>{{ strtoupper($approval->type) }}
                         @if ($approval->type != 'opcr')
                             - {{ strtoupper($approval->user_type) }}

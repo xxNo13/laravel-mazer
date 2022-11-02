@@ -20,6 +20,10 @@ class Output extends Model
         'duration_id'
     ];
 
+    public function funct(){
+        return $this->belongsTo(Funct::class);
+    }
+
     public function subFunct(){
         return $this->belongsTo(SubFunct::class);
     }

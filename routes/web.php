@@ -38,7 +38,6 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::get('/training-recommendation', TrainingRecommendationLivewire::class)->name('training.recommendation');
     Route::get('/ttma', TtmaLivewire::class)->name('ttma');
     Route::get('/print/{print}', [PDFController::class, 'print'])->name('print');
-    Route::post('/view', [PDFController::class, 'view'])->name('view');
 
 
     // Head of Agency Route

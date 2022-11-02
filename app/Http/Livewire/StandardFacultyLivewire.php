@@ -58,6 +58,7 @@ class StandardFacultyLivewire extends Component
         $this->duration = Duration::orderBy('id', 'DESC')->where('start_date', '<=', date('Y-m-d'))->first();
         if ($this->duration) {
             $this->approval = Approval::orderBy('id', 'DESC')
+                    ->where('name', 'approval')
                     ->where('user_id', Auth::user()->id)
                     ->where('type', 'standard')
                     ->where('duration_id', $this->duration->id)
@@ -193,6 +194,7 @@ class StandardFacultyLivewire extends Component
         $this->validate();
 
         Approval::create([
+            'name' => 'apporval',
             'user_id' => Auth::user()->id,
             'superior1_id' => $this->superior1_id,
             'superior2_id' => $this->superior2_id,

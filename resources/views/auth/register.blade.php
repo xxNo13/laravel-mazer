@@ -12,6 +12,13 @@
                 @error('name') <p style="color: rgb(220 38 38);">{{ $message }}</p> @enderror
             </div>
             <div class="form-group position-relative has-icon-left mb-4">
+                <input type="text" class="form-control form-control-xl" name="title" placeholder="Title" value="{{ old('title') }}">
+                <div class="form-control-icon">
+                    <i class="bi bi-person-badge"></i>
+                </div>
+                @error('title') <p style="color: rgb(220 38 38);">{{ $message }}</p> @enderror
+            </div>
+            <div class="form-group position-relative has-icon-left mb-4">
                 <input type="email" class="form-control form-control-xl" name="email" placeholder="Email" value="{{ old('email') }}">
                 <div class="form-control-icon">
                     <i class="bi bi-envelope"></i>

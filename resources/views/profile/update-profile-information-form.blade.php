@@ -17,6 +17,13 @@
                     <x-maz-input-error for="name" />
                 </div>
 
+                <!-- Title -->
+                <div class="form-group">
+                    <label for="title">Title</label>
+                    <input id="title" type="text" class="form-control {{ $errors->has('title') ? 'is-invalid' : '' }}" wire:model.defer="state.title" autocomplete="title" >
+                    <x-maz-input-error for="title" />
+                </div>
+
                 <!-- Email -->
                 <div class="col-span-6 sm:col-span-4">
                     <x-jet-label for="email" value="{{ __('Email') }}" />

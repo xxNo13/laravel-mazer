@@ -36,6 +36,7 @@ class ForapprovalLivewire extends Component
         $this->approval = Approval::orderBy('id', 'DESC')
                 ->where('user_id', $user_id)
                 ->where('type', $category)
+                ->where('user_type', $userType)
                 ->where('duration_id', $this->duration->id)
                 ->first();
         if ($category == 'standard') {
