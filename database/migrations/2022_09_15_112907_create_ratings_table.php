@@ -24,9 +24,9 @@ return new class extends Migration
             $table->string('average');
             $table->string('remarks');
             $table->string('type');
-            $table->foreignId('user_id')->onDelete('cascade');
-            $table->foreignId('target_id')->onDelete('cascade');
-            $table->foreignId('duration_id')->onDelete('cascade');
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->foreignId('target_id')->constrained()->onDelete('cascade');
+            $table->foreignId('duration_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });
     }

@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create('approvals', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->foreignId('user_id')->onDelete('cascade')->nullable();
+            $table->foreignId('user_id')->nullable()->constrained()->onDelete('cascade');
             $table->integer('superior1_id')->nullable();
             $table->smallInteger('superior1_status')->nullable();
             $table->date('superior1_date')->nullable();
@@ -28,7 +28,7 @@ return new class extends Migration
             $table->string('type');
             $table->string('user_type');
             $table->smallInteger('added_id')->nullable();
-            $table->foreignId('duration_id')->onDelete('cascade');
+            $table->foreignId('duration_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });
     }

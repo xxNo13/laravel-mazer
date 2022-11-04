@@ -14,7 +14,7 @@ return new class extends Migration
     public function up()
     {
         Schema::create('account_type_user', function (Blueprint $table) {
-            $table->foreignId('account_type_id')->onDelete('cascade');
+            $table->foreignId('account_type_id')->constrained()->onDelete('cascade');
             $table->foreignId('user_id')->onDelete('cascade');
         });
     }

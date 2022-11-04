@@ -18,9 +18,9 @@ return new class extends Migration
             $table->string('suboutput');
             $table->string('type');
             $table->string('user_type');
-            $table->foreignId('output_id')->onDelete('cascade');
-            $table->foreignId('user_id')->onDelete('cascade')->nullable();
-            $table->foreignId('duration_id')->onDelete('cascade');
+            $table->foreignId('output_id')->constrained()->onDelete('cascade');
+            $table->foreignId('user_id')->nullable()->constrained()->onDelete('cascade');
+            $table->foreignId('duration_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });
     }

@@ -20,8 +20,8 @@ return new class extends Migration
             $table->integer('support');
             $table->string('type');
             $table->string('userType');
-            $table->foreignId('user_id')->onDelete('cascade');
-            $table->foreignId('duration_id')->onDelete('cascade');
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->foreignId('duration_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });
     }

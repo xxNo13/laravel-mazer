@@ -19,10 +19,10 @@ return new class extends Migration
             $table->string('output');
             $table->string('type');
             $table->string('user_type');
-            $table->foreignId('sub_funct_id')->onDelete('cascade')->nullable();
-            $table->foreignId('funct_id')->onDelete('cascade')->nullable();
-            $table->foreignId('user_id')->onDelete('cascade')->nullable();
-            $table->foreignId('duration_id')->onDelete('cascade');
+            $table->foreignId('sub_funct_id')->nullable()->constrained()->onDelete('cascade');
+            $table->foreignId('funct_id')->nullable()->constrained()->onDelete('cascade');
+            $table->foreignId('user_id')->nullable()->constrained()->onDelete('cascade');
+            $table->foreignId('duration_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });
     }
