@@ -38,6 +38,7 @@
         $('#AddPercentageModal').modal('hide');
         $('#EditPercentageModal').modal('hide');
         $('#DeletePercentageModal').modal('hide');
+        $('#DisapproveModal').modal('hide');
     });
 </script>
 

@@ -313,6 +313,6 @@
 
     {{ $functs->links('components.pagination') }}
     @if (isset($subFuncts))
-        <x-modals :selected="$selected" :users1="$users1" :users2="$users2" :type="$type" :duration="$duration" :userType="$userType" :subFuncts="$subFuncts" :outputs="$outputs" :suboutputs="$suboutputs" :targets="$targets" />
+        <x-modals :selected="$selected" :users1="$users1" :users2="$users2" :type="$type" :duration="$duration" :userType="$userType" :subFuncts="$subFuncts" :outputs="$outputs" :suboutputs="$suboutputs" :targets="$targets" :functs="$functs" />
     @endif
 </div>

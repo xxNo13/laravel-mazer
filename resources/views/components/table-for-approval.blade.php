@@ -48,7 +48,7 @@
                                             <i class="bi bi-check"></i>
                                         </button>
                                         <button type="button" class="btn icon btn-danger"
-                                            wire:click="disapproved({{ $approval->id }})">
+                                            wire:click="clickdisapproved({{ $approval->id }})"  data-bs-toggle="modal" data-bs-target="#DisapproveModal">
                                             <i class="bi bi-x"></i>
                                         </button>
                                         <button type="button" class="btn icon btn-secondary"
@@ -71,7 +71,7 @@
                                             <i class="bi bi-check"></i>
                                         </button>
                                         <button type="button" class="btn icon btn-danger"
-                                            wire:click="disapproved({{ $approval->id }})">
+                                            wire:click="clickdisapproved({{ $approval->id }})"  data-bs-toggle="modal" data-bs-target="#DisapproveModal">
                                             <i class="bi bi-x"></i>
                                         </button>
                                         <button type="button" class="btn icon btn-secondary"
@@ -93,3 +93,5 @@
         </tbody>
     </table>
 </div>
+
+<x-modals />

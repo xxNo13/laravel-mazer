@@ -13,8 +13,8 @@ use Illuminate\Support\Facades\Auth;
 
 class DashboardLivewire extends Component
 {
-
-    public function mount(){
+    public function render()
+    {
         $this->duration = Duration::orderBy('id', 'DESC')->where('start_date', '<=', date('Y-m-d'))->first();
         
         if ($this->duration) {
@@ -88,9 +88,7 @@ class DashboardLivewire extends Component
                             ->take(7)
                             ->get();
         }
-    }
-    public function render()
-    {
+        
         return view('livewire.dashboard-livewire');
     }
 }

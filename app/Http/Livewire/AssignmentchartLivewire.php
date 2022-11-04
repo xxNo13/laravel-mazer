@@ -11,7 +11,9 @@ class AssignmentchartLivewire extends Component
 {
     public $month;
     public $dateToday;
-    public function mount(){
+    
+    public function render()
+    {
         $this->duration = Duration::orderBy('id', 'DESC')->where('start_date', '<=', date('Y-m-d'))->first();
         $this->dateToday = date('d');
         $this->month = date('Y-m-d');
@@ -47,10 +49,7 @@ class AssignmentchartLivewire extends Component
                 ++$this->assignments[0];
             }
         }
-    }
-    
-    public function render()
-    {
+        
         return view('livewire.assignmentchart-livewire');
     }
 }

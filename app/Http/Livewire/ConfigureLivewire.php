@@ -43,12 +43,9 @@ class ConfigureLivewire extends Component
         $this->validateOnly($property);
     }
 
-    public function mount(){
-        $this->duration = Duration::orderBy('id', 'DESC')->first();
-    }
-
     public function render()
     {
+        $this->duration = Duration::orderBy('id', 'DESC')->first();
         $offices = Office::query();
         if ($this->searchoffice) {
             $offices->where('office', 'like', "%{$this->searchoffice}%")

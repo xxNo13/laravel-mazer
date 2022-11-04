@@ -25,21 +25,23 @@
                         </td>
                         <td>
                             <div class="d-md-flex gap-3 justify-content-center">
-                                @foreach ($user->account_types as $account_type)
-                                    @if ($account_type->account_type == 'Faculty')
-                                        <button type="button" class="btn icon icon-left btn-secondary" wire:click="viewed({{ $user->id }}, '{{ 'officemates' }}', '{{ 'faculty' }}')">
+                                @if (isset($duration))
+                                    @foreach ($user->account_types as $account_type)
+                                        @if ($account_type->account_type == 'Faculty')
+                                            <button type="button" class="btn icon icon-left btn-secondary" wire:click="viewed({{ $user->id }}, '{{ 'officemates' }}', '{{ 'faculty' }}')">
+                                                <i class="bi bi-eye"></i> 
+                                                IPCR-Faculty
+                                            </button>
+                                        @endif
+                                        
+                                        @if ($account_type->account_type == 'Staff')
+                                        <button type="button" class="btn icon icon-left btn-secondary" wire:click="viewed({{ $user->id }}, '{{ 'officemates' }}', '{{ 'staff' }}')">
                                             <i class="bi bi-eye"></i> 
-                                            IPCR-Faculty
+                                            IPCR-Staff
                                         </button>
-                                    @endif
-                                    
-                                    @if ($account_type->account_type == 'Staff')
-                                    <button type="button" class="btn icon icon-left btn-secondary" wire:click="viewed({{ $user->id }}, '{{ 'officemates' }}', '{{ 'staff' }}')">
-                                        <i class="bi bi-eye"></i> 
-                                        IPCR-Staff
-                                    </button>
-                                    @endif
-                                @endforeach
+                                        @endif
+                                    @endforeach
+                                @endif
                             </div>
                         </td>
                     </tr>

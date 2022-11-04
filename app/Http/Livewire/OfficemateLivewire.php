@@ -39,11 +39,6 @@ class OfficemateLivewire extends Component
         }
     }
 
-    public function mount(){
-        $this->duration = Duration::orderBy('id', 'DESC')->where('start_date', '<=', date('Y-m-d'))->first();
-        
-    }
-
     public function updated($property)
     {
         if ($property == 'search') {
@@ -53,6 +48,8 @@ class OfficemateLivewire extends Component
 
     public function render()
     {
+        $this->duration = Duration::orderBy('id', 'DESC')->where('start_date', '<=', date('Y-m-d'))->first();
+
         if ($this->view) {
             $functs = Funct::all();
             $user = User::find($this->user_id);

@@ -24,6 +24,8 @@ class ForapprovalLivewire extends Component
     public $approval;
     public $search;
     public $duration;
+    public $message;
+    public $approving;
 
     protected  $queryString = ['search'];
 
@@ -54,12 +56,10 @@ class ForapprovalLivewire extends Component
         }
     }
 
-    public function mount(){
-        $this->duration = Duration::orderBy('id', 'DESC')->where('start_date', '<=', date('Y-m-d'))->first();
-    }
-
     public function render()
     {
+        $this->duration = Duration::orderBy('id', 'DESC')->where('start_date', '<=', date('Y-m-d'))->first();
+        
         if ($this->view && $this->category == 'ipcr'){
             $functs = Funct::all();
             $user = User::find($this->user_id);
@@ -130,7 +130,7 @@ class ForapprovalLivewire extends Component
             $this->resetPage();
         }
     }
-
+        
     public function approved($id){
         $approval = Approval::find($id);
 
@@ -152,18 +152,22 @@ class ForapprovalLivewire extends Component
         return redirect(request()->header('Referer'));
     }
 
-    public function disapproved($id){
-        $approval = Approval::find($id);
+    public function clickdisapproved($id) {
+        $this->approving = Approval::find($id);
+    }
 
-        if ($approval->superior1_id == Auth::user()->id){
-            Approval::where('id', $id)->update([
+    public function disapproved(){
+        if ($this->approving->superior1_id == Auth::user()->id){
+            Approval::where('id', $this->approving->id)->update([
                 'superior1_status' => 2,
                 'superior1_date' => Carbon::now(),
+                'superior1_message' => $this->message,
             ]);
-        } elseif ($approval->superior2_id == Auth::user()->id){
-            Approval::where('id', $id)->update([
+        } elseif ($this->approving->superior2_id == Auth::user()->id){
+            Approval::where('id', $this->approving->id)->update([
                 'superior2_status' => 2,
                 'superior2_date' => Carbon::now(),
+                'superior2_message' => $this->message,
             ]);
         }
 
@@ -180,6 +184,8 @@ class ForapprovalLivewire extends Component
         $this->url = '';
         $this->approval = '';
         $this->userType = '';
+        $this->approving = '';
+        $this->message = '';
     }
 
     public function closeModal(){

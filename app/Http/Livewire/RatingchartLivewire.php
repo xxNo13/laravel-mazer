@@ -13,7 +13,8 @@ class RatingchartLivewire extends Component
     public $number = 0;
     public $targets = [];
     public $ratings = [];
-    public function mount()
+    
+    public function render()
     {
         $this->duration = Duration::orderBy('id', 'DESC')->where('start_date', '<=', date('Y-m-d'))->first();
         $this->targs = Target::orderBy('id', 'ASC')
@@ -35,9 +36,7 @@ class RatingchartLivewire extends Component
 
             $this->number++;
         }
-    }
-    public function render()
-    {
+        
         return view('livewire.ratingchart-livewire');
     }
 }

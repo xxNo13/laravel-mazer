@@ -14,13 +14,15 @@
                     <form wire:submit.prevent="save">
                         <div class="modal-body">
                             <div class="mt-3 form-group d-flex justify-content-between">
-                                <div class="form-check form-switch">
-                                    <input wire:change="changed" type="radio" class="form-check-input" id="output"
-                                        value="sub_funct" name="selected" wire:model="selected">
-                                    <label class="form-check-label" for="sub_funct">
-                                        Sub Function
-                                    </label>
-                                </div>
+                                @if ($functs->links()->paginator->currentPage() == '3')
+                                    <div class="form-check form-switch">
+                                        <input wire:change="changed" type="radio" class="form-check-input" id="output"
+                                            value="sub_funct" name="selected" wire:model="selected">
+                                        <label class="form-check-label" for="sub_funct">
+                                            Sub Function
+                                        </label>
+                                    </div>
+                                @endif
                                 <div class="form-check form-switch">
                                     <input wire:change="changed" type="radio" class="form-check-input" id="output"
                                         value="output" name="selected" wire:model="selected">
@@ -54,31 +56,33 @@
                                             wire:model="sub_funct">
                                     </div>
                                 @elseif ($selected == 'output')
-                                    <label>Sub Function in Support Function (Optional): </label>
-                                    <div class="form-group">
-                                        <select placeholder="Sub Function" class="form-control"
-                                            wire:model="sub_funct_id">
-                                            <option value="">Select a Sub Function</option>
-                                            @if ($userType == 'faculty')
-                                                @foreach ($subFuncts as $sub_funct)
-                                                    @if ($sub_funct->type == 'ipcr' && $sub_funct->duration_id == $duration->id && $sub_funct->user_type == $userType)
-                                                        <option value="{{ $sub_funct->id }}">
-                                                            {{ $sub_funct->sub_funct }}</option>
-                                                    @endif
-                                                @endforeach
-                                            @else
-                                                @foreach (Auth::user()->subFuncts as $sub_funct)
-                                                    @if ($sub_funct->type == 'ipcr' && $sub_funct->duration_id == $duration->id && $sub_funct->user_type == $userType)
-                                                        <option value="{{ $sub_funct->id }}">{{ $sub_funct->sub_funct }}
-                                                        </option>
-                                                    @endif
-                                                @endforeach
-                                            @endif
-                                        </select>
-                                        @error('output_id')
-                                            <p class="text-danger">{{ $message }}</p>
-                                        @enderror
-                                    </div>
+                                    @if ($functs->links()->paginator->currentPage() == '3')
+                                        <label>Sub Function (Optional): </label>
+                                        <div class="form-group">
+                                            <select placeholder="Sub Function" class="form-control"
+                                                wire:model="sub_funct_id">
+                                                <option value="">Select a Sub Function</option>
+                                                @if ($userType == 'faculty')
+                                                    @foreach ($subFuncts as $sub_funct)
+                                                        @if ($sub_funct->type == 'ipcr' && $sub_funct->duration_id == $duration->id && $sub_funct->user_type == $userType)
+                                                            <option value="{{ $sub_funct->id }}">
+                                                                {{ $sub_funct->sub_funct }}</option>
+                                                        @endif
+                                                    @endforeach
+                                                @else
+                                                    @foreach (Auth::user()->subFuncts as $sub_funct)
+                                                        @if ($sub_funct->type == 'ipcr' && $sub_funct->duration_id == $duration->id && $sub_funct->user_type == $userType)
+                                                            <option value="{{ $sub_funct->id }}">{{ $sub_funct->sub_funct }}
+                                                            </option>
+                                                        @endif
+                                                    @endforeach
+                                                @endif
+                                            </select>
+                                            @error('output_id')
+                                                <p class="text-danger">{{ $message }}</p>
+                                            @enderror
+                                        </div>
+                                    @endif
                                     <label>Output: </label>
                                     <div class="form-group">
                                         <input type="text" placeholder="Output" class="form-control" name="output"
@@ -282,13 +286,15 @@
                     <form wire:submit.prevent="save">
                         <div class="modal-body">
                             <div class="mt-3 form-group d-flex justify-content-between">
-                                <div class="form-check form-switch">
-                                    <input wire:change="changed" type="radio" class="form-check-input" id="output"
-                                        value="sub_funct" name="selected" wire:model="selected">
-                                    <label class="form-check-label" for="sub_funct">
-                                        Sub Function
-                                    </label>
-                                </div>
+                                @if ($functs->links()->paginator->currentPage() == '3')
+                                    <div class="form-check form-switch">
+                                        <input wire:change="changed" type="radio" class="form-check-input" id="output"
+                                            value="sub_funct" name="selected" wire:model="selected">
+                                        <label class="form-check-label" for="sub_funct">
+                                            Sub Function
+                                        </label>
+                                    </div>
+                                @endif
                                 <div class="form-check form-switch">
                                     <input wire:change="changed" type="radio" class="form-check-input" id="output"
                                         value="output" name="selected" wire:model="selected">
@@ -322,22 +328,24 @@
                                             wire:model="sub_funct">
                                     </div>
                                 @elseif ($selected == 'output')
-                                    <label>Sub Function in Support Function (Optional): </label>
-                                    <div class="form-group">
-                                        <select placeholder="Sub Function" class="form-control"
-                                            wire:model="sub_funct_id">
-                                            <option value="">Select a Sub Function</option>
-                                            @foreach (Auth::user()->subFuncts as $sub_funct)
-                                                @if ($sub_funct->type == 'opcr' && $sub_funct->duration_id == $duration->id && $sub_funct->user_type == $userType)
-                                                    <option value="{{ $sub_funct->id }}">{{ $sub_funct->sub_funct }}
-                                                    </option>
-                                                @endif
-                                            @endforeach
-                                        </select>
-                                        @error('output_id')
-                                            <p class="text-danger">{{ $message }}</p>
-                                        @enderror
-                                    </div>
+                                    @if ($functs->links()->paginator->currentPage() == '3')
+                                        <label>Sub Function (Optional): </label>
+                                        <div class="form-group">
+                                            <select placeholder="Sub Function" class="form-control"
+                                                wire:model="sub_funct_id">
+                                                <option value="">Select a Sub Function</option>
+                                                @foreach (Auth::user()->subFuncts as $sub_funct)
+                                                    @if ($sub_funct->type == 'opcr' && $sub_funct->duration_id == $duration->id && $sub_funct->user_type == $userType)
+                                                        <option value="{{ $sub_funct->id }}">{{ $sub_funct->sub_funct }}
+                                                        </option>
+                                                    @endif
+                                                @endforeach
+                                            </select>
+                                            @error('output_id')
+                                                <p class="text-danger">{{ $message }}</p>
+                                            @enderror
+                                        </div>
+                                    @endif
                                     <label>Output: </label>
                                     <div class="form-group">
                                         <input type="text" placeholder="Output" class="form-control" name="output"
@@ -1489,7 +1497,7 @@
                                     @foreach ($subFuncts as $sub_funct)
                                         <label>{{ $sub_funct->sub_funct }} %: </label>
                                         <div class="form-group">
-                                            <input type="text" placeholder="Support Function" class="form-control"
+                                            <input type="text" placeholder="{{ $sub_funct->sub_funct }}" class="form-control"
                                                 wire:model="supp.{{ $sub_funct->id }}">
                                         </div>
                                     @endforeach
@@ -1548,7 +1556,7 @@
                                     @foreach ($subFuncts as $sub_funct)
                                         <label>{{ $sub_funct->sub_funct }} %: </label>
                                         <div class="form-group">
-                                            <input type="text" placeholder="Support Function" class="form-control"
+                                            <input type="text" placeholder="{{ $sub_funct->sub_funct }}" class="form-control"
                                                 wire:model="supp.{{ $sub_funct->id }}">
                                         </div>
                                     @endforeach
@@ -1599,6 +1607,41 @@
                         <button type="submit" wire:loading.attr="disabled" class="btn btn-danger ml-1">
                             <i class="bx bx-check d-block d-sm-none"></i>
                             <span class="d-none d-sm-block">Delete</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    {{-- Disapprove Modal --}}
+    <div wire:ignore.self class="modal fade text-left" id="DisapproveModal" tabindex="-1" role="dialog"
+        aria-labelledby="myModalLabel33" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="myModalLabel33">Disapprove Message</h4>
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                        <i data-feather="x"></i>
+                    </button>
+                </div>
+                <form wire:submit.prevent="disapproved">
+                    <div class="modal-body">
+                        <label>Message: </label>
+                        <div class="form-group">
+                            <textarea placeholder="Message" class="form-control"
+                                wire:model="message">
+                            </textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-light-secondary" wire:click="closeModal">
+                            <i class="bx bx-x d-block d-sm-none"></i>
+                            <span class="d-none d-sm-block">Close</span>
+                        </button>
+                        <button type="submit" wire:loading.attr="disabled" class="btn btn-primary ml-1">
+                            <i class="bx bx-check d-block d-sm-none"></i>
+                            <span class="d-none d-sm-block">Save</span>
                         </button>
                     </div>
                 </form>

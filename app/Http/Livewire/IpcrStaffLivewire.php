@@ -72,7 +72,8 @@ class IpcrStaffLivewire extends Component
         'support' => ['required_if:selected,percentage'],
     ];
 
-    public function mount(){
+    public function render()
+    {
         $this->users1 = User::whereHas('account_types', function(\Illuminate\Database\Eloquent\Builder $query) {
             return $query->where('account_type', 'like', "%head%");
         })->where('id', '!=', Auth::user()->id)->get();
@@ -110,11 +111,16 @@ class IpcrStaffLivewire extends Component
                 ->where('userType', 'staff')
                 ->where('duration_id', $this->duration->id)
                 ->first();
+            if ($this->approval) {
+                $this->appsuperior1 = User::where('id', $this->approval->superior1_id)->first();
+                $this->appsuperior2 = User::where('id', $this->approval->superior2_id)->first();
+            }
+            if ($this->assess) {
+                $this->asssuperior1 = User::where('id', $this->assess->superior1_id)->first();
+                $this->asssuperior2 = User::where('id', $this->assess->superior2_id)->first();
+            }
         }
-    }
-
-    public function render()
-    {
+        
         $functs = Funct::paginate(1);
 
         return view('livewire.ipcr-staff-livewire', [

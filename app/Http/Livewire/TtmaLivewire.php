@@ -30,15 +30,11 @@ class TtmaLivewire extends Component
 
     protected  $queryString = ['search'];
 
-    public function mount()
-    {
-        $this->users = User::where('id', '!=', Auth::user()->id)->get();
-        $this->duration = Duration::orderBy('id', 'DESC')->where('start_date', '<=', date('Y-m-d'))->first();
-    }
-
     public function render()
     {   
-
+        $this->users = User::where('id', '!=', Auth::user()->id)->get();
+        $this->duration = Duration::orderBy('id', 'DESC')->where('start_date', '<=', date('Y-m-d'))->first();
+    
         $search = $this->search;
         $ttmas = Ttma::query();
 
@@ -51,15 +47,21 @@ class TtmaLivewire extends Component
                 ->get();
         }
 
+        if($this->duration) {
+            return view('livewire.ttma-livewire', [
+                'ttmas' => $ttmas
+                        ->where('duration_id', $this->duration->id)
+                        ->where('head_id', Auth::user()->id)
+                        ->paginate(10),
+                'assignments' => Ttma::orderBy('created_at', 'DESC')
+                                ->where('user_id', Auth::user()->id)
+                                ->where('duration_id', $this->duration->id)
+                                ->paginate(10),
+            ]);
+        }
         return view('livewire.ttma-livewire', [
-            'ttmas' => $ttmas
-                    ->where('duration_id', $this->duration->id)
-                    ->where('head_id', Auth::user()->id)
-                    ->paginate(10),
-            'assignments' => Ttma::orderBy('created_at', 'DESC')
-                            ->where('user_id', Auth::user()->id)
-                            ->where('duration_id', $this->duration->id)
-                            ->paginate(10),
+            'ttmas' => $ttmas->paginate(10),
+            'assignments' => Ttma::orderBy('created_at', 'DESC')->paginate(10),
         ]);
     }
 

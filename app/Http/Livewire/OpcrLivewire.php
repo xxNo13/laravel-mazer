@@ -73,7 +73,7 @@ class OpcrLivewire extends Component
         'support' => ['required_if:selected,percentage'],
     ];
 
-    public function mount()
+    public function render()
     {
         $this->users1 = User::whereHas('account_types', function (\Illuminate\Database\Eloquent\Builder $query) {
             return $query->where('account_type', 'like', "%head%");
@@ -110,11 +110,16 @@ class OpcrLivewire extends Component
                 ->where('userType', 'office')
                 ->where('duration_id', $this->duration->id)
                 ->first();
+            if ($this->approval) {
+                $this->appsuperior1 = User::where('id', $this->approval->superior1_id)->first();
+                $this->appsuperior2 = User::where('id', $this->approval->superior2_id)->first();
+            }
+            if ($this->assess) {
+                $this->asssuperior1 = User::where('id', $this->assess->superior1_id)->first();
+                $this->asssuperior2 = User::where('id', $this->assess->superior2_id)->first();
+            }
         }
-    }
 
-    public function render()
-    {
         $functs = Funct::paginate(1);
 
         return view('livewire.opcr-livewire', [
@@ -615,6 +620,7 @@ class OpcrLivewire extends Component
         $this->superior2_id = '';
         $this->alloted_budget = '';
         $this->responsible = '';
+        $this->sub_funct = '';
         $this->sub_funct_id = '';
     }
 

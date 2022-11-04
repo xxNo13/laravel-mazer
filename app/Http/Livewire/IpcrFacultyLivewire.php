@@ -56,7 +56,7 @@ class IpcrFacultyLivewire extends Component
         'superior2_id' => ['required_if:selected,submit'],
     ];
 
-    public function mount()
+    public function render()
     {
         $this->users1 = User::whereHas('account_types', function (\Illuminate\Database\Eloquent\Builder $query) {
             return $query->where('account_type', 'like', "%head%");
@@ -79,10 +79,7 @@ class IpcrFacultyLivewire extends Component
                 ->where('duration_id', $this->duration->id)
                 ->first();
         }
-    }
-
-    public function render()
-    {
+        
         $functs = Funct::paginate(1);
         if ($this->duration){
             $this->outputs = Output::where('user_id', null)

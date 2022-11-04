@@ -27,7 +27,7 @@
                 </div>
             </div>
             <div class="card-body">
-                <x-table-office-list :users="$users" />
+                <x-table-office-list :users="$users" :duration="$duration" />
             </div>
         </div>
         {{-- <div class="card">
