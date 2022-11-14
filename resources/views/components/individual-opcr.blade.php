@@ -179,10 +179,11 @@
                                                                                 </tr>
                                                                             </thead>
                                                                             <tbody>
-                                                                                @if ($target->rating)
-                                                                                    <tr>
-                                                                                        <td>{{ $target->rating->alloted_budget }}</td>
-                                                                                        <td>{{ $target->rating->responsible }}</td>
+                                                                                <tr>
+                                                                                    <td>{{ "₱ " . number_format($target->alloted_budget) }}</td>
+                                                                                    <td>{{ $target->responsible }}</td>
+                                                                                    
+                                                                                    @if ($target->rating)
                                                                                         <td>{{ $target->rating->accomplishment }}</td>
                                                                                         <td>
                                                                                             @if ($target->rating->efficiency)
@@ -207,8 +208,8 @@
                                                                                         </td>
                                                                                         <td>{{ $target->rating->average }}</td>
                                                                                         <td>{{ $target->rating->remarks }}</td>
-                                                                                    </tr>
-                                                                                @endif
+                                                                                    @endif
+                                                                                </tr>
                                                                             </tbody>
                                                                         </table>
                                                                     </div>
@@ -274,10 +275,11 @@
                                                                             </tr>
                                                                         </thead>
                                                                         <tbody>
-                                                                            @if ($target->rating)
-                                                                                <tr>
-                                                                                    <td>{{ $target->rating->alloted_budget }}</td>
-                                                                                    <td>{{ $target->rating->responsible }}</td>
+                                                                            <tr>
+                                                                                <td>{{ "₱ " . number_format($target->alloted_budget) }}</td>
+                                                                                <td>{{ $target->responsible }}</td>
+                                                                                
+                                                                                @if ($target->rating)
                                                                                     <td>{{ $target->rating->accomplishment }}</td>
                                                                                     <td>
                                                                                         @if ($target->rating->efficiency)
@@ -302,8 +304,8 @@
                                                                                     </td>
                                                                                     <td>{{ $target->rating->average }}</td>
                                                                                     <td>{{ $target->rating->remarks }}</td>
-                                                                                </tr>
-                                                                            @endif
+                                                                                @endif
+                                                                            </tr>
                                                                         </tbody>
                                                                     </table>
                                                                 </div>
@@ -397,10 +399,11 @@
                                                                 </tr>
                                                             </thead>
                                                             <tbody>
-                                                                @if ($target->rating)
-                                                                    <tr>
-                                                                        <td>{{ $target->rating->alloted_budget }}</td>
-                                                                        <td>{{ $target->rating->responsible }}</td>
+                                                                <tr>
+                                                                    <td>{{ "₱ " . number_format($target->alloted_budget) }}</td>
+                                                                    <td>{{ $target->responsible }}</td>
+                                                                    
+                                                                    @if ($target->rating)
                                                                         <td>{{ $target->rating->accomplishment }}</td>
                                                                         <td>
                                                                             @if ($target->rating->efficiency)
@@ -425,8 +428,8 @@
                                                                         </td>
                                                                         <td>{{ $target->rating->average }}</td>
                                                                         <td>{{ $target->rating->remarks }}</td>
-                                                                    </tr>
-                                                                @endif
+                                                                    @endif
+                                                                </tr>
                                                             </tbody>
                                                         </table>
                                                     </div>
@@ -490,10 +493,11 @@
                                                             </tr>
                                                         </thead>
                                                         <tbody>
-                                                            @if ($target->rating)
-                                                                <tr>
-                                                                    <td>{{ $target->rating->alloted_budget }}</td>
-                                                                    <td>{{ $target->rating->responsible }}</td>
+                                                            <tr>
+                                                                <td>{{ "₱ " . number_format($target->alloted_budget) }}</td>
+                                                                <td>{{ $target->responsible }}</td>
+                                                                
+                                                                @if ($target->rating)
                                                                     <td>{{ $target->rating->accomplishment }}</td>
                                                                     <td>
                                                                         @if ($target->rating->efficiency)
@@ -518,8 +522,8 @@
                                                                     </td>
                                                                     <td>{{ $target->rating->average }}</td>
                                                                     <td>{{ $target->rating->remarks }}</td>
-                                                                </tr>
-                                                            @endif
+                                                                @endif
+                                                            </tr>
                                                         </tbody>
                                                     </table>
                                                 </div>

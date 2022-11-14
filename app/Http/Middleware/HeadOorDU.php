@@ -17,7 +17,7 @@ class HeadOorDU
      */
     public function handle(Request $request, Closure $next)
     {
-        if (!Auth::user()->account_types->contains(3) || !Auth::user()->account_types->contains(4))
+        if (!Auth::user()->account_types->contains(3) && !Auth::user()->account_types->contains(4))
         {
             abort(403);
         }

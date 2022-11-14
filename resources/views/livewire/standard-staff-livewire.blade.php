@@ -60,40 +60,6 @@
                     @endif
                 </div>
             @endif
-            @if ((isset($assess) && ($assess->superior1_status == 2 || $assess->superior2_status == 2)))
-                <div class="row">
-                    @if ($assess->superior1_message)
-                        <div class="col-6">
-                            <div class="card">
-                                <div class="card-header">
-                                    <h4 class="card-title">
-                                        {{ $asssuperior1->name }} Message:
-                                    </h4>
-                                    <p class="text-subtitle text-muted"></p>
-                                </div>
-                                <div class="card-body">
-                                    {{ $assess->superior1_message }}
-                                </div>
-                            </div>
-                        </div>
-                    @endif
-                    @if ($assess->superior2_message)
-                        <div class="col-6">
-                            <div class="card">
-                                <div class="card-header">
-                                    <h4 class="card-title">
-                                        {{ $asssuperior2->name }} Message:
-                                    </h4>
-                                    <p class="text-subtitle text-muted"></p>
-                                </div>
-                                <div class="card-body">
-                                    {{ $assess->superior2_message }}
-                                </div>
-                            </div>
-                        </div>
-                    @endif
-                </div>
-            @endif
             <div class="hstack mb-3">
                 <h4>
                     {{ $funct->funct }}

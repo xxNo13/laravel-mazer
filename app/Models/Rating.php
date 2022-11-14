@@ -10,8 +10,6 @@ class Rating extends Model
     use HasFactory;
 
     protected $fillable = [
-        'alloted_budget',
-        'responsible',
         'accomplishment',
         'efficiency',
         'quality',

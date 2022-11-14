@@ -117,7 +117,7 @@
                 @forelse ($funct->subFuncts as $subFunct)   
                     @if ($subFunct->user_id == Auth::user()->id &&
                     $subFunct->user_type == $userType  &&
-                    $subFunct->type == 'ipcr' &&
+                    $subFunct->type == $type &&
                     $subFunct->duration_id == $duration->id)
                         <tr>
                             <td colspan="2">
@@ -128,12 +128,12 @@
                         @foreach ($subFunct->outputs as $output)
                             @if ($output->user_id == Auth::user()->id &&
                                 $output->user_type == $userType  &&
-                                $output->type == 'ipcr' &&
+                                $output->type == $type &&
                                 $output->duration_id == $duration->id)
                                 @forelse ($output->suboutputs as $suboutput)
                                     @if ($suboutput->user_id == Auth::user()->id &&
                                     $suboutput->user_type == $userType  &&
-                                    $suboutput->type == 'ipcr' &&
+                                    $suboutput->type == $type &&
                                     $suboutput->duration_id == $duration->id)
                                         <tr>
                                             <td>
@@ -155,7 +155,7 @@
                                             @foreach ($suboutput->targets as $target)
                                                 @if ($target->user_id == Auth::user()->id &&
                                                     $target->user_type == $userType  &&
-                                                    $target->type == 'ipcr' &&
+                                                    $target->type == $type &&
                                                     $target->duration_id == $duration->id)
                                                     @if ($first)
                                                     <td rowspan="5">{{ $target->target }}</td>
@@ -262,7 +262,7 @@
                                         @foreach ($output->targets as $target)
                                             @if ($target->user_id == Auth::user()->id &&
                                                 $target->user_type == $userType  &&
-                                                $target->type == 'ipcr' &&
+                                                $target->type == $type &&
                                                 $target->duration_id == $duration->id)
                                                 @if ($first)
                                                     <td rowspan="5">{{ $target->target }}</td>
@@ -361,12 +361,12 @@
                     @foreach ($funct->outputs as $output)
                         @if ($output->user_id == Auth::user()->id &&
                             $output->user_type == $userType  &&
-                            $output->type == 'ipcr' &&
+                            $output->type == $type &&
                             $output->duration_id == $duration->id)
                             @forelse ($output->suboutputs as $suboutput)
                                 @if ($suboutput->user_id == Auth::user()->id &&
                                 $suboutput->user_type == $userType  &&
-                                $suboutput->type == 'ipcr' &&
+                                $suboutput->type == $type &&
                                 $suboutput->duration_id == $duration->id)
                                     <tr>
                                         <td>
@@ -388,7 +388,7 @@
                                         @foreach ($suboutput->targets as $target)
                                             @if ($target->user_id == Auth::user()->id &&
                                                 $target->user_type == $userType  &&
-                                                $target->type == 'ipcr' &&
+                                                $target->type == $type &&
                                                 $target->duration_id == $duration->id)
                                                 @if ($first)
                                                 <td rowspan="5">{{ $target->target }}</td>
@@ -495,7 +495,7 @@
                                     @foreach ($output->targets as $target)
                                         @if ($target->user_id == Auth::user()->id &&
                                             $target->user_type == $userType  &&
-                                            $target->type == 'ipcr' &&
+                                            $target->type == $type &&
                                             $target->duration_id == $duration->id)
                                             @if ($first)
                                                 <td rowspan="5">{{ $target->target }}</td>

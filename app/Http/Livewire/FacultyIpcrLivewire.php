@@ -16,6 +16,7 @@ use App\Models\Percentage;
 use Livewire\WithPagination;
 use App\Models\SuppPercentage;
 use Illuminate\Support\Facades\Auth;
+use App\Notifications\ApprovalNotification;
 
 class FacultyIpcrLivewire extends Component
 {
@@ -46,19 +47,22 @@ class FacultyIpcrLivewire extends Component
     public $strategic;
     public $support;
     public $supp = [];
+    public $dummy = 'dummy';
 
 
     protected $rules = [
         'accomplishment' => ['required_if:selected,rating'],
+        'efficiency' => ['nullable', 'required_without_all:quality,timeliness,dummy', 'integer', 'min:1', 'max:5'],
+        'quality' => ['nullable', 'required_without_all:efficiency,timeliness,dummy', 'integer', 'min:1', 'max:5'],
+        'timeliness' => ['nullable', 'required_without_all:quality,efficiency,dummy', 'integer', 'min:1', 'max:5'],
         'superior1_id' => ['required_if:selected,approval'],
         'superior2_id' => ['required_if:selected,approval'],
-        'core' => ['required_if:selected,percentage'],
-        'strategic' => ['required_if:selected,percentage'],
-        'support' => ['required_if:selected,percentage'],
+        'core' => ['nullable', 'required_if:selected,percentage', 'integer'],
+        'strategic' => ['nullable', 'required_if:selected,percentage', 'integer'],
+        'support' => ['nullable', 'required_if:selected,percentage', 'integer'],
     ];
 
-    public function render()
-    {
+    public function mount() {
         $this->users1 = User::whereHas('account_types', function(\Illuminate\Database\Eloquent\Builder $query) {
             return $query->where('account_type', 'like', "%head%");
         })->where('id', '!=', Auth::user()->id)->get();
@@ -66,6 +70,25 @@ class FacultyIpcrLivewire extends Component
             return $query->where('account_type', 'like', "%head%");
         })->where('id', '!=', Auth::user()->id)->get();
         $this->duration = Duration::orderBy('id', 'DESC')->where('start_date', '<=', date('Y-m-d'))->first();
+        
+        if ($this->duration) {
+            $this->approveFaculty = Approval::orderBy('id', 'DESC')
+                ->where('name', 'approval')
+                ->where('user_id', null)
+                ->where('type', 'ipcr')
+                ->where('duration_id', $this->duration->id)
+                ->where('user_type', 'faculty')
+                ->where('added_id', '!=', null)
+                ->first();
+            $this->subFuncts = SubFunct::where('user_id', Auth::user()->id)
+                ->where('type', 'ipcr')
+                ->where('user_type', 'faculty')
+                ->where('duration_id', $this->duration->id)
+                ->get();
+        }
+    }
+    public function render()
+    {
         if ($this->duration) {
             $this->output = Output::where('user_id', Auth::user()->id)
                     ->where('type', 'ipcr')
@@ -86,19 +109,6 @@ class FacultyIpcrLivewire extends Component
                     ->where('duration_id', $this->duration->id)
                     ->where('user_type', 'faculty')
                     ->first();
-            $this->approveFaculty = Approval::orderBy('id', 'DESC')
-                ->where('name', 'approval')
-                ->where('user_id', null)
-                ->where('type', 'ipcr')
-                ->where('duration_id', $this->duration->id)
-                ->where('user_type', 'faculty')
-                ->where('added_id', '!=', null)
-                ->first();
-            $this->subFuncts = SubFunct::where('user_id', Auth::user()->id)
-                ->where('type', 'ipcr')
-                ->where('user_type', 'faculty')
-                ->where('duration_id', $this->duration->id)
-                ->get();
             $this->percentage = Percentage::where('user_id', Auth::user()->id)
                 ->where('type', 'ipcr')
                 ->where('userType', 'faculty')
@@ -367,7 +377,6 @@ class FacultyIpcrLivewire extends Component
 
         session()->flash('message', 'Added Successfully!');
         $this->configure = false;
-        return redirect(request()->header('Referer'));
     }
 
     public function resetIPCR(){
@@ -398,15 +407,16 @@ class FacultyIpcrLivewire extends Component
         
         session()->flash('message', 'Reset Successfully!');
         $this->closeModal();
-        return redirect(request()->header('Referer'));
     }
     
 
     // CONFIGURING RATING START ----------->
     public function rating($target_id = null, $rating_id = null){
-        $this->seleced = 'rating';
+        $this->selected = 'rating';
         $this->rating_id = $rating_id;
         $this->target_id = $target_id;
+        
+        $this->dummy = '';
     }
 
     public function editRating($rating_id){
@@ -436,7 +446,7 @@ class FacultyIpcrLivewire extends Component
             if(!$this->timeliness){
                 $divisor++;
             }
-            $number = ($this->efficiency + $this->quality + $this->timeliness) / (3 - $divisor);
+            $number = ((int)$this->efficiency + (int)$this->quality + (int)$this->timeliness) / (3 - $divisor);
             $average = number_format((float)$number, 2, '.', '');
 
             Rating::create([
@@ -464,7 +474,7 @@ class FacultyIpcrLivewire extends Component
             if(!$this->timeliness){
                 $divisor++;
             }
-            $number = ($this->efficiency + $this->quality + $this->timeliness) / (3 - $divisor);
+            $number = ((int)$this->efficiency + (int)$this->quality + (int)$this->timeliness) / (3 - $divisor);
             $average = number_format((float)$number, 2, '.', '');
 
             Rating::where('id', $this->rating_id)->update([
@@ -495,7 +505,13 @@ class FacultyIpcrLivewire extends Component
     // SUBMITING OF IPCR START ------------>
     public function submit() {
         $this->selected = 'approval';
+
+        if ($this->approval) {
+            $this->superior1_id = $this->approval->superior1_id;
+            $this->superior2_id = $this->approval->superior2_id;
+        }
     }   
+
     public function changeUser(){
         if($this->superior1_id != ''){
             $this->users2 = User::whereHas('account_types', function(\Illuminate\Database\Eloquent\Builder $query) {
@@ -512,7 +528,7 @@ class FacultyIpcrLivewire extends Component
 
         $this->validate();
 
-        Approval::create([
+        $approval = Approval::create([
             'name' => 'approval',
             'user_id' => Auth::user()->id,
             'superior1_id' => $this->superior1_id,
@@ -521,18 +537,23 @@ class FacultyIpcrLivewire extends Component
             'user_type' => 'faculty',
             'duration_id' => $this->duration->id
         ]);
+        
+        $user1 = User::where('id', $this->superior1_id)->first();
+        $user2 = User::where('id', $this->superior2_id)->first();
+
+        $user1->notify(new ApprovalNotification($approval, Auth::user(), 'Submitting'));
+        $user2->notify(new ApprovalNotification($approval, Auth::user(), 'Submitting'));
 
         session()->flash('message', 'Submitted Successfully!');
         $this->resetInput();
         $this->dispatchBrowserEvent('close-modal'); 
-        return redirect(request()->header('Referer'));
     }
 
     public function assessISO(){
 
         $this->validate();
 
-        Approval::create([
+        $approval = Approval::create([
             'name' => 'assess',
             'user_id' => Auth::user()->id,
             'superior1_id' => $this->superior1_id,
@@ -541,18 +562,30 @@ class FacultyIpcrLivewire extends Component
             'user_type' => 'faculty',
             'duration_id' => $this->duration->id
         ]);
+        
+        $user1 = User::where('id', $this->superior1_id)->first();
+        $user2 = User::where('id', $this->superior2_id)->first();
+
+        $user1->notify(new ApprovalNotification($approval, Auth::user(), 'Submitting'));
+        $user2->notify(new ApprovalNotification($approval, Auth::user(), 'Submitting'));
 
         session()->flash('message', 'Submitted Successfully!');
         $this->resetInput();
         $this->dispatchBrowserEvent('close-modal'); 
-        return redirect(request()->header('Referer'));
     }
     // <---------------- SUBMITING OF IPCR END
 
     // Configuring Percentage ------------------->
     public function savePercent(){
-        $this->selected = 'percentage';
+
         $this->validate();
+
+        if (($this->core + $this->strategic + $this->support) != 100) {
+            session()->flash('message', 'Percentage is not equal to 100!');
+            $this->resetInput();
+            $this->dispatchBrowserEvent('close-modal');
+            return;
+        }
 
         $percentage = Percentage::create([
             'core' => $this->core,
@@ -577,12 +610,17 @@ class FacultyIpcrLivewire extends Component
         session()->flash('message', 'Added Successfully!');
         $this->resetInput();
         $this->dispatchBrowserEvent('close-modal'); 
-        return redirect(request()->header('Referer'));
     }
 
     public function updatePercent(){
-        $this->selected = 'percentage';
         $this->validate();
+
+        if (($this->core + $this->strategic + $this->support) != 100) {
+            session()->flash('message', 'Percentage is not equal to 100!');
+            $this->resetInput();
+            $this->dispatchBrowserEvent('close-modal');
+            return;
+        }
 
         Percentage::where('id', $this->percentage->id)->update([
             'core' => $this->core,
@@ -609,7 +647,6 @@ class FacultyIpcrLivewire extends Component
         session()->flash('message', 'Updated Successfully!');
         $this->resetInput();
         $this->dispatchBrowserEvent('close-modal'); 
-        return redirect(request()->header('Referer'));
     }
 
     public function deletePercentage() {
@@ -620,27 +657,31 @@ class FacultyIpcrLivewire extends Component
         session()->flash('message', 'Updated Successfully!');
         $this->resetInput();
         $this->dispatchBrowserEvent('close-modal'); 
-        return redirect(request()->header('Referer'));
     }
 
-    public function percent(){
-        $this->core = $this->percentage->core;
-        $this->strategic = $this->percentage->strategic;
-        $this->support = $this->percentage->support;
+    public function percent($category = null)
+    {
+        $this->selected = 'percentage';
 
-        $suppPercentage = SuppPercentage::where('percentage_id', $this->percentage->id)
+        if ($category) {
+            $this->core = $this->percentage->core;
+            $this->strategic = $this->percentage->strategic;
+            $this->support = $this->percentage->support;
+    
+            $suppPercentage = SuppPercentage::where('percentage_id', $this->percentage->id)
                 ->where('user_id', Auth::user()->id)
                 ->where('duration_id', $this->duration->id)
                 ->get();
-
-        foreach($this->subFuncts as $subFunct) {
-            foreach($suppPercentage as $supp) {
-                if($subFunct->sub_funct == $supp->name) {
-                    $this->supp[$subFunct->id] = $supp->percent;
-                    break;
+    
+            foreach ($this->subFuncts as $subFunct) {
+                foreach ($suppPercentage as $supp) {
+                    if ($subFunct->sub_funct == $supp->name) {
+                        $this->supp[$subFunct->id] = $supp->percent;
+                        break;
+                    }
                 }
             }
-        } 
+        }
     }
     // <------------------- Percetage Configure End
     public function resetInput(){
@@ -653,6 +694,11 @@ class FacultyIpcrLivewire extends Component
         $this->quality = '';
         $this->timeliness = '';
         $this->selected = '';
+        $this->core = '';
+        $this->strategic = '';
+        $this->support = '';
+        $this->supp = [];
+        $this->dummy = 'dummy';
     }
 
     public function closeModal(){

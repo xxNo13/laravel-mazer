@@ -20,20 +20,20 @@
         </div>
     </a>
     <ul class="dropdown-menu dropdown-menu-end overflow-auto" aria-labelledby="dropdownMenuButton"
-        style="max-height: 500px;">
+        style="max-height: 500px; width: 250px;">
         <li>
             <h6 class="dropdown-header">Notifications</h6>
         </li>
         @forelse (Auth::user()->notifications as $notification)
             @if (isset($notification->data['remarks']))
                 <li>
-                    <button wire:click="read('{{ $notification->id }}')" class="dropdown-item">
+                    <button wire:click="read('{{ $notification->id }}', 'ttma')" class="dropdown-item">
                         <div class="d-flex align-items-center">
                             <div style="width: 90%;">
                                 <div class="text-truncate fw-bold">
                                     <span>Marked as Done:</span>
                                 </div>
-                                <div class="text-truncate">
+                                <div class="text-truncate text-capitalize">
                                     {{ $notification->data['subject'] }} - {{ $notification->data['output'] }}
                                 </div>
                                 <div>
@@ -51,16 +51,61 @@
                         </div>
                     </button>
                 </li>
-            @else
+            @elseif (isset($notification->data['ttma_id']))
                 <li>
-                    <button wire:click="read('{{ $notification->id }}')" class="dropdown-item">
+                    <button wire:click="read('{{ $notification->id }}', 'ttma')" class="dropdown-item">
                         <div class="d-flex align-items-center">
                             <div style="width: 90%;">
                                 <div class="text-truncate fw-bold">
                                     <span>Assigned Task:</span>
                                 </div>
-                                <div class="text-truncate">
+                                <div class="text-truncate text-capitalize">
                                     {{ $notification->data['subject'] }} - {{ $notification->data['output'] }}
+                                </div>
+                                <div>
+                                    <span
+                                        class="text-muted fst-italic">{{ $notification->created_at->diffForHumans() }}</span>
+                                </div>
+                            </div>
+                            <div class="text-primary hstack" style="width: 10%;">
+                                @if (empty($notification->read_at))
+                                    <span class="ms-auto">
+                                        <i class="bi bi-circle-fill"></i>
+                                    </span>
+                                @endif
+                            </div>
+                        </div>
+                    </button>
+                </li>
+            @elseif (isset($notification->data['approval_id']))
+                @php
+                    if ($notification->data['status'] == 'Submitting') {
+                        $url = 'for-approval';
+                    } else {
+                        if ($notification->data['type'] == 'ipcr' && $notification->data['userType'] == 'staff') {
+                            $url = 'ipcr/staff';
+                        } elseif ($notification->data['type'] == 'ipcr' && $notification->data['userType'] == 'faculty') {
+                            $url = 'ipcr/faculty';
+                        } elseif ($notification->data['type'] == 'standard' && $notification->data['userType'] == 'staff') {
+                            $url = 'standard/staff';
+                        } elseif ($notification->data['type'] == 'standard' && $notification->data['userType'] == 'faculty') {
+                            $url = 'standard/faculty';
+                        } elseif ($notification->data['type'] == 'opcr' && $notification->data['userType'] == 'office') {
+                            $url = 'opcr';
+                        } elseif ($notification->data['type'] == 'standard' && $notification->data['userType'] == 'office') {
+                            $url = 'standard/opcr';
+                        }
+                    }
+                @endphp
+                <li>
+                    <button wire:click="read('{{ $notification->id }}', '{{ $url }}')" class="dropdown-item">
+                        <div class="d-flex align-items-center">
+                            <div style="width: 90%;">
+                                <div class="text-truncate fw-bold">
+                                    <span>{{ $notification->data['user'] }}:</span>
+                                </div>
+                                <div class="text-truncate text-capitalize">
+                                    {{ $notification->data['status'] }} - {{ $notification->data['type'] }}
                                 </div>
                                 <div>
                                     <span

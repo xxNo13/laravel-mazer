@@ -40,6 +40,7 @@ class CreateNewUser implements CreatesNewUsers
 
         $user->account_types()->attach($input['account_type']);
 
+        session()->flash('message', 'User Successfully Registered!');
         return Auth::user();
     }
 }

@@ -119,16 +119,16 @@
                     </button>
                     @if (!$percentage)
                         <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal"
-                            data-bs-target="#AddPercentageModal" title="Add Percentage">
+                            data-bs-target="#AddPercentageModal" title="Add Percentage" wire:click="percent">
                             Add Percentage
                         </button>
                     @else
                         <button type="button" class="btn btn-outline-success" data-bs-toggle="modal"
-                            data-bs-target="#EditPercentageModal" title="Edit Percentage" wire:click="percent">
+                            data-bs-target="#EditPercentageModal" title="Edit Percentage" wire:click="percent('{{ 'edit' }}')">
                             Edit Percentage
                         </button>
                     @endif
-                    @if ($targ)
+                    @if ($targ && $percentage)
                         <button type="button" class="btn btn-outline-info" data-bs-toggle="modal"
                             data-bs-target="#SubmitISOModal" title="Save IPCR" wire:click="submit">
                             Submit
@@ -136,7 +136,7 @@
                     @endif
                 @elseif (($approval && $approval->superior1_status == 1 && $approval->superior2_status == 1)&& 
                 (!$assess || ($assess->superior1_status == 2 || $assess->superior2_status == 2)) &&
-                ($duration && $duration->start_date <= date('Y-m-d') && $duration->end_date >= date('Y-m-d')))
+                ($duration && $duration->start_date <= date('Y-m-d') && $duration->end_date >= date('Y-m-d')) && ($targ->rating))
                         <button type="button" class="ms-auto btn btn-outline-info" data-bs-toggle="modal"
                             data-bs-target="#AssessISOModal" title="Save IPCR" wire:click="submit">
                             Submit
@@ -307,7 +307,7 @@
                                                                                         <td>{{ $target->rating->remarks }}
                                                                                         </td>
                                                                                         <td>
-                                                                                            @if ($duration && $duration->start_date <= date('Y-m-d') && $duration->end_date >= date('Y-m-d'))
+                                                                                            @if ($duration && $duration->start_date <= date('Y-m-d') && $duration->end_date >= date('Y-m-d') && (!$assess || ($assess->superior1_status == 2 || $assess->superior2_status == 2)))
                                                                                                 <button type="button"
                                                                                                     class="btn icon btn-success"
                                                                                                     wire:click="editRating({{ $target->rating->id }})"
@@ -455,7 +455,7 @@
                                                                                     <td>{{ $target->rating->remarks }}
                                                                                     </td>
                                                                                     <td>
-                                                                                        @if ($duration && $duration->start_date <= date('Y-m-d') && $duration->end_date >= date('Y-m-d'))
+                                                                                        @if ($duration && $duration->start_date <= date('Y-m-d') && $duration->end_date >= date('Y-m-d') && (!$assess || ($assess->superior1_status == 2 || $assess->superior2_status == 2)))
                                                                                             <button type="button"
                                                                                                 class="btn icon btn-success"
                                                                                                 wire:click="editRating({{ $target->rating->id }})"
@@ -643,7 +643,7 @@
                                                                         <td>{{ $target->rating->average }}</td>
                                                                         <td>{{ $target->rating->remarks }}</td>
                                                                         <td>
-                                                                            @if ($duration && $duration->start_date <= date('Y-m-d') && $duration->end_date >= date('Y-m-d'))
+                                                                            @if ($duration && $duration->start_date <= date('Y-m-d') && $duration->end_date >= date('Y-m-d') && (!$assess || ($assess->superior1_status == 2 || $assess->superior2_status == 2)))
                                                                                 <button type="button"
                                                                                     class="btn icon btn-success"
                                                                                     wire:click="editRating({{ $target->rating->id }})"
@@ -782,7 +782,7 @@
                                                                     <td>{{ $target->rating->average }}</td>
                                                                     <td>{{ $target->rating->remarks }}</td>
                                                                     <td>
-                                                                        @if ($duration && $duration->start_date <= date('Y-m-d') && $duration->end_date >= date('Y-m-d'))
+                                                                        @if ($duration && $duration->start_date <= date('Y-m-d') && $duration->end_date >= date('Y-m-d') && (!$assess || ($assess->superior1_status == 2 || $assess->superior2_status == 2)))
                                                                             <button type="button"
                                                                                 class="btn icon btn-success"
                                                                                 wire:click="editRating({{ $target->rating->id }})"

@@ -1,4 +1,11 @@
 <x-app-layout>
+    @if (session()->has('message'))
+        <div x-data="{ show: true }" x-init="setTimeout(() => show = false, 3000)" x-show="show"
+            class="toastify on  toastify-right toastify-bottom" aria-live="polite"
+            style="background: #41bbdd; transform: translate(0px, 0px); bottom: 15px;">
+            {{ session('message') }}
+        </div>
+    @endif
     <div id="auth-left">
         <h1 class="auth-title">Sign Up</h1>
         <p class="auth-subtitle mb-5">Input data to register.</p>

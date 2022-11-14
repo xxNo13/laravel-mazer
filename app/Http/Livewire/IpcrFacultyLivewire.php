@@ -332,7 +332,6 @@ class IpcrFacultyLivewire extends Component
         session()->flash('message', 'Saved Successfully!');
         $this->resetInput();
         $this->dispatchBrowserEvent('close-modal');
-        return redirect(request()->header('Referer'));
     }
     // <---------------- SUBMITING OF IPCR END
 

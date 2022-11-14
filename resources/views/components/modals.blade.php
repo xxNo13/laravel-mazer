@@ -54,6 +54,9 @@
                                     <div class="form-group">
                                         <input type="text" placeholder="Sub Function" class="form-control"
                                             wire:model="sub_funct">
+                                        @error('sub_funct')
+                                            <p class="text-danger">{{ $message }}</p>
+                                        @enderror
                                     </div>
                                 @elseif ($selected == 'output')
                                     @if ($functs->links()->paginator->currentPage() == '3')
@@ -226,6 +229,9 @@
                                     <div class="form-group">
                                         <input type="text" placeholder="Sub Function" class="form-control"
                                             wire:model="sub_funct">
+                                        @error('sub_funct')
+                                            <p class="text-danger">{{ $message }}</p>
+                                        @enderror
                                     </div>
                                 @elseif ($selected == 'output')
                                     <label>Output: </label>
@@ -326,6 +332,9 @@
                                     <div class="form-group">
                                         <input type="text" placeholder="Sub Function" class="form-control"
                                             wire:model="sub_funct">
+                                        @error('sub_funct')
+                                            <p class="text-danger">{{ $message }}</p>
+                                        @enderror
                                     </div>
                                 @elseif ($selected == 'output')
                                     @if ($functs->links()->paginator->currentPage() == '3')
@@ -422,6 +431,22 @@
                                             <p class="text-danger">{{ $message }}</p>
                                         @enderror
                                     </div>
+                                    <label>Alloted Budget: </label>
+                                    <div class="form-group">
+                                        <input type="text" placeholder="Alloted Budget" class="form-control"
+                                            name="alloted_budget" wire:model="alloted_budget">
+                                        @error('alloted_budget')
+                                            <p class="text-danger">{{ $message }}</p>
+                                        @enderror
+                                    </div>
+                                    <label>Responsible Person/Office: </label>
+                                    <div class="form-group">
+                                        <input type="text" placeholder="Responsible Person/Office" class="form-control"
+                                            name="responsible" wire:model="responsible">
+                                        @error('responsible')
+                                            <p class="text-danger">{{ $message }}</p>
+                                        @enderror
+                                    </div>
                                 @endif
                             </div>
                         </div>
@@ -459,6 +484,9 @@
                                     <div class="form-group">
                                         <input type="text" placeholder="Sub Function" class="form-control"
                                             wire:model="sub_funct">
+                                        @error('sub_funct')
+                                            <p class="text-danger">{{ $message }}</p>
+                                        @enderror
                                     </div>
                                 @elseif ($selected == 'output')
                                     <label>Output: </label>
@@ -484,6 +512,22 @@
                                         <input type="text" placeholder="Target" class="form-control"
                                             name="target" wire:model="target">
                                         @error('target')
+                                            <p class="text-danger">{{ $message }}</p>
+                                        @enderror
+                                    </div>
+                                    <label>Alloted Budget: </label>
+                                    <div class="form-group">
+                                        <input type="text" placeholder="Alloted Budget" class="form-control"
+                                            name="alloted_budget" wire:model="alloted_budget">
+                                        @error('alloted_budget')
+                                            <p class="text-danger">{{ $message }}</p>
+                                        @enderror
+                                    </div>
+                                    <label>Responsible Person/Office: </label>
+                                    <div class="form-group">
+                                        <input type="text" placeholder="Responsible Person/Office" class="form-control"
+                                            name="responsible" wire:model="responsible">
+                                        @error('responsible')
                                             <p class="text-danger">{{ $message }}</p>
                                         @enderror
                                     </div>
@@ -552,24 +596,6 @@
 
                     <form wire:submit.prevent="saveRating('{{ 'add' }}')">
                         <div class="modal-body">
-                            @if ($type == 'OPCR')
-                                <label>Alloted Budget: </label>
-                                <div class="form-group">
-                                    <input type="text" placeholder="Alloted Budget" class="form-control"
-                                        wire:model="alloted_budget">
-                                    @error('alloted_budget')
-                                        <p class="text-danger">{{ $message }}</p>
-                                    @enderror
-                                </div>
-                                <label>Responsible Office/Person: </label>
-                                <div class="form-group">
-                                    <input type="text" placeholder="Responsible Office/Person"
-                                        class="form-control" wire:model="responsible">
-                                    @error('responsible')
-                                        <p class="text-danger">{{ $message }}</p>
-                                    @enderror
-                                </div>
-                            @endif
                             <label>Actual Accomplishment: </label>
                             <div class="form-group">
                                 <input type="text" placeholder="Actual Accomplishment" class="form-control"
@@ -632,43 +658,37 @@
 
                     <form wire:submit.prevent="saveRating('{{ 'edit' }}')">
                         <div class="modal-body">
-                            @if ($type == 'OPCR')
-                                <label>Alloted Budget: </label>
-                                <div class="form-group">
-                                    <input type="text" placeholder="Alloted Budget" class="form-control"
-                                        wire:model="alloted_budget">
-                                    @error('alloted_budget')
-                                        <p class="text-danger">{{ $message }}</p>
-                                    @enderror
-                                </div>
-                                <label>Responsible Office/Person: </label>
-                                <div class="form-group">
-                                    <input type="text" placeholder="Responsible Office/Person"
-                                        class="form-control" wire:model="responsible">
-                                    @error('responsible')
-                                        <p class="text-danger">{{ $message }}</p>
-                                    @enderror
-                                </div>
-                            @endif
                             <label>Actual Accomplishment: </label>
                             <div class="form-group">
                                 <input type="text" placeholder="Actual Accomplishment" class="form-control"
                                     wire:model="accomplishment">
+                                @error('accomplishment')
+                                    <p class="text-danger">{{ $message }}</p>
+                                @enderror
                             </div>
                             <label>Efficiency: </label>
                             <div class="form-group">
                                 <input type="text" placeholder="Efficiency" class="form-control"
                                     wire:model="efficiency">
+                                @error('efficiency')
+                                    <p class="text-danger">{{ $message }}</p>
+                                @enderror
                             </div>
                             <label>Quality: </label>
                             <div class="form-group">
                                 <input type="text" placeholder="Quality" class="form-control"
                                     wire:model="quality">
+                                @error('quality')
+                                    <p class="text-danger">{{ $message }}</p>
+                                @enderror
                             </div>
                             <label>Timeliness: </label>
                             <div class="form-group">
                                 <input type="text" placeholder="Timeliness" class="form-control"
                                     wire:model="timeliness">
+                                @error('timeliness')
+                                    <p class="text-danger">{{ $message }}</p>
+                                @enderror
                             </div>
                         </div>
                         <div class="modal-footer">
@@ -947,6 +967,9 @@
                                         <option value="{{ $user->id }}">{{ $user->name }}</option>
                                     @endforeach
                                 </select>
+                                @error('superior1_id')
+                                    <p class="text-danger">{{ $message }}</p>
+                                @enderror
                             </div>
                             <label>Head/Leader/Superior 2: </label>
                             <div class="form-group">
@@ -957,6 +980,9 @@
                                         <option value="{{ $user->id }}">{{ $user->name }}</option>
                                     @endforeach
                                 </select>
+                                @error('superior2_id')
+                                    <p class="text-danger">{{ $message }}</p>
+                                @enderror
                             </div>
                         </div>
                         <div class="modal-footer">
@@ -987,6 +1013,9 @@
                     </div>
 
                     <form wire:submit.prevent="assessISO">
+                        @error('quality')
+                            <p class="text-danger">{{ $message }}</p>
+                        @enderror
                         <div class="modal-body">
                             <label>Head/Leader/Superior 1: </label>
                             <div class="form-group">
@@ -997,6 +1026,9 @@
                                         <option value="{{ $user->id }}">{{ $user->name }}</option>
                                     @endforeach
                                 </select>
+                                @error('superior1_id')
+                                    <p class="text-danger">{{ $message }}</p>
+                                @enderror
                             </div>
                             <label>Head/Leader/Superior 2: </label>
                             <div class="form-group">
@@ -1007,6 +1039,9 @@
                                         <option value="{{ $user->id }}">{{ $user->name }}</option>
                                     @endforeach
                                 </select>
+                                @error('superior2_id')
+                                    <p class="text-danger">{{ $message }}</p>
+                                @enderror
                             </div>
                         </div>
                         <div class="modal-footer">
@@ -1043,6 +1078,9 @@
                             <div class="form-group">
                                 <input type="text" placeholder="Subject" class="form-control"
                                     wire:model="subject">
+                                @error('subject')
+                                    <p class="text-danger">{{ $message }}</p>
+                                @enderror
                             </div>
                             <label>Action Officer: </label>
                             <div class="form-group">
@@ -1053,10 +1091,16 @@
                                         <option value="{{ $user->id }}">{{ $user->name }}</option>
                                     @endforeach
                                 </select>
+                                @error('user_id')
+                                    <p class="text-danger">{{ $message }}</p>
+                                @enderror
                             </div>
                             <label>Output: </label>
                             <div class="form-group">
                                 <input type="text" placeholder="Output" class="form-control" wire:model="output">
+                                @error('output')
+                                    <p class="text-danger">{{ $message }}</p>
+                                @enderror
                             </div>
                         </div>
                         <div class="modal-footer">
@@ -1091,6 +1135,9 @@
                             <div class="form-group">
                                 <input type="text" placeholder="Subject" class="form-control"
                                     wire:model="subject">
+                                @error('subject')
+                                    <p class="text-danger">{{ $message }}</p>
+                                @enderror
                             </div>
                             <label>Action Officer: </label>
                             <div class="form-group">
@@ -1101,10 +1148,16 @@
                                         <option value="{{ $user->id }}">{{ $user->name }}</option>
                                     @endforeach
                                 </select>
+                                @error('user_id')
+                                    <p class="text-danger">{{ $message }}</p>
+                                @enderror
                             </div>
                             <label>Output: </label>
                             <div class="form-group">
                                 <input type="text" placeholder="Output" class="form-control" wire:model="output">
+                                @error('output')
+                                    <p class="text-danger">{{ $message }}</p>
+                                @enderror
                             </div>
                         </div>
                         <div class="modal-footer">
@@ -1169,10 +1222,16 @@
                         <label>Office: </label>
                         <div class="form-group">
                             <input type="text" placeholder="Office" class="form-control" wire:model="office">
+                            @error('office')
+                                <p class="text-danger">{{ $message }}</p>
+                            @enderror
                         </div>
                         <label>Building: </label>
                         <div class="form-group">
                             <input type="text" placeholder="Building" class="form-control" wire:model="building">
+                            @error('building')
+                                <p class="text-danger">{{ $message }}</p>
+                            @enderror
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -1206,10 +1265,16 @@
                         <label>Office: </label>
                         <div class="form-group">
                             <input type="text" placeholder="Office" class="form-control" wire:model="office">
+                            @error('office')
+                                <p class="text-danger">{{ $message }}</p>
+                            @enderror
                         </div>
                         <label>Building: </label>
                         <div class="form-group">
                             <input type="text" placeholder="Building" class="form-control" wire:model="building">
+                            @error('building')
+                                <p class="text-danger">{{ $message }}</p>
+                            @enderror
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -1244,6 +1309,9 @@
                         <div class="form-group">
                             <input type="text" placeholder="Account Type" class="form-control"
                                 wire:model="account_type">
+                                @error('account_type')
+                                    <p class="text-danger">{{ $message }}</p>
+                                @enderror
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -1278,6 +1346,9 @@
                         <div class="form-group">
                             <input type="text" placeholder="Account Type" class="form-control"
                                 wire:model="account_type">
+                                @error('account_type')
+                                    <p class="text-danger">{{ $message }}</p>
+                                @enderror
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -1315,6 +1386,9 @@
                         <div class="form-group">
                             <input type="date" placeholder="Start Date" class="form-control"
                                 wire:change="startChanged" wire:model="start_date" min="{{ date('Y-m-d') }}">
+                                @error('start_date')
+                                    <p class="text-danger">{{ $message }}</p>
+                                @enderror
                         </div>
 
                         <label>End Date: </label>
@@ -1324,6 +1398,9 @@
                                 @if (isset($startDate)) min="{{ $startDate }}"
                                 @else
                                     min="{{ date('Y-m-d') }}" @endif>
+                                @error('end_date')
+                                    <p class="text-danger">{{ $message }}</p>
+                                @enderror
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -1361,12 +1438,18 @@
                         <div class="form-group">
                             <input type="date" placeholder="Start Date" class="form-control"
                                 wire:model="start_date" min="{{ date('Y-m-d') }}">
+                                @error('start_date')
+                                    <p class="text-danger">{{ $message }}</p>
+                                @enderror
                         </div>
 
                         <label>End Date: </label>
                         <div class="form-group">
                             <input type="date" placeholder="End Date" class="form-control"
                                 wire:model="end_date" min="{{ date('Y-m-d') }}">
+                                @error('end_date')
+                                    <p class="text-danger">{{ $message }}</p>
+                                @enderror
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -1414,53 +1497,6 @@
         </div>
     </div>
 
-    @if (isset($userType))
-        {{-- Print Modal --}}
-        <div wire:ignore.self class="modal fade text-left" id="PrintModal" tabindex="-1" role="dialog"
-            aria-labelledby="myModalLabel33" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h4 class="modal-title" id="myModalLabel33">Print</h4>
-                        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                            <i data-feather="x"></i>
-                        </button>
-                    </div>
-                    <form action="/view?userType={{ $userType }}" method="POST">
-                        @csrf
-                        <div class="modal-body">
-                            <label>Core Funtion %: </label>
-                            <div class="form-group">
-                                <input type="text" placeholder="Core Funtion" class="form-control"
-                                    name="core">
-                            </div>
-                            <label>Strategic Funtion %: </label>
-                            <div class="form-group">
-                                <input type="text" placeholder="Strategic Funtion" class="form-control"
-                                    name="strategic">
-                            </div>
-                            <label>Support Funtion %: </label>
-                            <div class="form-group">
-                                <input type="text" placeholder="Support Funtion" class="form-control"
-                                    name="support">
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-light-secondary" wire:click="closeModal">
-                                <i class="bx bx-x d-block d-sm-none"></i>
-                                <span class="d-none d-sm-block">Close</span>
-                            </button>
-                            <button type="submit" class="btn btn-primary ml-1">
-                                <i class="bx bx-check d-block d-sm-none"></i>
-                                <span class="d-none d-sm-block">Save</span>
-                            </button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    @endif
-
     {{-- Add Percentage Modal --}}
     <div wire:ignore.self class="modal fade text-left" id="AddPercentageModal" tabindex="-1" role="dialog"
         aria-labelledby="myModalLabel33" aria-hidden="true">
@@ -1473,21 +1509,49 @@
                     </button>
                 </div>
                 <form wire:submit.prevent="savePercent">
+                    
+                    @error('output')
+                        <p class="text-danger">{{ $message }}</p>
+                    @enderror
+                    @error('suboutput')
+                        <p class="text-danger">{{ $message }}</p>
+                    @enderror
+                    @error('target')
+                        <p class="text-danger">{{ $message }}</p>
+                    @enderror
+                    @error('accomplishment')
+                        <p class="text-danger">{{ $message }}</p>
+                    @enderror
+                    @error('timeliness')
+                        <p class="text-danger">{{ $message }}</p>
+                    @enderror
+                    @error('superior1_id')
+                        <p class="text-danger">{{ $message }}</p>
+                    @enderror
                     <div class="modal-body">
                         <label>Core Function %: </label>
                         <div class="form-group">
                             <input type="text" placeholder="Core Function" class="form-control"
                                 wire:model="core">
+                                @error('core')
+                                    <p class="text-danger">{{ $message }}</p>
+                                @enderror
                         </div>
                         <label>Strategic Function %: </label>
                         <div class="form-group">
                             <input type="text" placeholder="Strategic Function" class="form-control"
                                 wire:model="strategic">
+                                @error('strategic')
+                                    <p class="text-danger">{{ $message }}</p>
+                                @enderror
                         </div>
                         <label>Support Function %: </label>
                         <div class="form-group">
                             <input type="text" placeholder="Support Function" class="form-control"
                                 wire:model="support">
+                                @error('support')
+                                    <p class="text-danger">{{ $message }}</p>
+                                @enderror
                         </div>
                         @if (isset($subFuncts))
                             <div class="d-flex gap-3" style="height: 100%;">
@@ -1537,16 +1601,25 @@
                         <div class="form-group">
                             <input type="text" placeholder="Core Function" class="form-control"
                                 wire:model="core">
+                                @error('core')
+                                    <p class="text-danger">{{ $message }}</p>
+                                @enderror
                         </div>
                         <label>Strategic Function %: </label>
                         <div class="form-group">
                             <input type="text" placeholder="Strategic Function" class="form-control"
                                 wire:model="strategic">
+                                @error('strategic')
+                                    <p class="text-danger">{{ $message }}</p>
+                                @enderror
                         </div>
                         <label>Support Function %: </label>
                         <div class="form-group">
                             <input type="text" placeholder="Support Function" class="form-control"
                                 wire:model="support">
+                                @error('support')
+                                    <p class="text-danger">{{ $message }}</p>
+                                @enderror
                         </div>
                         @if (isset($subFuncts))
                             <div class="d-flex gap-3" style="height: 100%;">
@@ -1620,7 +1693,7 @@
         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title" id="myModalLabel33">Disapprove Message</h4>
+                    <h4 class="modal-title" id="myModalLabel33">Disapproving Message</h4>
                     <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
                         <i data-feather="x"></i>
                     </button>
@@ -1632,6 +1705,9 @@
                             <textarea placeholder="Message" class="form-control"
                                 wire:model="message">
                             </textarea>
+                            @error('message')
+                                <p class="text-danger">{{ $message }}</p>
+                            @enderror
                         </div>
                     </div>
                     <div class="modal-footer">

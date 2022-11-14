@@ -10,15 +10,32 @@ class NotificationLivewire extends Component
 {
     public function render()
     {
-        if(str_replace(url('/'), '', url()->current()) == '/ttma'){
-            Auth::user()->unreadNotifications->markAsRead();
+        foreach (Auth::user()->unreadNotifications as $notification) {
+            if(str_replace(url('/'), '', url()->current()) == '/ttma' && $notification->data['ttma_id']){
+                $notification->markAsRead();
+            } elseif (str_replace(url('/'), '', url()->current()) == '/ipcr/staff' && $notification->data['type'] && ($notification->data['type'] == 'ipcr' && $notification->data['userType'] == 'staff')) {
+                $notification->markAsRead();
+            } elseif (str_replace(url('/'), '', url()->current()) == '/ipcr/faculty' && $notification->data['type'] && ($notification->data['type'] == 'ipcr' && $notification->data['userType'] == 'faculty')) {
+                $notification->markAsRead();
+            } elseif (str_replace(url('/'), '', url()->current()) == '/standard/staff' && $notification->data['type'] && ($notification->data['type'] == 'standard' && $notification->data['userType'] == 'staff')) {
+                $notification->markAsRead();
+            } elseif (str_replace(url('/'), '', url()->current()) == '/standard/faculty' && $notification->data['type'] && ($notification->data['type'] == 'standard' && $notification->data['userType'] == 'faculty')) {
+                $notification->markAsRead();
+            } elseif (str_replace(url('/'), '', url()->current()) == '/opcr' && $notification->data['type'] && ($notification->data['type'] == 'opcr' && $notification->data['userType'] == 'office')) {
+                $notification->markAsRead();
+            } elseif (str_replace(url('/'), '', url()->current()) == '/standard/opcr' && $notification->data['type'] && ($notification->data['type'] == 'standard' && $notification->data['userType'] == 'office')) {
+                $notification->markAsRead();
+            } elseif (str_replace(url('/'), '', url()->current()) == '/for-approval' && $notification->data['status'] && $notification->data['status'] == 'Submitting'){
+                $notification->markAsRead();
+            }
         }
+
         return view('livewire.notification-livewire',[
             'unreads' => 0
         ]);
     }
 
-    public function read($id) {
+    public function read($id, $url) {
         foreach (Auth::user()->notifications as $notification)
         {
             if ($notification->id == $id)
@@ -27,6 +44,7 @@ class NotificationLivewire extends Component
 
             }
         }
-        return redirect('/ttma');
+        
+        return redirect($url);
     }
 }

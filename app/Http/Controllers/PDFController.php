@@ -91,6 +91,11 @@ class PDFController extends Controller
             $pdf = PDF::loadView('print.opcr', $data)->setPaper('a4','landscape');
             return $pdf->stream('opcr.pdf');
         } elseif ($print == 'standard') {
+            if ($request->userType == 'office') {
+                $data['type'] = 'opcr';
+            } else {
+                $data['type'] = 'ipcr';
+            }
             $pdf = PDF::loadView('print.standard', $data)->setPaper('a4','landscape');
             return $pdf->stream('standard.pdf');
         } else {

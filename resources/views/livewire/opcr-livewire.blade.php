@@ -119,16 +119,16 @@
                     </button>
                     @if (!$percentage)
                         <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal"
-                            data-bs-target="#AddPercentageModal" title="Add Percentage">
+                            data-bs-target="#AddPercentageModal" wire:click="percent" title="Add Percentage">
                             Add Percentage
                         </button>
                     @else
                         <button type="button" class="btn btn-outline-success" data-bs-toggle="modal"
-                            data-bs-target="#EditPercentageModal" title="Edit Percentage" wire:click="percent">
+                            data-bs-target="#EditPercentageModal" title="Edit Percentage" wire:click="percent('{{ 'edit' }}')">
                             Edit Percentage
                         </button>
                     @endif
-                    @if ($targ)
+                    @if ($targ && $percentage)
                         <button type="button" class="btn btn-outline-info" data-bs-toggle="modal"
                             data-bs-target="#SubmitISOModal" title="Save OPCR" wire:click="submit">
                             Submit
@@ -136,7 +136,7 @@
                     @endif
                 @elseif (($approval && $approval->superior1_status == 1 && $approval->superior2_status == 1) && 
                 (!$assess || ($assess->superior1_status == 2 || $assess->superior2_status == 2)) &&
-                ($duration && $duration->start_date <= date('Y-m-d') && $duration->end_date >= date('Y-m-d')))
+                ($duration && $duration->start_date <= date('Y-m-d') && $duration->end_date >= date('Y-m-d')) && ($targ->rating))
                     <button type="button" class="ms-auto btn btn-outline-info" data-bs-toggle="modal"
                         data-bs-target="#AssessISOModal" title="Save OPCR" wire:click="submit">
                         Submit
@@ -277,10 +277,11 @@
                                                                                 </tr>
                                                                             </thead>
                                                                             <tbody>
-                                                                                @if ($target->rating)
-                                                                                    <tr>
-                                                                                        <td>{{ $target->rating->alloted_budget }}</td>
-                                                                                        <td>{{ $target->rating->responsible }}</td>
+                                                                                <tr>
+                                                                                    <td>{{ "₱ " . number_format($target->alloted_budget) }}</td>
+                                                                                    <td>{{ $target->responsible }}</td>
+                                                                                    
+                                                                                    @if ($target->rating)
                                                                                         <td>{{ $target->rating->accomplishment }}</td>
                                                                                         <td>
                                                                                             @if ($target->rating->efficiency)
@@ -306,7 +307,7 @@
                                                                                         <td>{{ $target->rating->average }}</td>
                                                                                         <td>{{ $target->rating->remarks }}</td>
                                                                                         <td>
-                                                                                            @if ($duration && $duration->start_date <= date('Y-m-d') && $duration->end_date >= date('Y-m-d'))
+                                                                                            @if ($duration && $duration->start_date <= date('Y-m-d') && $duration->end_date >= date('Y-m-d') && (!$assess || ($assess->superior1_status == 2 || $assess->superior2_status == 2)))
                                                                                                 <button type="button"
                                                                                                     class="btn icon btn-success"
                                                                                                     wire:click="editRating({{ $target->rating->id }})"
@@ -325,10 +326,8 @@
                                                                                                 </button>
                                                                                             @endif
                                                                                         </td>
-                                                                                    </tr>
-                                                                                @else
-                                                                                    <tr>
-                                                                                        <td colspan="8"></td>
+                                                                                    @else
+                                                                                        <td colspan="6"></td>
                                                                                         <td>
                                                                                             @if ($approval &&
                                                                                                 $approval->superior1_status == 1 &&
@@ -344,8 +343,8 @@
                                                                                                 </button>
                                                                                             @endif
                                                                                         </td>
-                                                                                    </tr>
-                                                                                @endif
+                                                                                    @endif
+                                                                                </tr>
                                                                             </tbody>
                                                                         </table>
                                                                     </div>
@@ -422,10 +421,11 @@
                                                                             </tr>
                                                                         </thead>
                                                                         <tbody>
-                                                                            @if ($target->rating)
-                                                                                <tr>
-                                                                                    <td>{{ $target->rating->alloted_budget }}</td>
-                                                                                    <td>{{ $target->rating->responsible }}</td>
+                                                                            <tr>
+                                                                                <td>{{ "₱ " . number_format($target->alloted_budget) }}</td>
+                                                                                <td>{{ $target->responsible }}</td>
+                                                                                
+                                                                                @if ($target->rating)
                                                                                     <td>{{ $target->rating->accomplishment }}</td>
                                                                                     <td>
                                                                                         @if ($target->rating->efficiency)
@@ -451,7 +451,7 @@
                                                                                     <td>{{ $target->rating->average }}</td>
                                                                                     <td>{{ $target->rating->remarks }}</td>
                                                                                     <td>
-                                                                                        @if ($duration && $duration->start_date <= date('Y-m-d') && $duration->end_date >= date('Y-m-d'))
+                                                                                        @if ($duration && $duration->start_date <= date('Y-m-d') && $duration->end_date >= date('Y-m-d') && (!$assess || ($assess->superior1_status == 2 || $assess->superior2_status == 2)))
                                                                                             <button type="button"
                                                                                                 class="btn icon btn-success"
                                                                                                 wire:click="editRating({{ $target->rating->id }})"
@@ -470,10 +470,8 @@
                                                                                             </button>
                                                                                         @endif
                                                                                     </td>
-                                                                                </tr>
-                                                                            @else
-                                                                                <tr>
-                                                                                    <td colspan="8"></td>
+                                                                                @else
+                                                                                    <td colspan="6"></td>
                                                                                     <td>
                                                                                         @if ($approval &&
                                                                                             $approval->superior1_status == 1 &&
@@ -489,8 +487,8 @@
                                                                                             </button>
                                                                                         @endif
                                                                                     </td>
-                                                                                </tr>
-                                                                            @endif
+                                                                                @endif
+                                                                            </tr>
                                                                         </tbody>
                                                                     </table>
                                                                 </div>
@@ -611,10 +609,11 @@
                                                                 </tr>
                                                             </thead>
                                                             <tbody>
-                                                                @if ($target->rating)
-                                                                    <tr>
-                                                                        <td>{{ $target->rating->alloted_budget }}</td>
-                                                                        <td>{{ $target->rating->responsible }}</td>
+                                                                <tr>
+                                                                    <td>{{ "₱ " . number_format($target->alloted_budget) }}</td>
+                                                                    <td>{{ $target->responsible }}</td>
+                                                                    
+                                                                    @if ($target->rating)
                                                                         <td>{{ $target->rating->accomplishment }}</td>
                                                                         <td>
                                                                             @if ($target->rating->efficiency)
@@ -640,7 +639,7 @@
                                                                         <td>{{ $target->rating->average }}</td>
                                                                         <td>{{ $target->rating->remarks }}</td>
                                                                         <td>
-                                                                            @if ($duration && $duration->start_date <= date('Y-m-d') && $duration->end_date >= date('Y-m-d'))
+                                                                            @if ($duration && $duration->start_date <= date('Y-m-d') && $duration->end_date >= date('Y-m-d') && (!$assess || ($assess->superior1_status == 2 || $assess->superior2_status == 2)))
                                                                                 <button type="button"
                                                                                     class="btn icon btn-success"
                                                                                     wire:click="editRating({{ $target->rating->id }})"
@@ -659,10 +658,8 @@
                                                                                 </button>
                                                                             @endif
                                                                         </td>
-                                                                    </tr>
-                                                                @else
-                                                                    <tr>
-                                                                        <td colspan="8"></td>
+                                                                    @else
+                                                                        <td colspan="6"></td>
                                                                         <td>
                                                                             @if ($approval &&
                                                                                 $approval->superior1_status == 1 &&
@@ -678,8 +675,8 @@
                                                                                 </button>
                                                                             @endif
                                                                         </td>
-                                                                    </tr>
-                                                                @endif
+                                                                    @endif
+                                                                </tr>
                                                             </tbody>
                                                         </table>
                                                     </div>
@@ -754,10 +751,11 @@
                                                             </tr>
                                                         </thead>
                                                         <tbody>
-                                                            @if ($target->rating)
-                                                                <tr>
-                                                                    <td>{{ $target->rating->alloted_budget }}</td>
-                                                                    <td>{{ $target->rating->responsible }}</td>
+                                                            <tr>
+                                                                <td>{{ "₱ " . number_format($target->alloted_budget) }}</td>
+                                                                <td>{{ $target->responsible }}</td>
+                                                                
+                                                                @if ($target->rating)
                                                                     <td>{{ $target->rating->accomplishment }}</td>
                                                                     <td>
                                                                         @if ($target->rating->efficiency)
@@ -783,7 +781,7 @@
                                                                     <td>{{ $target->rating->average }}</td>
                                                                     <td>{{ $target->rating->remarks }}</td>
                                                                     <td>
-                                                                        @if ($duration && $duration->start_date <= date('Y-m-d') && $duration->end_date >= date('Y-m-d'))
+                                                                        @if ($duration && $duration->start_date <= date('Y-m-d') && $duration->end_date >= date('Y-m-d') && (!$assess || ($assess->superior1_status == 2 || $assess->superior2_status == 2)))
                                                                             <button type="button"
                                                                                 class="btn icon btn-success"
                                                                                 wire:click="editRating({{ $target->rating->id }})"
@@ -802,10 +800,8 @@
                                                                             </button>
                                                                         @endif
                                                                     </td>
-                                                                </tr>
-                                                            @else
-                                                                <tr>
-                                                                    <td colspan="8"></td>
+                                                                @else
+                                                                    <td colspan="6"></td>
                                                                     <td>
                                                                         @if ($approval &&
                                                                             $approval->superior1_status == 1 &&
@@ -821,8 +817,8 @@
                                                                             </button>
                                                                         @endif
                                                                     </td>
-                                                                </tr>
-                                                            @endif
+                                                                @endif
+                                                            </tr>
                                                         </tbody>
                                                     </table>
                                                 </div>

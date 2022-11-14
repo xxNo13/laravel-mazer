@@ -72,7 +72,7 @@
             @if ($funct->subFuncts)
                 @foreach ($funct->subFuncts as $subFunct)
                     @if ($subFunct->user_id == $user_id &&
-                        $subFunct->type == 'ipcr' &&
+                        $subFunct->type == $type &&
                         $subFunct->duration_id == $duration->id &&
                         $subFunct->user_type == $userType)
                         <div>
@@ -88,7 +88,7 @@
                             </h5>
                             @foreach ($subFunct->outputs as $output)
                                 @if ($output->user_id == $user_id &&
-                                    $output->type == 'ipcr' &&
+                                    $output->type == $type &&
                                     $output->duration_id == $duration->id &&
                                     $output->user_type == $userType)
                                     <div class="card">
@@ -98,7 +98,7 @@
                                         </div>
                                         @forelse ($output->suboutputs as $suboutput)
                                             @if ($suboutput->user_id == $user_id &&
-                                                $suboutput->type == 'ipcr' &&
+                                                $suboutput->type == $type &&
                                                 $suboutput->duration_id == $duration->id &&
                                                 $output->user_type == $userType)
                                                 <div class="card-body">
@@ -110,7 +110,7 @@
                                                         <div class="d-sm-flex">
                                                             @foreach ($suboutput->targets as $target)
                                                                 @if ($target->user_id == $user_id &&
-                                                                    $target->type == 'ipcr' &&
+                                                                    $target->type == $type &&
                                                                     $target->duration_id == $duration->id &&
                                                                     $output->user_type == $userType)
                                                                     <div wire:ignore.self
@@ -133,7 +133,7 @@
 
                                                         @foreach ($suboutput->targets as $target)
                                                             @if ($target->user_id == $user_id &&
-                                                                $target->type == 'ipcr' &&
+                                                                $target->type == $type &&
                                                                 $target->duration_id == $duration->id &&
                                                                 $output->user_type == $userType)
                                                                 <div wire:ignore.self
@@ -227,7 +227,7 @@
                                                     <div class="d-sm-flex">
                                                         @foreach ($output->targets as $target)
                                                             @if ($target->user_id == $user_id &&
-                                                                $target->type == 'ipcr' &&
+                                                                $target->type == $type &&
                                                                 $target->duration_id == $duration->id &&
                                                                 $output->user_type == $userType)
                                                                 <div wire:ignore.self
@@ -250,7 +250,7 @@
 
                                                     @foreach ($output->targets as $target)
                                                         @if ($target->user_id == $user_id &&
-                                                            $target->type == 'ipcr' &&
+                                                            $target->type == $type &&
                                                             $target->duration_id == $duration->id &&
                                                             $output->user_type == $userType)
                                                             <div wire:ignore.self
@@ -346,14 +346,14 @@
                 @endforeach
             @endif
             @foreach ($funct->outputs as $output)
-                @if ($output->user_id == $user_id && $output->type == 'ipcr' && $output->duration_id == $duration->id && $output->user_type == $userType)
+                @if ($output->user_id == $user_id && $output->type == $type && $output->duration_id == $duration->id && $output->user_type == $userType)
                     <div class="card">
                         <div class="card-header">
                             <h4 class="card-title">{{ $output->code }} {{ $output->output }}</h4>
                             <p class="text-subtitle text-muted"></p>
                         </div>
                         @forelse ($output->suboutputs as $suboutput)
-                            @if ($suboutput->user_id == $user_id && $suboutput->type == 'ipcr' && $suboutput->duration_id == $duration->id && $output->user_type == $userType)
+                            @if ($suboutput->user_id == $user_id && $suboutput->type == $type && $suboutput->duration_id == $duration->id && $output->user_type == $userType)
                                 <div class="card-body">
                                     <h6>{{ $suboutput->suboutput }}</h6>
                                 </div>
@@ -362,7 +362,7 @@
                                         id="{{ str_replace(' ', '', $suboutput->suboutput) }}{{ $suboutput->id }}">
                                         <div class="d-sm-flex">
                                             @foreach ($suboutput->targets as $target)
-                                                @if ($target->user_id == $user_id && $target->type == 'ipcr' && $target->duration_id == $duration->id && $output->user_type == $userType)
+                                                @if ($target->user_id == $user_id && $target->type == $type && $target->duration_id == $duration->id && $output->user_type == $userType)
                                                     <div wire:ignore.self class="accordion-button collapsed gap-2"
                                                         type="button" data-bs-toggle="collapse"
                                                         data-bs-target="#{{ str_replace(' ', '', $target->target) }}{{ $target->id }}"
@@ -381,7 +381,7 @@
                                         </div>
 
                                         @foreach ($suboutput->targets as $target)
-                                            @if ($target->user_id == $user_id && $target->type == 'ipcr' && $target->duration_id == $duration->id && $output->user_type == $userType)
+                                            @if ($target->user_id == $user_id && $target->type == $type && $target->duration_id == $duration->id && $output->user_type == $userType)
                                                 <div wire:ignore.self
                                                     id="{{ str_replace(' ', '', $target->target) }}{{ $target->id }}"
                                                     class="accordion-collapse collapse"
@@ -457,7 +457,7 @@
                                     id="{{ str_replace(' ', '', $output->output) }}{{ $output->id }}">
                                     <div class="d-sm-flex">
                                         @foreach ($output->targets as $target)
-                                            @if ($target->user_id == $user_id && $target->type == 'ipcr' && $target->duration_id == $duration->id && $output->user_type == $userType)
+                                            @if ($target->user_id == $user_id && $target->type == $type && $target->duration_id == $duration->id && $output->user_type == $userType)
                                                 <div wire:ignore.self class="accordion-button collapsed gap-2"
                                                     type="button" data-bs-toggle="collapse"
                                                     data-bs-target="#{{ str_replace(' ', '', $target->target) }}{{ $target->id }}"
@@ -476,7 +476,7 @@
                                     </div>
 
                                     @foreach ($output->targets as $target)
-                                        @if ($target->user_id == $user_id && $target->type == 'ipcr' && $target->duration_id == $duration->id && $output->user_type == $userType)
+                                        @if ($target->user_id == $user_id && $target->type == $type && $target->duration_id == $duration->id && $output->user_type == $userType)
                                             <div wire:ignore.self
                                                 id="{{ str_replace(' ', '', $target->target) }}{{ $target->id }}"
                                                 class="accordion-collapse collapse" aria-labelledby="flush-headingOne"

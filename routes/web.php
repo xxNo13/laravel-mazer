@@ -13,6 +13,7 @@ use App\Http\Livewire\FacultyIpcrLivewire;
 use App\Http\Livewire\ForapprovalLivewire;
 use App\Http\Livewire\IpcrFacultyLivewire;
 use App\Http\Livewire\AgencyTargetLivewire;
+use App\Http\Livewire\StandardOpcrLivewire;
 use App\Http\Livewire\StandardStaffLivewire;
 use App\Http\Livewire\StandardFacultyLivewire;
 use App\Http\Livewire\TrainingRecommendationLivewire;
@@ -51,6 +52,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::middleware(['headoordu'])->group(function () {
         Route::get('/for-approval', ForapprovalLivewire::class)->name('for-approval');
         Route::get('/opcr', OpcrLivewire::class)->name('opcr');
+        Route::get('/standard/opcr', StandardOpcrLivewire::class)->name('standard.opcr');
         Route::get('/subordinates', OfficemateLivewire::class)->name('officemates');
     });
 

@@ -11,6 +11,7 @@ use App\Models\Duration;
 use App\Models\Percentage;
 use Livewire\WithPagination;
 use Illuminate\Support\Facades\Auth;
+use App\Notifications\ApprovalNotification;
 
 class ForapprovalLivewire extends Component
 {
@@ -42,11 +43,19 @@ class ForapprovalLivewire extends Component
                 ->where('duration_id', $this->duration->id)
                 ->first();
         if ($category == 'standard') {
-            $this->percentage = Percentage::where('user_id', $user_id)
-                ->where('type', 'ipcr')
-                ->where('userType', $userType)
-                ->where('duration_id', $this->duration->id)
-                ->first();
+            if ($userType == 'office') {
+                $this->percentage = Percentage::where('user_id', $user_id)
+                    ->where('type', 'opcr')
+                    ->where('userType', $userType)
+                    ->where('duration_id', $this->duration->id)
+                    ->first();
+            } else {
+                $this->percentage = Percentage::where('user_id', $user_id)
+                    ->where('type', 'ipcr')
+                    ->where('userType', $userType)
+                    ->where('duration_id', $this->duration->id)
+                    ->first();
+            }
         } else {
             $this->percentage = Percentage::where('user_id', $user_id)
                 ->where('type', $category)
@@ -87,18 +96,35 @@ class ForapprovalLivewire extends Component
                 'number' => 1
             ]);
         } elseif ($this->view && $this->category == 'standard'){
-            $functs = Funct::all();
-            $user = User::find($this->user_id);
-            return view('components.individual-standard',[
-                'functs' => $functs,
-                'user' => $user,
-                'url' => $this->url,
-                'approval' => $this->approval,
-                'duration' => $this->duration,
-                'userType' => $this->userType,
-                'percentage' => $this->percentage,
-                'number' => 1
-            ]);
+            if ($this->userType == 'office') {
+                $functs = Funct::all();
+                $user = User::find($this->user_id);
+                return view('components.individual-standard',[
+                    'functs' => $functs,
+                    'user' => $user,
+                    'url' => $this->url,
+                    'type' => 'opcr',
+                    'approval' => $this->approval,
+                    'duration' => $this->duration,
+                    'userType' => $this->userType,
+                    'percentage' => $this->percentage,
+                    'number' => 1
+                ]);
+            } else {
+                $functs = Funct::all();
+                $user = User::find($this->user_id);
+                return view('components.individual-standard',[
+                    'functs' => $functs,
+                    'user' => $user,
+                    'url' => $this->url,
+                    'type' => 'ipcr',
+                    'approval' => $this->approval,
+                    'duration' => $this->duration,
+                    'userType' => $this->userType,
+                    'percentage' => $this->percentage,
+                    'number' => 1
+                ]);
+            }
         } else {
             $search = $this->search;
             $approvals = Approval::query();
@@ -139,17 +165,22 @@ class ForapprovalLivewire extends Component
                 'superior1_status' => 1,
                 'superior1_date' => Carbon::now(),
             ]);
+            $superior = User::where('id', $approval->superior1_id)->first();
         } elseif ($approval->superior2_id == Auth::user()->id){
             Approval::where('id', $id)->update([
                 'superior2_status' => 1,
                 'superior2_date' => Carbon::now(),
             ]);
+            $superior = User::where('id', $approval->superior2_id)->first();
         }
+
+        $user = User::where('id', $approval->user_id)->first();
+
+        $user->notify(new ApprovalNotification($approval, $superior, 'approved'));
 
         session()->flash('message', 'Approved Successfully!');
         $this->resetInput();
         $this->dispatchBrowserEvent('close-modal'); 
-        return redirect(request()->header('Referer'));
     }
 
     public function clickdisapproved($id) {
@@ -163,17 +194,23 @@ class ForapprovalLivewire extends Component
                 'superior1_date' => Carbon::now(),
                 'superior1_message' => $this->message,
             ]);
+            $superior = User::where('id', $this->approving->superior1_id)->first();
         } elseif ($this->approving->superior2_id == Auth::user()->id){
             Approval::where('id', $this->approving->id)->update([
                 'superior2_status' => 2,
                 'superior2_date' => Carbon::now(),
                 'superior2_message' => $this->message,
             ]);
+            $superior = User::where('id', $this->approving->superior2_id)->first();
         }
+
+        $user = User::where('id', $this->approving->user_id)->first();
+
+        $user->notify(new ApprovalNotification($this->approving, $superior, 'disapproved'));
 
         session()->flash('message', 'Disapproved Successfully!');
         $this->resetInput();
-        $this->dispatchBrowserEvent('close-modal'); 
+        $this->dispatchBrowserEvent('close-modal');
         return redirect(request()->header('Referer'));
     }
 

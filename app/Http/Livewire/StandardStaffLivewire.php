@@ -12,6 +12,7 @@ use App\Models\Standard;
 use App\Models\Percentage;
 use Livewire\WithPagination;
 use Illuminate\Support\Facades\Auth;
+use App\Notifications\ApprovalNotification;
 
 class StandardStaffLivewire extends Component
 {   
@@ -32,6 +33,7 @@ class StandardStaffLivewire extends Component
     public $time_3;
     public $time_2;
     public $time_1;
+    public $dummy = 'dummy';
     public $target_id;
     public $standard_id;
     public $selected;
@@ -45,8 +47,23 @@ class StandardStaffLivewire extends Component
     public $percentage;
 
     protected $rules = [
-        'superior1_id' => ['required_if:selected,submit'],
-        'superior2_id' => ['required_if:selected,submit'],
+        'superior1_id' => ['required_if:selected,approval'],
+        'superior2_id' => ['required_if:selected,approval'],
+        'eff_5' => ['nullable', 'required_without_all:eff_4,eff_3,eff_2,eff_1,qua_5,qua_4,qua_3,qua_2,qua_1,time_5,time_4,time_3,time_2,time_1,dummy'],
+        'eff_4' => ['nullable', 'required_without_all:eff_5,eff_3,eff_2,eff_1,qua_5,qua_4,qua_3,qua_2,qua_1,time_5,time_4,time_3,time_2,time_1,dummy'],
+        'eff_3' => ['nullable', 'required_without_all:eff_5,eff_4,eff_2,eff_1,qua_5,qua_4,qua_3,qua_2,qua_1,time_5,time_4,time_3,time_2,time_1,dummy'],
+        'eff_2' => ['nullable', 'required_without_all:eff_5,eff_4,eff_3,eff_1,qua_5,qua_4,qua_3,qua_2,qua_1,time_5,time_4,time_3,time_2,time_1,dummy'],
+        'eff_1' => ['nullable', 'required_without_all:eff_5,eff_4,eff_3,eff_2,qua_5,qua_4,qua_3,qua_2,qua_1,time_5,time_4,time_3,time_2,time_1,dummy'],
+        'qua_5' => ['nullable', 'required_without_all:qua_4,qua_3,qua_2,qua_1,eff_5,eff_4,eff_3,eff_2,eff_1,time_5,time_4,time_3,time_2,time_1,dummy'],
+        'qua_4' => ['nullable', 'required_without_all:qua_5,qua_3,qua_2,qua_1,eff_5,eff_4,eff_3,eff_2,eff_1,time_5,time_4,time_3,time_2,time_1,dummy'],
+        'qua_3' => ['nullable', 'required_without_all:qua_5,qua_4,qua_2,qua_1,eff_5,eff_4,eff_3,eff_2,eff_1,time_5,time_4,time_3,time_2,time_1,dummy'],
+        'qua_2' => ['nullable', 'required_without_all:qua_5,qua_4,qua_3,qua_1,eff_5,eff_4,eff_3,eff_2,eff_1,time_5,time_4,time_3,time_2,time_1,dummy'],
+        'qua_1' => ['nullable', 'required_without_all:qua_5,qua_4,qua_3,qua_2,eff_5,eff_4,eff_3,eff_2,eff_1,time_5,time_4,time_3,time_2,time_1,dummy'],
+        'time_5' => ['nullable', 'required_without_all:time_4,time_3,time_2,time_1,eff_5,eff_4,eff_3,eff_2,eff_1,qua_5,qua_4,qua_3,qua_2,qua_1,dummy'],
+        'time_4' => ['nullable', 'required_without_all:time_5,time_3,time_2,time_1,eff_5,eff_4,eff_3,eff_2,eff_1,qua_5,qua_4,qua_3,qua_2,qua_1,dummy'],
+        'time_3' => ['nullable', 'required_without_all:time_5,time_4,time_2,time_1,eff_5,eff_4,eff_3,eff_2,eff_1,qua_5,qua_4,qua_3,qua_2,qua_1,dummy'],
+        'time_2' => ['nullable', 'required_without_all:time_5,time_4,time_3,time_1,eff_5,eff_4,eff_3,eff_2,eff_1,qua_5,qua_4,qua_3,qua_2,qua_1,dummy'],
+        'time_1' => ['nullable', 'required_without_all:time_5,time_4,time_3,time_2,eff_5,eff_4,eff_3,eff_2,eff_1,qua_5,qua_4,qua_3,qua_2,qua_1,dummy'],
     ];
 
     public function mount(){
@@ -57,6 +74,11 @@ class StandardStaffLivewire extends Component
             return $query->where('account_type', 'like', "%head%");
         })->where('id', '!=', Auth::user()->id)->get();
         $this->duration = Duration::orderBy('id', 'DESC')->where('start_date', '<=', date('Y-m-d'))->first();
+        
+    }
+
+    public function render()
+    {
         if ($this->duration) {
             $this->approval = Approval::orderBy('id', 'DESC')
                     ->where('name', 'approval')
@@ -79,15 +101,7 @@ class StandardStaffLivewire extends Component
                 $this->appsuperior1 = User::where('id', $this->approval->superior1_id)->first();
                 $this->appsuperior2 = User::where('id', $this->approval->superior2_id)->first();
             }
-            if ($this->assess) {
-                $this->asssuperior1 = User::where('id', $this->assess->superior1_id)->first();
-                $this->asssuperior2 = User::where('id', $this->assess->superior2_id)->first();
-            }
         }
-    }
-
-    public function render()
-    {
         $functs = Funct::paginate(1);
         return view('livewire.standard-staff-livewire',[
             'functs' => $functs
@@ -100,6 +114,8 @@ class StandardStaffLivewire extends Component
     }
 
     public function save($category){
+        $this->validate();
+
         if ($category == 'add'){
             Standard::create([
                 'eff_5' => $this->eff_5,
@@ -155,6 +171,7 @@ class StandardStaffLivewire extends Component
     }
 
     public function clicked($category, $id){
+        $this->dummy = '';
         // If add $id = $target_id else $id = $standard_id
         if ($category == 'add'){
             $this->target_id = $id;
@@ -183,7 +200,12 @@ class StandardStaffLivewire extends Component
     
     // SUBMITING OF IPCR START ------------>
     public function submit(){
-        $this->selected = 'submit';
+        $this->selected = 'approval';
+
+        if ($this->approval) {
+            $this->superior1_id = $this->approval->superior1_id;
+            $this->superior2_id = $this->approval->superior2_id;
+        }
     }
     
     public function changeUser(){
@@ -202,7 +224,7 @@ class StandardStaffLivewire extends Component
 
         $this->validate();
 
-        Approval::create([
+        $approval = Approval::create([
             'name' => 'approval',
             'user_id' => Auth::user()->id,
             'superior1_id' => $this->superior1_id,
@@ -212,10 +234,15 @@ class StandardStaffLivewire extends Component
             'duration_id' => $this->duration->id
         ]);
 
+        $user1 = User::where('id', $this->superior1_id)->first();
+        $user2 = User::where('id', $this->superior2_id)->first();
+
+        $user1->notify(new ApprovalNotification($approval, Auth::user(), 'Submitting'));
+        $user2->notify(new ApprovalNotification($approval, Auth::user(), 'Submitting'));
+
         session()->flash('message', 'Submitted Successfully!');
         $this->resetInput();
         $this->dispatchBrowserEvent('close-modal'); 
-        return redirect(request()->header('Referer'));
     }
     // <---------------- SUBMITING OF IPCR END
 
@@ -240,6 +267,7 @@ class StandardStaffLivewire extends Component
         $this->selected = '';
         $this->superior1_id = '';
         $this->superior2_id = '';
+        $this->dummy = 'dummy';
     }
 
     public function closeModal(){

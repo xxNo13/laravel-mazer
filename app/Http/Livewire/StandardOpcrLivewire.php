@@ -14,8 +14,8 @@ use Livewire\WithPagination;
 use Illuminate\Support\Facades\Auth;
 use App\Notifications\ApprovalNotification;
 
-class StandardFacultyLivewire extends Component
-{   
+class StandardOpcrLivewire extends Component
+{
     use WithPagination;
 
     public $eff_5;
@@ -33,6 +33,7 @@ class StandardFacultyLivewire extends Component
     public $time_3;
     public $time_2;
     public $time_1;
+    public $dummy = 'dummy';
     public $target_id;
     public $standard_id;
     public $selected;
@@ -44,7 +45,6 @@ class StandardFacultyLivewire extends Component
     public $duration;
     public $targ;
     public $percentage;
-    public $dummy = 'dummy';
 
     protected $rules = [
         'superior1_id' => ['required_if:selected,approval'],
@@ -66,7 +66,7 @@ class StandardFacultyLivewire extends Component
         'time_1' => ['nullable', 'required_without_all:time_5,time_4,time_3,time_2,eff_5,eff_4,eff_3,eff_2,eff_1,qua_5,qua_4,qua_3,qua_2,qua_1,dummy'],
     ];
 
-    public function mount() {
+    public function mount(){
         $this->users1 = User::whereHas('account_types', function(\Illuminate\Database\Eloquent\Builder $query) {
             return $query->where('account_type', 'like', "%head%");
         })->where('id', '!=', Auth::user()->id)->get();
@@ -84,16 +84,16 @@ class StandardFacultyLivewire extends Component
                     ->where('user_id', Auth::user()->id)
                     ->where('type', 'standard')
                     ->where('duration_id', $this->duration->id)
-                    ->where('user_type', 'faculty')
+                    ->where('user_type', 'office')
                     ->first();
             $this->targ = Target::where('user_id', Auth::user()->id)
-                    ->where('type', 'ipcr')
-                    ->where('user_type', 'faculty')
+                    ->where('type', 'opcr')
+                    ->where('user_type', 'office')
                     ->where('duration_id', $this->duration->id)
                     ->first();
             $this->percentage = Percentage::where('user_id', Auth::user()->id)
-                ->where('type', 'ipcr')
-                ->where('userType', 'faculty')
+                ->where('type', 'opcr')
+                ->where('userType', 'office')
                 ->where('duration_id', $this->duration->id)
                 ->first();
             if ($this->approval) {
@@ -101,20 +101,18 @@ class StandardFacultyLivewire extends Component
                 $this->appsuperior2 = User::where('id', $this->approval->superior2_id)->first();
             }
         }
-        
         $functs = Funct::paginate(1);
-        return view('livewire.standard-faculty-livewire',[
+        return view('livewire.standard-opcr-livewire',[
             'functs' => $functs
         ]);
     }
-
+    
     public function updated($property)
     {
         $this->validateOnly($property);
     }
 
     public function save($category){
-        
         $this->validate();
 
         if ($category == 'add'){
@@ -231,10 +229,10 @@ class StandardFacultyLivewire extends Component
             'superior1_id' => $this->superior1_id,
             'superior2_id' => $this->superior2_id,
             'type' => 'standard',
-            'user_type' => 'faculty',
+            'user_type' => 'office',
             'duration_id' => $this->duration->id
         ]);
-        
+
         $user1 = User::where('id', $this->superior1_id)->first();
         $user2 = User::where('id', $this->superior2_id)->first();
 

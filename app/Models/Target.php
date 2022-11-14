@@ -10,6 +10,8 @@ class Target extends Model
     use HasFactory;
 
     protected $fillable = [
+        'alloted_budget',
+        'responsible',
         'target',
         'output_id',
         'suboutput_id',
