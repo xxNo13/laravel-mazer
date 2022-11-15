@@ -15,7 +15,9 @@ class Ttma extends Model
         'output',
         'remarks',
         'head_id',
-        'duration_id'
+        'duration_id',
+        'message',
+        'comments'
     ];
 
     public function user(){

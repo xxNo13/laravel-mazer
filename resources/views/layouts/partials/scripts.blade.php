@@ -39,6 +39,8 @@
         $('#EditPercentageModal').modal('hide');
         $('#DeletePercentageModal').modal('hide');
         $('#DisapproveModal').modal('hide');
+        $('#MessageTTMAModal').modal('hide');
+        $('#EditMessageTTMAModal').modal('hide');
     });
 </script>
 

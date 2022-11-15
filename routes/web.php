@@ -5,6 +5,7 @@ use App\Http\Livewire\OpcrLivewire;
 use App\Http\Livewire\TtmaLivewire;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PDFController;
+use App\Http\Livewire\TrainingLivewire;
 use App\Http\Livewire\ConfigureLivewire;
 use App\Http\Livewire\DashboardLivewire;
 use App\Http\Livewire\IpcrStaffLivewire;
@@ -50,6 +51,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
 
     // Head of Office and Delivery Unit Route
     Route::middleware(['headoordu'])->group(function () {
+        Route::get('/trainings', TrainingLivewire::class)->name('trainings');
         Route::get('/for-approval', ForapprovalLivewire::class)->name('for-approval');
         Route::get('/opcr', OpcrLivewire::class)->name('opcr');
         Route::get('/standard/opcr', StandardOpcrLivewire::class)->name('standard.opcr');

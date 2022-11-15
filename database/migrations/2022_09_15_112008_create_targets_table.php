@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('user_type');
             $table->string('alloted_budget')->nullable();
             $table->string('responsible')->nullable();
+            $table->boolean('isDesignated')->default('false');
             $table->foreignId('output_id')->nullable()->constrained()->onDelete('cascade');
             $table->foreignId('suboutput_id')->nullable()->constrained()->onDelete('cascade');
             $table->foreignId('user_id')->nullable()->constrained()->onDelete('cascade');

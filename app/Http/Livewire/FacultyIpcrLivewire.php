@@ -23,11 +23,11 @@ class FacultyIpcrLivewire extends Component
     use WithPagination;
 
     public $configure = false;
-    public $selected;
+    public $selected = 'output';
     public $number = 1;
     public $duration;
     public $approval;
-    public $targets = [];
+    public $indicators = [];
     public $output;
     public $users1;
     public $users2;
@@ -48,9 +48,19 @@ class FacultyIpcrLivewire extends Component
     public $support;
     public $supp = [];
     public $dummy = 'dummy';
+    public $sub_funct;
+    public $suboutput;
+    public $target;
+    public $output_id;
+    public $suboutput_id;
+    public $sub_funct_id;
+    public $subput;
 
 
     protected $rules = [
+        'output' => ['required_if:selected,output'],
+        'suboutput' => ['required_if:selected,suboutput'],
+        'target' => ['required_if:selected,target'],
         'accomplishment' => ['required_if:selected,rating'],
         'efficiency' => ['nullable', 'required_without_all:quality,timeliness,dummy', 'integer', 'min:1', 'max:5'],
         'quality' => ['nullable', 'required_without_all:efficiency,timeliness,dummy', 'integer', 'min:1', 'max:5'],
@@ -80,20 +90,22 @@ class FacultyIpcrLivewire extends Component
                 ->where('user_type', 'faculty')
                 ->where('added_id', '!=', null)
                 ->first();
+        }
+    }
+
+    public function render()
+    {
+        if ($this->duration) {
             $this->subFuncts = SubFunct::where('user_id', Auth::user()->id)
                 ->where('type', 'ipcr')
                 ->where('user_type', 'faculty')
                 ->where('duration_id', $this->duration->id)
                 ->get();
-        }
-    }
-    public function render()
-    {
-        if ($this->duration) {
-            $this->output = Output::where('user_id', Auth::user()->id)
+            $this->targ = Target::where('user_id', Auth::user()->id)
                     ->where('type', 'ipcr')
                     ->where('user_type', 'faculty')
                     ->where('duration_id', $this->duration->id)
+                    ->where('isDesignated', false)
                     ->first();
             $this->approval = Approval::orderBy('id', 'DESC')
                     ->where('name', 'approval')
@@ -137,6 +149,236 @@ class FacultyIpcrLivewire extends Component
         }
     }
 
+    // CONFIGURING OST START ------------>
+    public function select($selected, $id = null){
+        $this->selected = $selected;
+
+        if($id) {
+            switch($selected){
+                case 'sub_funct':
+                    $this->sub_funct_id = $id;
+                    $sub_funct = SubFunct::where('id', $this->sub_funct_id)->first();
+                    $this->sub_funct = $sub_funct->sub_funct;
+                    break;
+                case 'output':
+                    $this->output_id = $id;
+                    $output = Output::where('id', $this->output_id)->first();
+                    $this->output = $output->output;
+                    break;
+                case 'suboutput':
+                    $this->suboutput_id = $id;
+                    $suboutput = Suboutput::where('id', $this->suboutput_id)->first();
+                    $this->suboutput = $suboutput->suboutput;
+                    break;
+                case 'target':
+                    $this->target_id = $id;
+                    $target = Target::where('id', $this->target_id)->first();
+                    $this->target = $target->target;
+                    break;
+
+                default:
+                    dd($selected);
+                    break;
+            }
+        }
+    }
+
+    // Save / Update OST
+    public function save(){
+        $this->validate();
+        $selected = $this->selected;
+
+        switch($selected){
+            case 'sub_funct':
+                switch (str_replace(url('/'), '', url()->previous())) {
+                    case '/ipcr/faculty':
+                        $this->funct_id = 1;
+                        break;
+                    case '/ipcr/faculty?page=2':
+                        $this->funct_id = 2;
+                        break;
+                    case '/ipcr/faculty?page=3':
+                        $this->funct_id = 3;
+                        break;
+                    default:
+                        $this->funct_id = 0;
+                        break;
+                };
+                SubFunct::create([
+                    'sub_funct' => $this->sub_funct,
+                    'funct_id' => $this->funct_id,
+                    'user_id' => Auth::user()->id,
+                    'type' => 'ipcr',
+                    'user_type' => 'faculty',
+                    'isDesignated' => true,
+                    'duration_id' => $this->duration->id
+                ]);
+                break;
+            case 'output':
+                switch (str_replace(url('/'), '', url()->previous())) {
+                    case '/ipcr/faculty':
+                        $this->code = 'CF ';
+                        $this->funct_id = 1;
+                        break;
+                    case '/ipcr/faculty?page=2':
+                        $this->code = 'STF ';
+                        $this->funct_id = 2;
+                        break;
+                    case '/ipcr/faculty?page=3':
+                        $this->code = 'SF ';
+                        $this->funct_id = 3;
+                        break;
+                    default:
+                        $this->code = 'Code ';
+                        $this->funct_id = 0;
+                        break;
+                };
+                if($this->sub_funct_id){
+                    Output::create([
+                        'code' => $this->code,
+                        'output' => $this->output,
+                        'sub_funct_id' => $this->sub_funct_id,
+                        'user_id' => Auth::user()->id,
+                        'type' => 'ipcr',
+                        'user_type' => 'faculty',
+                        'isDesignated' => true,
+                        'duration_id' => $this->duration->id
+                    ]);
+                    break;
+                }
+                Output::create([
+                    'code' => $this->code,
+                    'output' => $this->output,
+                    'funct_id' => $this->funct_id,
+                    'user_id' => Auth::user()->id,
+                    'type' => 'ipcr',
+                    'user_type' => 'faculty',
+                    'isDesignated' => true,
+                    'duration_id' => $this->duration->id
+                ]);
+                break;
+            case 'suboutput':
+                Suboutput::create([
+                    'suboutput' => $this->suboutput,
+                    'output_id' => $this->output_id,
+                    'user_id' => Auth::user()->id,
+                    'type' => 'ipcr',
+                    'user_type' => 'faculty',
+                    'isDesignated' => true,
+                    'duration_id' => $this->duration->id
+                ]);
+                break;
+            case 'target':
+                $subputArr = explode(',', $this->subput);
+    
+                if ($subputArr[0] == 'output'){
+                    Target::create([
+                        'target' => $this->target,
+                        'output_id' =>  $subputArr[1],
+                        'user_id' => Auth::user()->id,
+                        'type' => 'ipcr',
+                        'user_type' => 'faculty',
+                        'isDesignated' => true,
+                        'duration_id' => $this->duration->id
+                    ]);
+                } elseif ($subputArr[0] == 'suboutput'){
+                    Target::create([
+                        'target' => $this->target,
+                        'suboutput_id' =>  $subputArr[1],
+                        'user_id' => Auth::user()->id,
+                        'type' => 'ipcr',
+                        'user_type' => 'faculty',
+                        'isDesignated' => true,
+                        'duration_id' => $this->duration->id
+                    ]);
+                }
+                break;
+
+            default:
+                dd($selected);
+                break;
+        }
+
+        session()->flash('message', 'Added Successfully!');
+        $this->resetInput();
+        $this->dispatchBrowserEvent('close-modal'); 
+    }
+
+    public function update(){
+        $this->validate();
+
+        $selected = $this->selected;
+
+        switch($selected){
+            case 'sub_funct':
+                SubFunct::where('id', $this->sub_funct_id)->update([
+                    'sub_funct' => $this->sub_funct
+                ]);
+                break;
+            case 'output':
+                Output::where('id', $this->output_id)->update([
+                    'output' => $this->output,
+                ]);
+                break;
+            case 'suboutput':
+                Suboutput::where('id', $this->suboutput_id)->update([
+                    'suboutput' => $this->suboutput,
+                ]);
+                break;
+            case 'target':
+                Target::where('id', $this->target_id)->update([
+                    'target' => $this->target,
+                ]);
+                break;
+
+            default:
+                dd($selected);
+                break;
+        }
+
+        session()->flash('message', 'Updated Successfully!');
+        $this->resetInput();
+        $this->dispatchBrowserEvent('close-modal'); 
+    }
+
+    // When choosing add/edit/delete and output/suboutput/target(OST)
+    public function changed(){
+        $this->resetInput();
+    }
+
+    // Delete OST-R
+    public function delete(){
+
+        $selected = $this->selected;
+
+        switch($selected){
+            case 'sub_funct':
+                SubFunct::find($this->sub_funct_id)->delete();
+                break;
+            case 'output':
+                Output::find($this->output_id)->delete();
+                break;
+            case 'suboutput':
+                Suboutput::find($this->suboutput_id)->delete();
+                break;
+            case 'target':
+                Target::find($this->target_id)->delete();
+                break;
+            case 'rating':
+                Rating::find($this->rating_id)->delete();
+                break;
+            default:
+                dd($selected);
+                break;
+
+        }
+
+        session()->flash('message', 'Deleted Successfully!');
+        $this->resetInput();
+        $this->dispatchBrowserEvent('close-modal'); 
+    }
+    // <------------ CONFIGURING OST END!
+
     public function updated($property)
     {
         $this->validateOnly($property);
@@ -157,8 +399,9 @@ class FacultyIpcrLivewire extends Component
         $suboutput_id = 0;
         $storeSuboutput_id = 0;
         $target = '';
+        $funct_id = 0;
 
-        foreach($this->targets as $targ){
+        foreach($this->indicators as $targ){
             $target = Target::find($targ);
             if ($target->output_id && $output_id == $target->output_id) {
                 Target::create([
@@ -238,25 +481,80 @@ class FacultyIpcrLivewire extends Component
                                 'duration_id' => $this->duration->id
                             ]);
                         } else {
-                            $storeOutput = Output::create([
-                                'code' => $output->code,
-                                'output' => $output->output,
-                                'type' => $output->type,
-                                'user_type' => $output->user_type,
-                                'funct_id' => $output->funct_id,
-                                'user_id' => Auth::user()->id,
-                                'duration_id' => $this->duration->id
-                            ]);
-                            $storeOutput_id = $storeOutput->id;
-        
-                            Target::create([
-                                'target' => $target->target,
-                                'type' => $target->type,
-                                'user_type' => $target->user_type,
-                                'output_id' => $storeOutput->id,
-                                'user_id' => Auth::user()->id,
-                                'duration_id' => $this->duration->id
-                            ]);
+                            if (Auth::user()->account_types->contains(1)) {
+                                if ($output->funct_id == $funct_id) {
+                                    $storeOutput = Output::create([
+                                        'code' => $output->code,
+                                        'output' => $output->output,
+                                        'type' => $output->type,
+                                        'user_type' => $output->user_type,
+                                        'sub_funct_id' => $storesub_funct_id,
+                                        'user_id' => Auth::user()->id,
+                                        'duration_id' => $this->duration->id
+                                    ]);
+                                    $storeOutput_id = $storeOutput->id;
+                
+                                    Target::create([
+                                        'target' => $target->target,
+                                        'type' => $target->type,
+                                        'user_type' => $target->user_type,
+                                        'output_id' => $storeOutput->id,
+                                        'user_id' => Auth::user()->id,
+                                        'duration_id' => $this->duration->id
+                                    ]);
+                                } else {
+                                    $storesub_funct = SubFunct::create([
+                                        'sub_funct' => 'Default Outputs',
+                                        'funct_id' => $output->funct_id,
+                                        'user_id' => Auth::user()->id,
+                                        'type' => $output->type,
+                                        'user_type' => $output->user_type,
+                                        'duration_id' => $this->duration->id
+                                    ]);
+                                    $storesub_funct_id = $storesub_funct->id;
+                                    $funct_id = $storesub_funct->funct_id;
+
+                                    $storeOutput = Output::create([
+                                        'code' => $output->code,
+                                        'output' => $output->output,
+                                        'type' => $output->type,
+                                        'user_type' => $output->user_type,
+                                        'sub_funct_id' => $storesub_funct_id,
+                                        'user_id' => Auth::user()->id,
+                                        'duration_id' => $this->duration->id
+                                    ]);
+                                    $storeOutput_id = $storeOutput->id;
+                
+                                    Target::create([
+                                        'target' => $target->target,
+                                        'type' => $target->type,
+                                        'user_type' => $target->user_type,
+                                        'output_id' => $storeOutput->id,
+                                        'user_id' => Auth::user()->id,
+                                        'duration_id' => $this->duration->id
+                                    ]);
+                                }
+                            } else {
+                                $storeOutput = Output::create([
+                                    'code' => $output->code,
+                                    'output' => $output->output,
+                                    'type' => $output->type,
+                                    'user_type' => $output->user_type,
+                                    'funct_id' => $output->funct_id,
+                                    'user_id' => Auth::user()->id,
+                                    'duration_id' => $this->duration->id
+                                ]);
+                                $storeOutput_id = $storeOutput->id;
+            
+                                Target::create([
+                                    'target' => $target->target,
+                                    'type' => $target->type,
+                                    'user_type' => $target->user_type,
+                                    'output_id' => $storeOutput->id,
+                                    'user_id' => Auth::user()->id,
+                                    'duration_id' => $this->duration->id
+                                ]);
+                            }
                         }
                     }
                     
@@ -340,35 +638,110 @@ class FacultyIpcrLivewire extends Component
                                 'duration_id' => $this->duration->id
                             ]);
                         } else {
-                            $storeOutput = Output::create([
-                                'code' => $output->code,
-                                'output' => $output->output,
-                                'type' => $output->type,
-                                'user_type' => $output->user_type,
-                                'funct_id' => $output->funct_id,
-                                'user_id' => Auth::user()->id,
-                                'duration_id' => $this->duration->id
-                            ]);
-                            $storeOutput_id = $storeOutput->id;
-        
-                            $storeSuboutput = Suboutput::create([
-                                'suboutput' => $suboutput->suboutput,
-                                'type' => $suboutput->type,
-                                'user_type' => $suboutput->user_type,
-                                'output_id' => $storeOutput->id,
-                                'user_id' => Auth::user()->id,
-                                'duration_id' => $this->duration->id
-                            ]);
-                            $storeSuboutput_id = $storeSuboutput->id;
-        
-                            Target::create([
-                                'target' => $target->target,
-                                'type' => $target->type,
-                                'user_type' => $target->user_type,
-                                'suboutput_id' => $storeSuboutput->id,
-                                'user_id' => Auth::user()->id,
-                                'duration_id' => $this->duration->id
-                            ]);
+                            if (Auth::user()->account_types->contains(1)) {
+                                if ($output->funct_id == $funct_id) {   
+                                    $storeOutput = Output::create([
+                                        'code' => $output->code,
+                                        'output' => $output->output,
+                                        'type' => $output->type,
+                                        'user_type' => $output->user_type,
+                                        'sub_funct_id' => $storesub_funct_id,
+                                        'user_id' => Auth::user()->id,
+                                        'duration_id' => $this->duration->id
+                                    ]);
+                                    $storeOutput_id = $storeOutput->id;
+                
+                                    $storeSuboutput = Suboutput::create([
+                                        'suboutput' => $suboutput->suboutput,
+                                        'type' => $suboutput->type,
+                                        'user_type' => $suboutput->user_type,
+                                        'output_id' => $storeOutput->id,
+                                        'user_id' => Auth::user()->id,
+                                        'duration_id' => $this->duration->id
+                                    ]);
+                                    $storeSuboutput_id = $storeSuboutput->id;
+                
+                                    Target::create([
+                                        'target' => $target->target,
+                                        'type' => $target->type,
+                                        'user_type' => $target->user_type,
+                                        'suboutput_id' => $storeSuboutput->id,
+                                        'user_id' => Auth::user()->id,
+                                        'duration_id' => $this->duration->id
+                                    ]);
+                                } else {
+                                    $storesub_funct = SubFunct::create([
+                                        'sub_funct' => 'Default Outputs',
+                                        'funct_id' => $output->funct_id,
+                                        'user_id' => Auth::user()->id,
+                                        'type' => $output->type,
+                                        'user_type' => $output->user_type,
+                                        'duration_id' => $this->duration->id
+                                    ]);
+                                    $storesub_funct_id = $storesub_funct->id;
+                                    $funct_id = $storesub_funct->funct_id;
+
+                                    $storeOutput = Output::create([
+                                        'code' => $output->code,
+                                        'output' => $output->output,
+                                        'type' => $output->type,
+                                        'user_type' => $output->user_type,
+                                        'sub_funct_id' => $storesub_funct_id,
+                                        'user_id' => Auth::user()->id,
+                                        'duration_id' => $this->duration->id
+                                    ]);
+                                    $storeOutput_id = $storeOutput->id;
+                
+                                    $storeSuboutput = Suboutput::create([
+                                        'suboutput' => $suboutput->suboutput,
+                                        'type' => $suboutput->type,
+                                        'user_type' => $suboutput->user_type,
+                                        'output_id' => $storeOutput->id,
+                                        'user_id' => Auth::user()->id,
+                                        'duration_id' => $this->duration->id
+                                    ]);
+                                    $storeSuboutput_id = $storeSuboutput->id;
+                
+                                    Target::create([
+                                        'target' => $target->target,
+                                        'type' => $target->type,
+                                        'user_type' => $target->user_type,
+                                        'suboutput_id' => $storeSuboutput->id,
+                                        'user_id' => Auth::user()->id,
+                                        'duration_id' => $this->duration->id
+                                    ]);
+                                }
+                            } else {
+                                $storeOutput = Output::create([
+                                    'code' => $output->code,
+                                    'output' => $output->output,
+                                    'type' => $output->type,
+                                    'user_type' => $output->user_type,
+                                    'funct_id' => $output->funct_id,
+                                    'user_id' => Auth::user()->id,
+                                    'duration_id' => $this->duration->id
+                                ]);
+                                $storeOutput_id = $storeOutput->id;
+            
+                                $storeSuboutput = Suboutput::create([
+                                    'suboutput' => $suboutput->suboutput,
+                                    'type' => $suboutput->type,
+                                    'user_type' => $suboutput->user_type,
+                                    'output_id' => $storeOutput->id,
+                                    'user_id' => Auth::user()->id,
+                                    'duration_id' => $this->duration->id
+                                ]);
+                                $storeSuboutput_id = $storeSuboutput->id;
+            
+                                Target::create([
+                                    'target' => $target->target,
+                                    'type' => $target->type,
+                                    'user_type' => $target->user_type,
+                                    'suboutput_id' => $storeSuboutput->id,
+                                    'user_id' => Auth::user()->id,
+                                    'duration_id' => $this->duration->id
+                                ]);
+                            }
                         }
                     }
                 }
@@ -384,27 +757,37 @@ class FacultyIpcrLivewire extends Component
             Target::where('id', $target->id)
                 ->where('type', 'ipcr')
                 ->where('user_type', 'faculty')
+                ->where('isDesignated', false)
                 ->delete();
         }
         foreach(Auth::user()->outputs as $output) {
             Output::where('id', $output->id)
                 ->where('type', 'ipcr')
                 ->where('user_type', 'faculty')
+                ->where('isDesignated', false)
                 ->delete();
         }
         foreach(Auth::user()->suboutputs as $suboutput) {
             Suboutput::where('id', $suboutput->id)
                 ->where('type', 'ipcr')
                 ->where('user_type', 'faculty')
+                ->where('isDesignated', false)
                 ->delete();
         }
         foreach(Auth::user()->subFuncts as $sub_funct) {
             SubFunct::where('id', $sub_funct->id)
                 ->where('type', 'ipcr')
                 ->where('user_type', 'faculty')
+                ->where('isDesignated', false)
                 ->delete();
         }
         
+        if ($this->percentage) {
+            Percentage::where('id', $this->percentage->id)->delete();
+
+            SuppPercentage::where('percentage_id', $this->percentage->id)->delete();
+        }
+
         session()->flash('message', 'Reset Successfully!');
         $this->closeModal();
     }
@@ -463,6 +846,7 @@ class FacultyIpcrLivewire extends Component
             ]);
 
             session()->flash('message', 'Added Successfully!');
+
         } elseif ($category == 'edit') {
             $divisor= 0;
             if(!$this->efficiency){
@@ -492,15 +876,6 @@ class FacultyIpcrLivewire extends Component
         $this->dispatchBrowserEvent('close-modal'); 
     }
     // <------------- CONFIGURING RATING END
-
-    // Delete OST-R
-    public function delete(){
-        Rating::find($this->rating_id)->delete();
-
-        session()->flash('message', 'Deleted Successfully!');
-        $this->resetInput();
-        $this->dispatchBrowserEvent('close-modal'); 
-    }
 
     // SUBMITING OF IPCR START ------------>
     public function submit() {
@@ -587,6 +962,31 @@ class FacultyIpcrLivewire extends Component
             return;
         }
 
+        $funct = [
+            'core' => false,
+            'strategic' => false,
+            'support' => false,
+        ];
+        foreach ($this->subFuncts as $sub_funct) {
+            if ($sub_funct->funct_id == 1) {
+                $funct['core'] = true;
+            }
+            if ($sub_funct->funct_id == 2) {
+                $funct['strategic'] = true;
+            }
+            if ($sub_funct->funct_id == 3) {
+                $funct['support'] = true;
+            }
+        }
+        $total = count(array_filter($funct)) * 100;
+
+        if ($total != array_sum($this->supp)) {
+            session()->flash('message', 'Percentage is not equal to 100!');
+            $this->resetInput();
+            $this->dispatchBrowserEvent('close-modal');
+            return;
+        }
+
         $percentage = Percentage::create([
             'core' => $this->core,
             'strategic' => $this->strategic,
@@ -602,6 +1002,7 @@ class FacultyIpcrLivewire extends Component
                 'name' => $subFunct->sub_funct,
                 'percent' => $this->supp[$subFunct->id],
                 'percentage_id' => $percentage->id,
+                'sub_funct_id' => $subFunct->id,
                 'user_id' => Auth::user()->id,
                 'duration_id' => $this->duration->id
             ]);
@@ -621,6 +1022,30 @@ class FacultyIpcrLivewire extends Component
             $this->dispatchBrowserEvent('close-modal');
             return;
         }
+        $funct = [
+            'core' => false,
+            'strategic' => false,
+            'support' => false,
+        ];
+        foreach ($this->subFuncts as $sub_funct) {
+            if ($sub_funct->funct_id == 1) {
+                $funct['core'] = true;
+            }
+            if ($sub_funct->funct_id == 2) {
+                $funct['strategic'] = true;
+            }
+            if ($sub_funct->funct_id == 3) {
+                $funct['support'] = true;
+            }
+        }
+        $total = count(array_filter($funct)) * 100;
+
+        if ($total != array_sum($this->supp)) {
+            session()->flash('message', 'Percentage is not equal to 100!');
+            $this->resetInput();
+            $this->dispatchBrowserEvent('close-modal');
+            return;
+        }
 
         Percentage::where('id', $this->percentage->id)->update([
             'core' => $this->core,
@@ -635,7 +1060,7 @@ class FacultyIpcrLivewire extends Component
             
         foreach($this->subFuncts as $subFunct) {
             foreach($suppPercentage as $supp) {
-                if($subFunct->sub_funct == $supp->name) {
+                if($subFunct->sub_funct == $supp->name && $subFunct->id == $supp->sub_funct_id) {
                     SuppPercentage::where('id', $supp->id)->update([
                         'percent' => $this->supp[$subFunct->id],
                     ]);
@@ -675,7 +1100,7 @@ class FacultyIpcrLivewire extends Component
     
             foreach ($this->subFuncts as $subFunct) {
                 foreach ($suppPercentage as $supp) {
-                    if ($subFunct->sub_funct == $supp->name) {
+                    if ($subFunct->sub_funct == $supp->name && $subFunct->id == $supp->sub_funct_id) {
                         $this->supp[$subFunct->id] = $supp->percent;
                         break;
                     }
@@ -693,12 +1118,18 @@ class FacultyIpcrLivewire extends Component
         $this->efficiency = '';
         $this->quality = '';
         $this->timeliness = '';
-        $this->selected = '';
         $this->core = '';
         $this->strategic = '';
         $this->support = '';
         $this->supp = [];
         $this->dummy = 'dummy';
+        $this->sub_funct = '';
+        $this->suboutput = '';
+        $this->target = '';
+        $this->output_id = '';
+        $this->suboutput_id = '';
+        $this->sub_funct_id = '';
+        $this->subput = '';
     }
 
     public function closeModal(){

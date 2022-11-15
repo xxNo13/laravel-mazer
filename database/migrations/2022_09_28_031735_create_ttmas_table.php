@@ -19,6 +19,8 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->string('output');
             $table->string('remarks')->nullable();
+            $table->mediumText('message')->nullable();
+            $table->mediumText('comments')->nullable();
             $table->integer('head_id');
             $table->foreignId('duration_id')->constrained()->onDelete('cascade');
             $table->timestamps();

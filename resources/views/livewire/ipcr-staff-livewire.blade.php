@@ -167,7 +167,7 @@
                                 {{ $subFunct->sub_funct }}
                                 @if ($percentage)
                                     @foreach ($percentage->supports as $support)
-                                        @if ($support->name == $subFunct->sub_funct)
+                                        @if ($support->name == $subFunct->sub_funct && $support->sub_funct_id == $subFunct->id)
                                             {{ $support->percent }}%
                                         @endif
                                     @endforeach

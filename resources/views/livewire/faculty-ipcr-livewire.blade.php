@@ -113,9 +113,15 @@
                 </h4>
                 @if ((!$approval || ($approval->superior1_status == 2 || $approval->superior2_status == 2)) &&
                 ($duration && $duration->start_date <= date('Y-m-d') && $duration->end_date >= date('Y-m-d')))
+                    @if (Auth::user()->account_types->contains(1))
+                        <button type="button" class="ms-auto btn btn-outline-secondary" data-bs-toggle="modal"
+                            data-bs-target="#AddIPCROSTModal" title="Add Output/Suboutput/Target">
+                            Add OST
+                        </button>
+                    @endif
                     @if ($approveFaculty)
-                        @if ($output)
-                            <button type="button" class="ms-auto btn btn-outline-danger" data-bs-toggle="modal"
+                        @if ($targ)
+                            <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal"
                                 data-bs-target="#ResetIPCRModal" title="Configure Output/Suboutput/Target">
                                 Reset IPCR
                             </button>
@@ -129,15 +135,13 @@
                                     data-bs-target="#EditPercentageModal" title="Edit Percentage" wire:click="percent('{{ 'edit' }}')">
                                     Edit Percentage
                                 </button>
-                            @endif
-                            @if ($percentage)
                                 <button type="button" class="btn btn-outline-info" data-bs-toggle="modal"
                                     data-bs-target="#SubmitISOModal" title="Save IPCR" wire:click="submit">
                                     Submit
                                 </button>
                             @endif
                         @else
-                            <button type="button" class="ms-auto btn btn-outline-secondary" wire:click="configure"
+                            <button type="button" class="btn btn-outline-secondary" wire:click="configure"
                                 title="Configure Output/Suboutput/Target">
                                 Add IPCR
                             </button>
@@ -164,10 +168,18 @@
                         $subFunct->user_type == $userType)
                         <div>
                             <h5>
+                                @if ($subFunct->isDesignated && (!$approval || ($approval->superior1_status == 2 || $approval->superior2_status == 2)) &&
+                                ($duration && $duration->start_date <= date('Y-m-d') && $duration->end_date >= date('Y-m-d')))
+                                    <i class="bi bi-three-dots-vertical" data-bs-toggle="dropdown" style="cursor: pointer;"></i>
+                                    <div class="dropdown-menu">
+                                        <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#EditIPCROSTModal" wire:click="select('{{ 'sub_funct' }}', {{ $subFunct->id }})">Edit</a>
+                                        <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#DeleteModal" wire:click="select('{{ 'sub_funct' }}', {{ $subFunct->id }})">Delete</a>
+                                    </div>
+                                @endif
                                 {{ $subFunct->sub_funct }}
                                 @if ($percentage)
                                     @foreach ($percentage->supports as $support)
-                                        @if ($support->name == $subFunct->sub_funct)
+                                        @if ($support->name == $subFunct->sub_funct && $support->sub_funct_id == $subFunct->id)
                                             {{ $support->percent }}%
                                         @endif
                                     @endforeach
@@ -181,6 +193,14 @@
                                     <div class="card">
                                         <div class="card-header">
                                             <h4 class="card-title">
+                                                @if ($output->isDesignated && (!$approval || ($approval->superior1_status == 2 || $approval->superior2_status == 2)) &&
+                                                ($duration && $duration->start_date <= date('Y-m-d') && $duration->end_date >= date('Y-m-d')))
+                                                    <i class="bi bi-three-dots-vertical" data-bs-toggle="dropdown" style="cursor: pointer;"></i>
+                                                    <div class="dropdown-menu">
+                                                        <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#EditIPCROSTModal" wire:click="select('{{ 'output' }}', {{ $output->id }})">Edit</a>
+                                                        <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#DeleteModal" wire:click="select('{{ 'output' }}', {{ $output->id }})">Delete</a>
+                                                    </div>
+                                                @endif
                                                 {{ $output->code }} {{ $number++ }}
                                                 {{ $output->output }}
                                             </h4>
@@ -193,6 +213,14 @@
                                                 $output->user_type == $userType)
                                                 <div class="card-body">
                                                     <h6>
+                                                        @if ($suboutput->isDesignated && (!$approval || ($approval->superior1_status == 2 || $approval->superior2_status == 2)) &&
+                                                        ($duration && $duration->start_date <= date('Y-m-d') && $duration->end_date >= date('Y-m-d')))
+                                                            <i class="bi bi-three-dots-vertical" data-bs-toggle="dropdown" style="cursor: pointer;"></i>
+                                                            <div class="dropdown-menu">
+                                                                <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#EditIPCROSTModal" wire:click="select('{{ 'suboutput' }}', {{ $suboutput->id }})">Edit</a>
+                                                                <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#DeleteModal" wire:click="select('{{ 'suboutput' }}', {{ $suboutput->id }})">Delete</a>
+                                                            </div>
+                                                        @endif
                                                         {{ $suboutput->suboutput }}
                                                     </h6>
                                                 </div>
@@ -205,6 +233,16 @@
                                                                     $target->type == 'ipcr' &&
                                                                     $target->duration_id == $duration->id &&
                                                                     $output->user_type == $userType)
+                                                                    <span class="my-auto">
+                                                                        @if ($target->isDesignated && (!$approval || ($approval->superior1_status == 2 || $approval->superior2_status == 2)) &&
+                                                                        ($duration && $duration->start_date <= date('Y-m-d') && $duration->end_date >= date('Y-m-d')))
+                                                                            <i class="bi bi-three-dots-vertical" data-bs-toggle="dropdown" style="cursor: pointer;"></i>
+                                                                            <div class="dropdown-menu">
+                                                                                <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#EditIPCROSTModal" wire:click="select('{{ 'target' }}', {{ $target->id }})">Edit</a>
+                                                                                <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#DeleteModal" wire:click="select('{{ 'target' }}', {{ $target->id }})">Delete</a>
+                                                                            </div>
+                                                                        @endif
+                                                                    </span>
                                                                     <div wire:ignore.self
                                                                         class="accordion-button collapsed gap-2"
                                                                         type="button" data-bs-toggle="collapse"
@@ -343,6 +381,16 @@
                                                                 $target->type == 'ipcr' &&
                                                                 $target->duration_id == $duration->id &&
                                                                 $output->user_type == $userType)
+                                                                <span class="my-auto">
+                                                                    @if ($target->isDesignated && (!$approval || ($approval->superior1_status == 2 || $approval->superior2_status == 2)) &&
+                                                                    ($duration && $duration->start_date <= date('Y-m-d') && $duration->end_date >= date('Y-m-d')))
+                                                                        <i class="bi bi-three-dots-vertical" data-bs-toggle="dropdown" style="cursor: pointer;"></i>
+                                                                        <div class="dropdown-menu">
+                                                                            <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#EditIPCROSTModal" wire:click="select('{{ 'target' }}', {{ $target->id }})">Edit</a>
+                                                                            <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#DeleteModal" wire:click="select('{{ 'target' }}', {{ $target->id }})">Delete</a>
+                                                                        </div>
+                                                                    @endif
+                                                                </span>
                                                                 <div wire:ignore.self
                                                                     class="accordion-button collapsed gap-2"
                                                                     type="button" data-bs-toggle="collapse"
@@ -487,6 +535,14 @@
                     <div class="card">
                         <div class="card-header">
                             <h4 class="card-title">
+                                @if ($output->isDesignated && (!$approval || ($approval->superior1_status == 2 || $approval->superior2_status == 2)) &&
+                                ($duration && $duration->start_date <= date('Y-m-d') && $duration->end_date >= date('Y-m-d')))
+                                    <i class="bi bi-three-dots-vertical" data-bs-toggle="dropdown" style="cursor: pointer;"></i>
+                                    <div class="dropdown-menu">
+                                        <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#EditIPCROSTModal" wire:click="select('{{ 'output' }}', {{ $output->id }})">Edit</a>
+                                        <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#DeleteModal" wire:click="select('{{ 'output' }}', {{ $output->id }})">Delete</a>
+                                    </div>
+                                @endif
                                 {{ $output->code }} {{ $number++ }} {{ $output->output }}
                             </h4>
                             <p class="text-subtitle text-muted"></p>
@@ -498,6 +554,14 @@
                                 $output->user_type == $userType)
                                 <div class="card-body">
                                     <h6>
+                                        @if ($suboutput->isDesignated && (!$approval || ($approval->superior1_status == 2 || $approval->superior2_status == 2)) &&
+                                        ($duration && $duration->start_date <= date('Y-m-d') && $duration->end_date >= date('Y-m-d')))
+                                            <i class="bi bi-three-dots-vertical" data-bs-toggle="dropdown" style="cursor: pointer;"></i>
+                                            <div class="dropdown-menu">
+                                                <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#EditIPCROSTModal" wire:click="select('{{ 'suboutput' }}', {{ $suboutput->id }})">Edit</a>
+                                                <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#DeleteModal" wire:click="select('{{ 'suboutput' }}', {{ $suboutput->id }})">Delete</a>
+                                            </div>
+                                        @endif
                                         {{ $suboutput->suboutput }}
                                     </h6>
                                 </div>
@@ -510,6 +574,16 @@
                                                     $target->type == 'ipcr' &&
                                                     $target->duration_id == $duration->id &&
                                                     $output->user_type == $userType)
+                                                    <span class="my-auto">
+                                                        @if ($target->isDesignated && (!$approval || ($approval->superior1_status == 2 || $approval->superior2_status == 2)) &&
+                                                        ($duration && $duration->start_date <= date('Y-m-d') && $duration->end_date >= date('Y-m-d')))
+                                                            <i class="bi bi-three-dots-vertical" data-bs-toggle="dropdown" style="cursor: pointer;"></i>
+                                                            <div class="dropdown-menu">
+                                                                <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#EditIPCROSTModal" wire:click="select('{{ 'target' }}', {{ $target->id }})">Edit</a>
+                                                                <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#DeleteModal" wire:click="select('{{ 'target' }}', {{ $target->id }})">Delete</a>
+                                                            </div>
+                                                        @endif
+                                                    </span>
                                                     <div wire:ignore.self class="accordion-button collapsed gap-2"
                                                         type="button" data-bs-toggle="collapse"
                                                         data-bs-target="#{{ str_replace(' ', '', $target->target) }}{{ $target->id }}"
@@ -640,6 +714,16 @@
                                                 $target->type == 'ipcr' &&
                                                 $target->duration_id == $duration->id &&
                                                 $output->user_type == $userType)
+                                                <span class="my-auto">
+                                                    @if ($target->isDesignated && (!$approval || ($approval->superior1_status == 2 || $approval->superior2_status == 2)) &&
+                                                    ($duration && $duration->start_date <= date('Y-m-d') && $duration->end_date >= date('Y-m-d')))
+                                                        <i class="bi bi-three-dots-vertical" data-bs-toggle="dropdown" style="cursor: pointer;"></i>
+                                                        <div class="dropdown-menu">
+                                                            <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#EditIPCROSTModal" wire:click="select('{{ 'target' }}', {{ $target->id }})">Edit</a>
+                                                            <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#DeleteModal" wire:click="select('{{ 'target' }}', {{ $target->id }})">Delete</a>
+                                                        </div>
+                                                    @endif
+                                                </span>
                                                 <div wire:ignore.self class="accordion-button collapsed gap-2"
                                                     type="button" data-bs-toggle="collapse"
                                                     data-bs-target="#{{ str_replace(' ', '', $target->target) }}{{ $target->id }}"
@@ -766,5 +850,10 @@
     </section>
 
     {{ $functs->links('components.pagination') }}
-    <x-modals :users1="$users1" :users2="$users2" :type="$type" :subFuncts="$subFuncts" :percentage="$percentage" />
+    @php
+        $facult = 'facult'
+    @endphp
+    <x-modals :selected="$selected" :users1="$users1" :users2="$users2" :type="$type" :duration="$duration"
+    :userType="$facult" :subFuncts="$subFuncts" :percentage="$percentage" :functs="$functs" />
+
 </div>

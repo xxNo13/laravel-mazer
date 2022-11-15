@@ -20,63 +20,117 @@
         </div>
     </a>
     <ul class="dropdown-menu dropdown-menu-end overflow-auto" aria-labelledby="dropdownMenuButton"
-        style="max-height: 500px; width: 250px;">
+        style="max-height: 80vh; width: 300px; border-radius: 20px; ">
         <li>
             <h6 class="dropdown-header">Notifications</h6>
         </li>
         @forelse (Auth::user()->notifications as $notification)
-            @if (isset($notification->data['remarks']))
-                <li>
-                    <button wire:click="read('{{ $notification->id }}', 'ttma')" class="dropdown-item">
-                        <div class="d-flex align-items-center">
-                            <div style="width: 90%;">
-                                <div class="text-truncate fw-bold">
-                                    <span>Marked as Done:</span>
+            @if (isset($notification->data['ttma_id']))
+                @if (isset($notification->data['remarks']))
+                    <li>
+                        <button wire:click="read('{{ $notification->id }}', 'ttma')" class="dropdown-item">
+                            <div class="d-flex align-items-center">
+                                <div style="width: 90%;">
+                                    <div class="text-truncate fw-bold">
+                                        <span>{{ $notification->data['head'] }} Marked Task as Done:</span>
+                                    </div>
+                                    <div class="text-truncate text-capitalize">
+                                        {{ $notification->data['subject'] }} - {{ $notification->data['output'] }}
+                                    </div>
+                                    <div>
+                                        <span
+                                            class="text-muted fst-italic">{{ $notification->created_at->diffForHumans() }}</span>
+                                    </div>
                                 </div>
-                                <div class="text-truncate text-capitalize">
-                                    {{ $notification->data['subject'] }} - {{ $notification->data['output'] }}
-                                </div>
-                                <div>
-                                    <span
-                                        class="text-muted fst-italic">{{ $notification->created_at->diffForHumans() }}</span>
-                                </div>
-                            </div>
-                            <div class="text-primary hstack" style="width: 10%;">
-                                @if (empty($notification->read_at))
-                                    <span class="ms-auto">
-                                        <i class="bi bi-circle-fill"></i>
-                                    </span>
-                                @endif
-                            </div>
-                        </div>
-                    </button>
-                </li>
-            @elseif (isset($notification->data['ttma_id']))
-                <li>
-                    <button wire:click="read('{{ $notification->id }}', 'ttma')" class="dropdown-item">
-                        <div class="d-flex align-items-center">
-                            <div style="width: 90%;">
-                                <div class="text-truncate fw-bold">
-                                    <span>Assigned Task:</span>
-                                </div>
-                                <div class="text-truncate text-capitalize">
-                                    {{ $notification->data['subject'] }} - {{ $notification->data['output'] }}
-                                </div>
-                                <div>
-                                    <span
-                                        class="text-muted fst-italic">{{ $notification->created_at->diffForHumans() }}</span>
+                                <div class="text-primary hstack" style="width: 10%;">
+                                    @if (empty($notification->read_at))
+                                        <span class="ms-auto">
+                                            <i class="bi bi-circle-fill"></i>
+                                        </span>
+                                    @endif
                                 </div>
                             </div>
-                            <div class="text-primary hstack" style="width: 10%;">
-                                @if (empty($notification->read_at))
-                                    <span class="ms-auto">
-                                        <i class="bi bi-circle-fill"></i>
-                                    </span>
-                                @endif
+                        </button>
+                    </li>
+                @elseif (isset($notification->data['status']) && $notification->data['status'] == 'Done')
+                    <li>
+                        <button wire:click="read('{{ $notification->id }}', 'ttma')" class="dropdown-item">
+                            <div class="d-flex align-items-center">
+                                <div style="width: 90%;">
+                                    <div class="text-truncate fw-bold">
+                                        <span>{{ $notification->data['user'] }} Complete Task:</span>
+                                    </div>
+                                    <div class="text-truncate text-capitalize">
+                                        {{ $notification->data['subject'] }} - {{ $notification->data['output'] }}
+                                    </div>
+                                    <div>
+                                        <span
+                                            class="text-muted fst-italic">{{ $notification->created_at->diffForHumans() }}</span>
+                                    </div>
+                                </div>
+                                <div class="text-primary hstack" style="width: 10%;">
+                                    @if (empty($notification->read_at))
+                                        <span class="ms-auto">
+                                            <i class="bi bi-circle-fill"></i>
+                                        </span>
+                                    @endif
+                                </div>
                             </div>
-                        </div>
-                    </button>
-                </li>
+                        </button>
+                    </li>
+                @elseif (isset($notification->data['status']) && $notification->data['status'] == 'Disapproved')
+                    <li>
+                        <button wire:click="read('{{ $notification->id }}', 'ttma')" class="dropdown-item">
+                            <div class="d-flex align-items-center">
+                                <div style="width: 90%;">
+                                    <div class="text-truncate fw-bold">
+                                        <span>{{ $notification->data['user'] }} Decline Complete:</span>
+                                    </div>
+                                    <div class="text-truncate text-capitalize">
+                                        {{ $notification->data['subject'] }} - {{ $notification->data['output'] }}
+                                    </div>
+                                    <div>
+                                        <span
+                                            class="text-muted fst-italic">{{ $notification->created_at->diffForHumans() }}</span>
+                                    </div>
+                                </div>
+                                <div class="text-primary hstack" style="width: 10%;">
+                                    @if (empty($notification->read_at))
+                                        <span class="ms-auto">
+                                            <i class="bi bi-circle-fill"></i>
+                                        </span>
+                                    @endif
+                                </div>
+                            </div>
+                        </button>
+                    </li>
+                @else
+                    <li>
+                        <button wire:click="read('{{ $notification->id }}', 'ttma')" class="dropdown-item">
+                            <div class="d-flex align-items-center">
+                                <div style="width: 90%;">
+                                    <div class="text-truncate fw-bold">
+                                        <span>{{ $notification->data['head'] }} Assigned Task:</span>
+                                    </div>
+                                    <div class="text-truncate text-capitalize">
+                                        {{ $notification->data['subject'] }} - {{ $notification->data['output'] }}
+                                    </div>
+                                    <div>
+                                        <span
+                                            class="text-muted fst-italic">{{ $notification->created_at->diffForHumans() }}</span>
+                                    </div>
+                                </div>
+                                <div class="text-primary hstack" style="width: 10%;">
+                                    @if (empty($notification->read_at))
+                                        <span class="ms-auto">
+                                            <i class="bi bi-circle-fill"></i>
+                                        </span>
+                                    @endif
+                                </div>
+                            </div>
+                        </button>
+                    </li>
+                @endif
             @elseif (isset($notification->data['approval_id']))
                 @php
                     if ($notification->data['status'] == 'Submitting') {

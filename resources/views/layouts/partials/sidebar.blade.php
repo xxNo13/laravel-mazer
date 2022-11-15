@@ -9,6 +9,7 @@
         <x-maz-sidebar-item name="Agency's Target" :link="route('agency.target')" icon="bi bi-person-circle"></x-maz-sidebar-item>
     @endif
     @if (Auth::user()->account_types->contains(3) || Auth::user()->account_types->contains(4))
+        <x-maz-sidebar-item name="Trainings" :link="route('trainings')" icon="bi bi-person-workspace"></x-maz-sidebar-item>
         <x-maz-sidebar-item name="Subordinates" :link="route('officemates')" icon="bi bi-people-fill"></x-maz-sidebar-item>
         <x-maz-sidebar-item name="For Approval" :link="route('for-approval')" icon="bi bi-person-lines-fill"></x-maz-sidebar-item>
         <x-maz-sidebar-item name="OPCR" :link="route('opcr')" icon="bi bi-clipboard2-data-fill"></x-maz-sidebar-item>

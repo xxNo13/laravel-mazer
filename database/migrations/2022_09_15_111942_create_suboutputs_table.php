@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('suboutput');
             $table->string('type');
             $table->string('user_type');
+            $table->boolean('isDesignated')->default('false');
             $table->foreignId('output_id')->constrained()->onDelete('cascade');
             $table->foreignId('user_id')->nullable()->constrained()->onDelete('cascade');
             $table->foreignId('duration_id')->constrained()->onDelete('cascade');

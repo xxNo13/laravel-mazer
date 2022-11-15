@@ -152,9 +152,23 @@ class IpcrFacultyLivewire extends Component
 
         switch($selected){
             case 'sub_funct':
+                switch (str_replace(url('/'), '', url()->previous())) {
+                    case '/ipcr/add/faculty':
+                        $this->funct_id = 1;
+                        break;
+                    case '/ipcr/add/faculty?page=2':
+                        $this->funct_id = 2;
+                        break;
+                    case '/ipcr/add/faculty?page=3':
+                        $this->funct_id = 3;
+                        break;
+                    default:
+                        $this->funct_id = 0;
+                        break;
+                };
                 SubFunct::create([
                     'sub_funct' => $this->sub_funct,
-                    'funct_id' => 3,
+                    'funct_id' => $this->funct_id,
                     'type' => 'ipcr',
                     'user_type' => 'faculty',
                     'duration_id' => $this->duration->id

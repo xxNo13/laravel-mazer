@@ -3,7 +3,7 @@
         {{-- Add Output/Suboutput/Target Modal --}}
         <div wire:ignore.self class="modal fade text-left" id="AddIPCROSTModal" tabindex="-1" role="dialog"
             aria-labelledby="myModalLabel33" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+            <div class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h4 class="modal-title" id="myModalLabel33">Add Output/Suboutput/Target</h4>
@@ -14,15 +14,13 @@
                     <form wire:submit.prevent="save">
                         <div class="modal-body">
                             <div class="mt-3 form-group d-flex justify-content-between">
-                                @if ($functs->links()->paginator->currentPage() == '3')
-                                    <div class="form-check form-switch">
-                                        <input wire:change="changed" type="radio" class="form-check-input" id="output"
-                                            value="sub_funct" name="selected" wire:model="selected">
-                                        <label class="form-check-label" for="sub_funct">
-                                            Sub Function
-                                        </label>
-                                    </div>
-                                @endif
+                                <div class="form-check form-switch">
+                                    <input wire:change="changed" type="radio" class="form-check-input" id="output"
+                                        value="sub_funct" name="selected" wire:model="selected">
+                                    <label class="form-check-label" for="sub_funct">
+                                        Sub Function
+                                    </label>
+                                </div>
                                 <div class="form-check form-switch">
                                     <input wire:change="changed" type="radio" class="form-check-input" id="output"
                                         value="output" name="selected" wire:model="selected">
@@ -59,33 +57,38 @@
                                         @enderror
                                     </div>
                                 @elseif ($selected == 'output')
-                                    @if ($functs->links()->paginator->currentPage() == '3')
-                                        <label>Sub Function (Optional): </label>
-                                        <div class="form-group">
-                                            <select placeholder="Sub Function" class="form-control"
-                                                wire:model="sub_funct_id">
-                                                <option value="">Select a Sub Function</option>
-                                                @if ($userType == 'faculty')
-                                                    @foreach ($subFuncts as $sub_funct)
-                                                        @if ($sub_funct->type == 'ipcr' && $sub_funct->duration_id == $duration->id && $sub_funct->user_type == $userType)
-                                                            <option value="{{ $sub_funct->id }}">
-                                                                {{ $sub_funct->sub_funct }}</option>
-                                                        @endif
-                                                    @endforeach
-                                                @else
-                                                    @foreach (Auth::user()->subFuncts as $sub_funct)
-                                                        @if ($sub_funct->type == 'ipcr' && $sub_funct->duration_id == $duration->id && $sub_funct->user_type == $userType)
-                                                            <option value="{{ $sub_funct->id }}">{{ $sub_funct->sub_funct }}
-                                                            </option>
-                                                        @endif
-                                                    @endforeach
-                                                @endif
-                                            </select>
-                                            @error('output_id')
-                                                <p class="text-danger">{{ $message }}</p>
-                                            @enderror
-                                        </div>
-                                    @endif
+                                    <label>Sub Function (Optional): </label>
+                                    <div class="form-group">
+                                        <select placeholder="Sub Function" class="form-control"
+                                            wire:model="sub_funct_id">
+                                            <option value="">Select a Sub Function</option>
+                                            @if ($userType == 'faculty')
+                                                @foreach ($subFuncts as $sub_funct)
+                                                    @if ($sub_funct->type == 'ipcr' && $sub_funct->duration_id == $duration->id && $sub_funct->user_type == $userType)
+                                                        <option value="{{ $sub_funct->id }}">
+                                                            {{ $sub_funct->sub_funct }}</option>
+                                                    @endif
+                                                @endforeach
+                                            @elseif ($userType == 'facult')
+                                                @foreach (Auth::user()->subFuncts as $sub_funct)
+                                                    @if ($sub_funct->isDesignated && $sub_funct->type == 'ipcr' && $sub_funct->duration_id == $duration->id && $sub_funct->user_type == 'faculty')
+                                                        <option value="{{ $sub_funct->id }}">{{ $sub_funct->sub_funct }}
+                                                        </option>
+                                                    @endif
+                                                @endforeach
+                                            @else
+                                                @foreach (Auth::user()->subFuncts as $sub_funct)
+                                                    @if ($sub_funct->type == 'ipcr' && $sub_funct->duration_id == $duration->id && $sub_funct->user_type == $userType)
+                                                        <option value="{{ $sub_funct->id }}">{{ $sub_funct->sub_funct }}
+                                                        </option>
+                                                    @endif
+                                                @endforeach
+                                            @endif
+                                        </select>
+                                        @error('output_id')
+                                            <p class="text-danger">{{ $message }}</p>
+                                        @enderror
+                                    </div>
                                     <label>Output: </label>
                                     <div class="form-group">
                                         <input type="text" placeholder="Output" class="form-control" name="output"
@@ -107,6 +110,17 @@
                                                         <option value="{{ $output->id }}">{{ $output->code }}
                                                             {{ $output->output }}
                                                         </option>
+                                                    @endforelse
+                                                @endforeach
+                                            @elseif ($userType == 'facult')
+                                                @foreach (Auth::user()->outputs as $output)
+                                                    @forelse ($output->targets as $target)
+                                                    @empty
+                                                        @if ($output->isDesignated && $output->type == 'ipcr' && $output->duration_id == $duration->id && $output->user_type == 'faculty')
+                                                            <option value="{{ $output->id }}">{{ $output->code }}
+                                                                {{ $output->output }}
+                                                            </option>
+                                                        @endif
                                                     @endforelse
                                                 @endforeach
                                             @else
@@ -156,6 +170,27 @@
                                                         {{ $suboutput->output->output }} -
                                                         {{ $suboutput->suboutput }}
                                                     </option>
+                                                @endforeach
+                                            @elseif ($userType == 'facult')
+                                                @foreach (Auth::user()->outputs as $output)
+                                                    @forelse ($output->suboutputs as $suboutput)
+                                                    @empty
+                                                        @if ($output->isDesignated && $output->type == 'ipcr' && $output->duration_id == $duration->id && $output->user_type == 'faculty')
+                                                            <option value="output, {{ $output->id }}">
+                                                                {{ $output->code }}
+                                                                {{ $output->output }}
+                                                            </option>
+                                                        @endif
+                                                    @endforelse
+                                                @endforeach
+                                                @foreach (Auth::user()->suboutputs as $suboutput)
+                                                    @if ($suboutput->isDesignated && $suboutput->type == 'ipcr' && $suboutput->duration_id == $duration->id && $suboutput->user_type == 'faculty')
+                                                        <option value="suboutput, {{ $suboutput->id }}">
+                                                            {{ $suboutput->output->code }}
+                                                            {{ $suboutput->output->output }} -
+                                                            {{ $suboutput->suboutput }}
+                                                        </option>
+                                                    @endif
                                                 @endforeach
                                             @else
                                                 @foreach (Auth::user()->outputs as $output)
@@ -213,7 +248,7 @@
         {{-- Edit Output/Suboutput/Target Modal --}}
         <div wire:ignore.self class="modal fade text-left" id="EditIPCROSTModal" tabindex="-1" role="dialog"
             aria-labelledby="myModalLabel33" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+            <div class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h4 class="modal-title" id="myModalLabel33">Edit Output/Suboutput/Target</h4>
@@ -281,7 +316,7 @@
         {{-- Add Output/Suboutput/Target Modal --}}
         <div wire:ignore.self class="modal fade text-left" id="AddOPCROSTModal" tabindex="-1" role="dialog"
             aria-labelledby="myModalLabel33" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+            <div class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h4 class="modal-title" id="myModalLabel33">Add Output/Suboutput/Target</h4>
@@ -292,15 +327,13 @@
                     <form wire:submit.prevent="save">
                         <div class="modal-body">
                             <div class="mt-3 form-group d-flex justify-content-between">
-                                @if ($functs->links()->paginator->currentPage() == '3')
-                                    <div class="form-check form-switch">
-                                        <input wire:change="changed" type="radio" class="form-check-input" id="output"
-                                            value="sub_funct" name="selected" wire:model="selected">
-                                        <label class="form-check-label" for="sub_funct">
-                                            Sub Function
-                                        </label>
-                                    </div>
-                                @endif
+                                <div class="form-check form-switch">
+                                    <input wire:change="changed" type="radio" class="form-check-input" id="output"
+                                        value="sub_funct" name="selected" wire:model="selected">
+                                    <label class="form-check-label" for="sub_funct">
+                                        Sub Function
+                                    </label>
+                                </div>
                                 <div class="form-check form-switch">
                                     <input wire:change="changed" type="radio" class="form-check-input" id="output"
                                         value="output" name="selected" wire:model="selected">
@@ -337,24 +370,22 @@
                                         @enderror
                                     </div>
                                 @elseif ($selected == 'output')
-                                    @if ($functs->links()->paginator->currentPage() == '3')
-                                        <label>Sub Function (Optional): </label>
-                                        <div class="form-group">
-                                            <select placeholder="Sub Function" class="form-control"
-                                                wire:model="sub_funct_id">
-                                                <option value="">Select a Sub Function</option>
-                                                @foreach (Auth::user()->subFuncts as $sub_funct)
-                                                    @if ($sub_funct->type == 'opcr' && $sub_funct->duration_id == $duration->id && $sub_funct->user_type == $userType)
-                                                        <option value="{{ $sub_funct->id }}">{{ $sub_funct->sub_funct }}
-                                                        </option>
-                                                    @endif
-                                                @endforeach
-                                            </select>
-                                            @error('output_id')
-                                                <p class="text-danger">{{ $message }}</p>
-                                            @enderror
-                                        </div>
-                                    @endif
+                                    <label>Sub Function (Optional): </label>
+                                    <div class="form-group">
+                                        <select placeholder="Sub Function" class="form-control"
+                                            wire:model="sub_funct_id">
+                                            <option value="">Select a Sub Function</option>
+                                            @foreach (Auth::user()->subFuncts as $sub_funct)
+                                                @if ($sub_funct->type == 'opcr' && $sub_funct->duration_id == $duration->id && $sub_funct->user_type == $userType)
+                                                    <option value="{{ $sub_funct->id }}">{{ $sub_funct->sub_funct }}
+                                                    </option>
+                                                @endif
+                                            @endforeach
+                                        </select>
+                                        @error('output_id')
+                                            <p class="text-danger">{{ $message }}</p>
+                                        @enderror
+                                    </div>
                                     <label>Output: </label>
                                     <div class="form-group">
                                         <input type="text" placeholder="Output" class="form-control" name="output"
@@ -468,7 +499,7 @@
         {{-- Edit Output/Suboutput/Target Modal --}}
         <div wire:ignore.self class="modal fade text-left" id="EditOPCROSTModal" tabindex="-1" role="dialog"
             aria-labelledby="myModalLabel33" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+            <div class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h4 class="modal-title" id="myModalLabel33">Edit Output/Suboutput/Target</h4>
@@ -553,7 +584,7 @@
     {{-- Delete Modal --}}
     <div wire:ignore.self class="modal fade text-left" id="DeleteModal" tabindex="-1" role="dialog"
         aria-labelledby="myModalLabel33" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+        <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h4 class="modal-title" id="myModalLabel33">Delete Modal</h4>
@@ -585,7 +616,7 @@
         {{-- Add Rating Modal --}}
         <div wire:ignore.self class="modal fade text-left" id="AddRatingModal" tabindex="-1" role="dialog"
             aria-labelledby="myModalLabel33" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+            <div class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h4 class="modal-title" id="myModalLabel33">Add Rating</h4>
@@ -647,7 +678,7 @@
         {{-- Edit Rating Modal --}}
         <div wire:ignore.self class="modal fade text-left" id="EditRatingModal" tabindex="-1" role="dialog"
             aria-labelledby="myModalLabel33" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+            <div class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h4 class="modal-title" id="myModalLabel33">Edit Rating</h4>
@@ -710,7 +741,7 @@
     {{-- Add Standard Modal --}}
     <div wire:ignore.self class="modal fade text-left" id="AddStandardModal" tabindex="-1" role="dialog"
         aria-labelledby="myModalLabel33" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl" role="document">
+        <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h4 class="modal-title" id="myModalLabel33">Add Standard</h4>
@@ -828,7 +859,7 @@
     {{-- Edit Standard Modal --}}
     <div wire:ignore.self class="modal fade text-left" id="EditStandardModal" tabindex="-1" role="dialog"
         aria-labelledby="myModalLabel33" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl" role="document">
+        <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h4 class="modal-title" id="myModalLabel33">Edit Standard</h4>
@@ -947,7 +978,7 @@
         {{-- Submit IPCR/Standard/OPCR Modal --}}
         <div wire:ignore.self class="modal fade text-left" id="SubmitISOModal" tabindex="-1" role="dialog"
             aria-labelledby="myModalLabel33" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+            <div class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h4 class="modal-title" id="myModalLabel33">Save IPCR</h4>
@@ -1003,7 +1034,7 @@
         {{-- Assess IPCR/Standard/OPCR Modal --}}
         <div wire:ignore.self class="modal fade text-left" id="AssessISOModal" tabindex="-1" role="dialog"
             aria-labelledby="myModalLabel33" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+            <div class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h4 class="modal-title" id="myModalLabel33">Save IPCR</h4>
@@ -1064,7 +1095,7 @@
         {{-- Add TTMA Modal --}}
         <div wire:ignore.self class="modal fade text-left" id="AddTTMAModal" tabindex="-1" role="dialog"
             aria-labelledby="myModalLabel33" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+            <div class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h4 class="modal-title" id="myModalLabel33">Add Assignment</h4>
@@ -1121,7 +1152,7 @@
         {{-- Edit TTMA Modal --}}
         <div wire:ignore.self class="modal fade text-left" id="EditTTMAModal" tabindex="-1" role="dialog"
             aria-labelledby="myModalLabel33" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+            <div class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h4 class="modal-title" id="myModalLabel33">Edit Assignment</h4>
@@ -1179,7 +1210,7 @@
     {{-- Done Modal --}}
     <div wire:ignore.self class="modal fade text-left" id="DoneModal" tabindex="-1" role="dialog"
         aria-labelledby="myModalLabel33" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+        <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h4 class="modal-title" id="myModalLabel33">Done</h4>
@@ -1209,7 +1240,7 @@
     {{-- Add Office Modal --}}
     <div wire:ignore.self class="modal fade text-left" id="AddOfficeModal" tabindex="-1" role="dialog"
         aria-labelledby="myModalLabel33" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+        <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h4 class="modal-title" id="myModalLabel33">Add Office</h4>
@@ -1252,7 +1283,7 @@
     {{-- Edit Office Modal --}}
     <div wire:ignore.self class="modal fade text-left" id="EditOfficeModal" tabindex="-1" role="dialog"
         aria-labelledby="myModalLabel33" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+        <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h4 class="modal-title" id="myModalLabel33">Edit Office</h4>
@@ -1295,7 +1326,7 @@
     {{-- Add Account Type Modal --}}
     <div wire:ignore.self class="modal fade text-left" id="AddAccountTypeModal" tabindex="-1" role="dialog"
         aria-labelledby="myModalLabel33" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+        <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h4 class="modal-title" id="myModalLabel33">Add Account Type</h4>
@@ -1332,7 +1363,7 @@
     {{-- Edit Account Type Modal --}}
     <div wire:ignore.self class="modal fade text-left" id="EditAccountTypeModal" tabindex="-1" role="dialog"
         aria-labelledby="myModalLabel33" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+        <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h4 class="modal-title" id="myModalLabel33">Edit Account Type</h4>
@@ -1369,7 +1400,7 @@
     {{-- Add Duration Modal --}}
     <div wire:ignore.self class="modal fade text-left" id="AddDurationModal" tabindex="-1" role="dialog"
         aria-labelledby="myModalLabel33" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+        <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h4 class="modal-title" id="myModalLabel33">Add Duration</h4>
@@ -1421,7 +1452,7 @@
     {{-- Edit Duration Modal --}}
     <div wire:ignore.self class="modal fade text-left" id="EditDurationModal" tabindex="-1" role="dialog"
         aria-labelledby="myModalLabel33" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+        <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h4 class="modal-title" id="myModalLabel33">Edit Duration</h4>
@@ -1470,7 +1501,7 @@
     {{-- Reset IPCR Modal --}}
     <div wire:ignore.self class="modal fade text-left" id="ResetIPCRModal" tabindex="-1" role="dialog"
         aria-labelledby="myModalLabel33" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+        <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h4 class="modal-title" id="myModalLabel33">Reset IPR</h4>
@@ -1500,7 +1531,7 @@
     {{-- Add Percentage Modal --}}
     <div wire:ignore.self class="modal fade text-left" id="AddPercentageModal" tabindex="-1" role="dialog"
         aria-labelledby="myModalLabel33" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+        <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h4 class="modal-title" id="myModalLabel33">Add Percentage</h4>
@@ -1509,25 +1540,6 @@
                     </button>
                 </div>
                 <form wire:submit.prevent="savePercent">
-                    
-                    @error('output')
-                        <p class="text-danger">{{ $message }}</p>
-                    @enderror
-                    @error('suboutput')
-                        <p class="text-danger">{{ $message }}</p>
-                    @enderror
-                    @error('target')
-                        <p class="text-danger">{{ $message }}</p>
-                    @enderror
-                    @error('accomplishment')
-                        <p class="text-danger">{{ $message }}</p>
-                    @enderror
-                    @error('timeliness')
-                        <p class="text-danger">{{ $message }}</p>
-                    @enderror
-                    @error('superior1_id')
-                        <p class="text-danger">{{ $message }}</p>
-                    @enderror
                     <div class="modal-body">
                         <label>Core Function %: </label>
                         <div class="form-group">
@@ -1537,6 +1549,23 @@
                                     <p class="text-danger">{{ $message }}</p>
                                 @enderror
                         </div>
+                        @if (isset($subFuncts))
+                            <div class="d-flex gap-3" style="height: 100%;">
+                                <div class="vr"></div>
+                                
+                                <div class="">
+                                    @foreach ($subFuncts as $sub_funct)
+                                        @if ($sub_funct->funct_id == 1)
+                                            <label>{{ $sub_funct->sub_funct }} %: </label>
+                                            <div class="form-group">
+                                                <input type="text" placeholder="{{ $sub_funct->sub_funct }}" class="form-control"
+                                                    wire:model="supp.{{ $sub_funct->id }}">
+                                            </div>
+                                        @endif
+                                    @endforeach
+                                </div>
+                            </div>
+                        @endif
                         <label>Strategic Function %: </label>
                         <div class="form-group">
                             <input type="text" placeholder="Strategic Function" class="form-control"
@@ -1545,6 +1574,23 @@
                                     <p class="text-danger">{{ $message }}</p>
                                 @enderror
                         </div>
+                        @if (isset($subFuncts))
+                            <div class="d-flex gap-3" style="height: 100%;">
+                                <div class="vr"></div>
+                                
+                                <div class="">
+                                    @foreach ($subFuncts as $sub_funct)
+                                        @if ($sub_funct->funct_id == 2)
+                                            <label>{{ $sub_funct->sub_funct }} %: </label>
+                                            <div class="form-group">
+                                                <input type="text" placeholder="{{ $sub_funct->sub_funct }}" class="form-control"
+                                                    wire:model="supp.{{ $sub_funct->id }}">
+                                            </div>
+                                        @endif
+                                    @endforeach
+                                </div>
+                            </div>
+                        @endif
                         <label>Support Function %: </label>
                         <div class="form-group">
                             <input type="text" placeholder="Support Function" class="form-control"
@@ -1559,11 +1605,13 @@
                                 
                                 <div class="">
                                     @foreach ($subFuncts as $sub_funct)
-                                        <label>{{ $sub_funct->sub_funct }} %: </label>
-                                        <div class="form-group">
-                                            <input type="text" placeholder="{{ $sub_funct->sub_funct }}" class="form-control"
-                                                wire:model="supp.{{ $sub_funct->id }}">
-                                        </div>
+                                        @if ($sub_funct->funct_id == 3)
+                                            <label>{{ $sub_funct->sub_funct }} %: </label>
+                                            <div class="form-group">
+                                                <input type="text" placeholder="{{ $sub_funct->sub_funct }}" class="form-control"
+                                                    wire:model="supp.{{ $sub_funct->id }}">
+                                            </div>
+                                        @endif
                                     @endforeach
                                 </div>
                             </div>
@@ -1587,7 +1635,7 @@
     {{-- Edit Percentage Modal --}}
     <div wire:ignore.self class="modal fade text-left" id="EditPercentageModal" tabindex="-1" role="dialog"
         aria-labelledby="myModalLabel33" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+        <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h4 class="modal-title" id="myModalLabel33">Edit Percentage</h4>
@@ -1605,6 +1653,23 @@
                                     <p class="text-danger">{{ $message }}</p>
                                 @enderror
                         </div>
+                        @if (isset($subFuncts))
+                            <div class="d-flex gap-3" style="height: 100%;">
+                                <div class="vr"></div>
+                                
+                                <div class="">
+                                    @foreach ($subFuncts as $sub_funct)
+                                        @if ($sub_funct->funct_id == 1)
+                                            <label>{{ $sub_funct->sub_funct }} %: </label>
+                                            <div class="form-group">
+                                                <input type="text" placeholder="{{ $sub_funct->sub_funct }}" class="form-control"
+                                                    wire:model="supp.{{ $sub_funct->id }}">
+                                            </div>
+                                        @endif
+                                    @endforeach
+                                </div>
+                            </div>
+                        @endif
                         <label>Strategic Function %: </label>
                         <div class="form-group">
                             <input type="text" placeholder="Strategic Function" class="form-control"
@@ -1613,6 +1678,23 @@
                                     <p class="text-danger">{{ $message }}</p>
                                 @enderror
                         </div>
+                        @if (isset($subFuncts))
+                            <div class="d-flex gap-3" style="height: 100%;">
+                                <div class="vr"></div>
+                                
+                                <div class="">
+                                    @foreach ($subFuncts as $sub_funct)
+                                        @if ($sub_funct->funct_id == 2)
+                                            <label>{{ $sub_funct->sub_funct }} %: </label>
+                                            <div class="form-group">
+                                                <input type="text" placeholder="{{ $sub_funct->sub_funct }}" class="form-control"
+                                                    wire:model="supp.{{ $sub_funct->id }}">
+                                            </div>
+                                        @endif
+                                    @endforeach
+                                </div>
+                            </div>
+                        @endif
                         <label>Support Function %: </label>
                         <div class="form-group">
                             <input type="text" placeholder="Support Function" class="form-control"
@@ -1627,11 +1709,13 @@
                                 
                                 <div class="">
                                     @foreach ($subFuncts as $sub_funct)
-                                        <label>{{ $sub_funct->sub_funct }} %: </label>
-                                        <div class="form-group">
-                                            <input type="text" placeholder="{{ $sub_funct->sub_funct }}" class="form-control"
-                                                wire:model="supp.{{ $sub_funct->id }}">
-                                        </div>
+                                        @if ($sub_funct->funct_id == 3)
+                                            <label>{{ $sub_funct->sub_funct }} %: </label>
+                                            <div class="form-group">
+                                                <input type="text" placeholder="{{ $sub_funct->sub_funct }}" class="form-control"
+                                                    wire:model="supp.{{ $sub_funct->id }}">
+                                            </div>
+                                        @endif
                                     @endforeach
                                 </div>
                             </div>
@@ -1659,7 +1743,7 @@
     {{-- Delete Percentage Modal --}}
     <div wire:ignore.self class="modal fade text-left" id="DeletePercentageModal" tabindex="-1" role="dialog"
         aria-labelledby="myModalLabel33" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+        <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h4 class="modal-title" id="myModalLabel33">Delete Modal</h4>
@@ -1690,7 +1774,7 @@
     {{-- Disapprove Modal --}}
     <div wire:ignore.self class="modal fade text-left" id="DisapproveModal" tabindex="-1" role="dialog"
         aria-labelledby="myModalLabel33" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+        <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h4 class="modal-title" id="myModalLabel33">Disapproving Message</h4>
@@ -1699,6 +1783,44 @@
                     </button>
                 </div>
                 <form wire:submit.prevent="disapproved">
+                    <div class="modal-body">
+                        <label>Comment: </label>
+                        <div class="form-group">
+                            <textarea placeholder="Comment" class="form-control"
+                                wire:model="comment">
+                            </textarea>
+                            @error('comment')
+                                <p class="text-danger">{{ $message }}</p>
+                            @enderror
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-light-secondary" wire:click="closeModal">
+                            <i class="bx bx-x d-block d-sm-none"></i>
+                            <span class="d-none d-sm-block">Close</span>
+                        </button>
+                        <button type="submit" wire:loading.attr="disabled" class="btn btn-primary ml-1">
+                            <i class="bx bx-check d-block d-sm-none"></i>
+                            <span class="d-none d-sm-block">Save</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    {{-- MessageTTMA Modal --}}
+    <div wire:ignore.self class="modal fade text-left" id="MessageTTMAModal" tabindex="-1" role="dialog"
+        aria-labelledby="myModalLabel33" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="myModalLabel33">Done Message</h4>
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                        <i data-feather="x"></i>
+                    </button>
+                </div>
+                <form wire:submit.prevent="message">
                     <div class="modal-body">
                         <label>Message: </label>
                         <div class="form-group">
@@ -1718,6 +1840,44 @@
                         <button type="submit" wire:loading.attr="disabled" class="btn btn-primary ml-1">
                             <i class="bx bx-check d-block d-sm-none"></i>
                             <span class="d-none d-sm-block">Save</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    {{-- EditMessageTTMA Modal --}}
+    <div wire:ignore.self class="modal fade text-left" id="EditMessageTTMAModal" tabindex="-1" role="dialog"
+        aria-labelledby="myModalLabel33" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="myModalLabel33">Done Message</h4>
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                        <i data-feather="x"></i>
+                    </button>
+                </div>
+                <form wire:submit.prevent="message">
+                    <div class="modal-body">
+                        <label>Message: </label>
+                        <div class="form-group">
+                            <textarea placeholder="Message" class="form-control"
+                                wire:model="message">
+                            </textarea>
+                            @error('message')
+                                <p class="text-danger">{{ $message }}</p>
+                            @enderror
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-light-secondary" wire:click="closeModal">
+                            <i class="bx bx-x d-block d-sm-none"></i>
+                            <span class="d-none d-sm-block">Close</span>
+                        </button>
+                        <button type="submit" wire:loading.attr="disabled" class="btn btn-success ml-1">
+                            <i class="bx bx-check d-block d-sm-none"></i>
+                            <span class="d-none d-sm-block">Update</span>
                         </button>
                     </div>
                 </form>

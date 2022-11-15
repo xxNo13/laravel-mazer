@@ -82,7 +82,7 @@
                                                             <div class="form-check form-switch">
                                                                 <input class="form-check-input" type="checkbox"
                                                                     id="{{ $target->target }}{{ $target->id }}"
-                                                                    value="{{ $target->id }}" wire:model="targets.{{ $arrayn++ }}">
+                                                                    value="{{ $target->id }}" wire:model="indicators.{{ $arrayn++ }}">
                                                                 <label class="form-check-label"
                                                                     for="{{ $target->target }}{{ $target->id }}">{{ $target->target }}</label>
                                                             </div>
@@ -102,7 +102,7 @@
                                                         <div class="form-check form-switch">
                                                             <input class="form-check-input" type="checkbox"
                                                                 id="{{ $target->target }}{{ $target->id }}"
-                                                                value="{{ $target->id }}" wire:model="targets.{{ $arrayn++ }}">
+                                                                value="{{ $target->id }}" wire:model="indicators.{{ $arrayn++ }}">
                                                             <label class="form-check-label"
                                                                 for="{{ $target->target }}{{ $target->id }}">{{ $target->target }}</label>
                                                         </div>
@@ -147,7 +147,7 @@
                                                 <div class="form-check form-switch">
                                                     <input class="form-check-input" type="checkbox"
                                                         id="{{ $target->target }}{{ $target->id }}"
-                                                        value="{{ $target->id }}" wire:model="targets.{{ $arrayn++ }}">
+                                                        value="{{ $target->id }}" wire:model="indicators.{{ $arrayn++ }}">
                                                     <label class="form-check-label"
                                                         for="{{ $target->target }}{{ $target->id }}">{{ $target->target }}</label>
                                                 </div>
@@ -167,7 +167,7 @@
                                             <div class="form-check form-switch">
                                                 <input class="form-check-input" type="checkbox"
                                                     id="{{ $target->target }}{{ $target->id }}"
-                                                    value="{{ $target->id }}" wire:model="targets.{{ $arrayn++ }}">
+                                                    value="{{ $target->id }}" wire:model="indicators.{{ $arrayn++ }}">
                                                 <label class="form-check-label"
                                                     for="{{ $target->target }}{{ $target->id }}">{{ $target->target }}</label>
                                             </div>

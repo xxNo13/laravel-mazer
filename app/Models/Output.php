@@ -17,7 +17,8 @@ class Output extends Model
         'user_id',
         'type',
         'user_type',
-        'duration_id'
+        'duration_id',
+        'isDesignated'
     ];
 
     public function funct(){

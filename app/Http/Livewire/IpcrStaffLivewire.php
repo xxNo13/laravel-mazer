@@ -183,9 +183,23 @@ class IpcrStaffLivewire extends Component
 
         switch($selected){
             case 'sub_funct':
+                switch (str_replace(url('/'), '', url()->previous())) {
+                    case '/ipcr/staff':
+                        $this->funct_id = 1;
+                        break;
+                    case '/ipcr/staff?page=2':
+                        $this->funct_id = 2;
+                        break;
+                    case '/ipcr/staff?page=3':
+                        $this->funct_id = 3;
+                        break;
+                    default:
+                        $this->funct_id = 0;
+                        break;
+                };
                 SubFunct::create([
                     'sub_funct' => $this->sub_funct,
-                    'funct_id' => 3,
+                    'funct_id' => $this->funct_id,
                     'user_id' => Auth::user()->id,
                     'type' => 'ipcr',
                     'user_type' => 'staff',
@@ -520,6 +534,31 @@ class IpcrStaffLivewire extends Component
             return;
         }
 
+        $funct = [
+            'core' => false,
+            'strategic' => false,
+            'support' => false,
+        ];
+        foreach ($this->subFuncts as $sub_funct) {
+            if ($sub_funct->funct_id == 1) {
+                $funct['core'] = true;
+            }
+            if ($sub_funct->funct_id == 2) {
+                $funct['strategic'] = true;
+            }
+            if ($sub_funct->funct_id == 3) {
+                $funct['support'] = true;
+            }
+        }
+        $total = count(array_filter($funct)) * 100;
+
+        if ($total != array_sum($this->supp)) {
+            session()->flash('message', 'Percentage is not equal to 100!');
+            $this->resetInput();
+            $this->dispatchBrowserEvent('close-modal');
+            return;
+        }
+
         $percentage = Percentage::create([
             'core' => $this->core,
             'strategic' => $this->strategic,
@@ -535,6 +574,7 @@ class IpcrStaffLivewire extends Component
                 'name' => $subFunct->sub_funct,
                 'percent' => $this->supp[$subFunct->id],
                 'percentage_id' => $percentage->id,
+                'sub_funct_id' => $subFunct->id,
                 'user_id' => Auth::user()->id,
                 'duration_id' => $this->duration->id
             ]);
@@ -554,6 +594,31 @@ class IpcrStaffLivewire extends Component
             $this->dispatchBrowserEvent('close-modal');
             return;
         }
+        
+        $funct = [
+            'core' => false,
+            'strategic' => false,
+            'support' => false,
+        ];
+        foreach ($this->subFuncts as $sub_funct) {
+            if ($sub_funct->funct_id == 1) {
+                $funct['core'] = true;
+            }
+            if ($sub_funct->funct_id == 2) {
+                $funct['strategic'] = true;
+            }
+            if ($sub_funct->funct_id == 3) {
+                $funct['support'] = true;
+            }
+        }
+        $total = count(array_filter($funct)) * 100;
+
+        if ($total != array_sum($this->supp)) {
+            session()->flash('message', 'Percentage is not equal to 100!');
+            $this->resetInput();
+            $this->dispatchBrowserEvent('close-modal');
+            return;
+        }
 
         Percentage::where('id', $this->percentage->id)->update([
             'core' => $this->core,
@@ -568,7 +633,7 @@ class IpcrStaffLivewire extends Component
             
         foreach($this->subFuncts as $subFunct) {
             foreach($suppPercentage as $supp) {
-                if($subFunct->sub_funct == $supp->name) {
+                if($subFunct->sub_funct == $supp->name && $subFunct->id == $supp->sub_funct_id) {
                     SuppPercentage::where('id', $supp->id)->update([
                         'percent' => $this->supp[$subFunct->id],
                     ]);
@@ -608,7 +673,7 @@ class IpcrStaffLivewire extends Component
     
             foreach ($this->subFuncts as $subFunct) {
                 foreach ($suppPercentage as $supp) {
-                    if ($subFunct->sub_funct == $supp->name) {
+                    if ($subFunct->sub_funct == $supp->name && $subFunct->id == $supp->sub_funct_id) {
                         $this->supp[$subFunct->id] = $supp->percent;
                         break;
                     }

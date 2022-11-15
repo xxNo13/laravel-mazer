@@ -25,7 +25,7 @@ class ForapprovalLivewire extends Component
     public $approval;
     public $search;
     public $duration;
-    public $message;
+    public $comment;
     public $approving;
 
     protected  $queryString = ['search'];
@@ -130,23 +130,41 @@ class ForapprovalLivewire extends Component
             $approvals = Approval::query();
 
             if ($search) {
-                $approvals->whereHas('user', function(\Illuminate\Database\Eloquent\Builder $query) use ($search){
-                    return $query->where('name', 'LIKE','%'.$search.'%')
-                        ->orWhere('email','LIKE','%'.$search.'%')
-                        ->orwhereHas('office', function(\Illuminate\Database\Eloquent\Builder $query) use ($search){
-                            return $query->where('office', 'LIKE','%'.$search.'%')
-                                ->orWhere('building','LIKE','%'.$search.'%');
-                        })->orWhereHas('account_types', function(\Illuminate\Database\Eloquent\Builder $query) use ($search){
-                            return $query->where('account_type', 'LIKE','%'.$search.'%');
-                        });
-                })
-                ->orWhere('type','LIKE','%'.$search.'%')
-                ->get();
+                if ($this->duration) {
+                    $approvals->where(function ($query) use ($search) {
+                        $query->whereHas('user', function(\Illuminate\Database\Eloquent\Builder $query) use ($search){
+                            return $query->where('name', 'LIKE','%'.$search.'%')
+                                ->orWhere('email','LIKE','%'.$search.'%')
+                                ->orwhereHas('office', function(\Illuminate\Database\Eloquent\Builder $query) use ($search){
+                                    return $query->where('office', 'LIKE','%'.$search.'%')
+                                        ->orWhere('building','LIKE','%'.$search.'%');
+                                })->orWhereHas('account_types', function(\Illuminate\Database\Eloquent\Builder $query) use ($search){
+                                    return $query->where('account_type', 'LIKE','%'.$search.'%');
+                                });
+                        })
+                        ->orWhere('type','LIKE','%'.$search.'%');
+                    })->where('duration_id', $this->duration->id)->get();
+                } else {
+                    $approvals->whereHas('user', function(\Illuminate\Database\Eloquent\Builder $query) use ($search){
+                        return $query->where('name', 'LIKE','%'.$search.'%')
+                            ->orWhere('email','LIKE','%'.$search.'%')
+                            ->orwhereHas('office', function(\Illuminate\Database\Eloquent\Builder $query) use ($search){
+                                return $query->where('office', 'LIKE','%'.$search.'%')
+                                    ->orWhere('building','LIKE','%'.$search.'%');
+                            })->orWhereHas('account_types', function(\Illuminate\Database\Eloquent\Builder $query) use ($search){
+                                return $query->where('account_type', 'LIKE','%'.$search.'%');
+                            });
+                    })
+                    ->orWhere('type','LIKE','%'.$search.'%')
+                    ->get();
+                }
             }
 
-            return view('livewire.forapproval-livewire', [
-                'approvals' => $approvals->orderBy('id','DESC')->paginate(10),
-            ]);
+            if ($this->duration) {
+                return view('livewire.forapproval-livewire', [
+                    'approvals' => $approvals->orderBy('id','DESC')->where('duration_id', $this->duration->id)->paginate(10),
+                ]);
+            }
         }
     }
 
@@ -192,14 +210,14 @@ class ForapprovalLivewire extends Component
             Approval::where('id', $this->approving->id)->update([
                 'superior1_status' => 2,
                 'superior1_date' => Carbon::now(),
-                'superior1_message' => $this->message,
+                'superior1_message' => $this->comment,
             ]);
             $superior = User::where('id', $this->approving->superior1_id)->first();
         } elseif ($this->approving->superior2_id == Auth::user()->id){
             Approval::where('id', $this->approving->id)->update([
                 'superior2_status' => 2,
                 'superior2_date' => Carbon::now(),
-                'superior2_message' => $this->message,
+                'superior2_message' => $this->comment,
             ]);
             $superior = User::where('id', $this->approving->superior2_id)->first();
         }
@@ -222,7 +240,7 @@ class ForapprovalLivewire extends Component
         $this->approval = '';
         $this->userType = '';
         $this->approving = '';
-        $this->message = '';
+        $this->comment = '';
     }
 
     public function closeModal(){

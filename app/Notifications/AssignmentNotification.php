@@ -2,24 +2,30 @@
 
 namespace App\Notifications;
 
+use App\Models\User;
 use Illuminate\Bus\Queueable;
+use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
-use Illuminate\Notifications\Notification;
 
 class AssignmentNotification extends Notification
 {
     use Queueable;
     private $assignemnt;
-
+    private $status;
+    private $user;
+    private $head;
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-    public function __construct($assignment)
+    public function __construct($assignment, $status = null)
     {
         $this->assignment = $assignment;
+        $this->status = $status;
+        $this->user = User::where('id', $assignment->user_id)->first();
+        $this->head = User::where('id', $assignment->head_id)->first();
     }
 
     /**
@@ -55,6 +61,9 @@ class AssignmentNotification extends Notification
             'subject' => $this->assignment->subject,
             'output' => $this->assignment->output,
             'remarks' => $this->assignment->remarks,
+            'status' => $this->status,
+            'user' => $this->user->name,
+            'head' => $this->head->name,
         ];
     }
 
