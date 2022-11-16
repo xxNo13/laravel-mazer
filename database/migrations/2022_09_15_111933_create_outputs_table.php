@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('output');
             $table->string('type');
             $table->string('user_type');
-            $table->boolean('isDesignated')->default('false');
+            $table->boolean('isDesignated')->default(false);
             $table->foreignId('sub_funct_id')->nullable()->constrained()->onDelete('cascade');
             $table->foreignId('funct_id')->nullable()->constrained()->onDelete('cascade');
             $table->foreignId('user_id')->nullable()->constrained()->onDelete('cascade');

@@ -25,11 +25,17 @@
         <div class="card">
             <div class="card-header hstack">
                 <h4 class="card-title my-auto"></h4>
-                <div class="ms-auto my-auto form-group position-relative has-icon-right">
-                    <input type="text" class="form-control" placeholder="Search.." wire:model="search">
-                    <div class="form-control-icon">
-                        <i class="bi bi-search"></i>
+                <div class="ms-auto hstack gap-3">
+                    <div class="my-auto form-group position-relative has-icon-right">
+                        <input type="text" class="form-control" placeholder="Search.." wire:model="search">
+                        <div class="form-control-icon">
+                            <i class="bi bi-search"></i>
+                        </div>
                     </div>
+                    <button type="button" class="btn icon btn-primary" data-bs-toggle="modal"
+                        data-bs-target="#AddTrainingModal">
+                        <i class="bi bi-plus"></i>
+                    </button>
                 </div>
             </div>
             <div class="card-body">
@@ -37,18 +43,44 @@
                     <table class="table table-lg text-center">
                         <thead>
                             <tr>
-                                <th>NAME</th>
-                                <th>EMAIL</th>
-                                <th>ACCOUNT TYPE</th>
-                                <th>OFFICE</th>
-                                <th>TYPE</th>
+                                <th>TRAININGS</th>
+                                <th>LINKS</th>
+                                <th>USER ADDED</th>
+                                <th>POSSIBLE TARGETS</th>
+                                <th>POSTED</th>
                                 <th>ACTION</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td colspan="6">No record available!</td>
-                            </tr>
+                            @forelse ($trainings as $training)
+                                <tr>
+                                    <td>{{ $training->training }}</td>
+                                    <td>{{ $training->link }}</td>
+                                    <td>{{ $training->user->name }}</td>
+                                    <td>{{ $training->possible_target }}</td>
+                                    <td>{{ $training->created_at->diffForHumans() }}</td>
+                                    <td>
+                                        @if ($training->user_id == Auth::user()->id)
+                                            <div class="hstack gap-2">
+                                                <button type="button" class="btn icon btn-success"
+                                                    data-bs-toggle="modal" data-bs-target="#EditTrainingModal"
+                                                    wire:click="clicked({{ $training->id }}, 'edit')">
+                                                    <i class="bi bi-pencil-square"></i>
+                                                </button>
+                                                <button type="button" class="btn icon btn-danger"
+                                                    data-bs-toggle="modal" data-bs-target="#DeleteModal"
+                                                    wire:click="clicked({{ $training->id }})">
+                                                    <i class="bi bi-trash"></i>
+                                                </button>
+                                            </div>
+                                        @endif
+                                    </td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="6">No record available!</td>
+                                </tr>
+                            @endforelse
                         </tbody>
                     </table>
                 </div>

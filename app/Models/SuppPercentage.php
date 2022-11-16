@@ -16,6 +16,5 @@ class SuppPercentage extends Model
         'user_id',
         'duration_id',
         'sub_funct_id',
-        'funct_id'
     ];
 }

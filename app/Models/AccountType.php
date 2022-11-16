@@ -10,7 +10,8 @@ class AccountType extends Model
     use HasFactory;
 
     protected $fillable = [
-        'account_type'
+        'account_type',
+        'rank'
     ];
 
     public function users(){

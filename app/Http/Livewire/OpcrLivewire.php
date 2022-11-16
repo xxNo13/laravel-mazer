@@ -79,12 +79,21 @@ class OpcrLivewire extends Component
     ];
 
     public function mount() {
-        $this->users1 = User::whereHas('account_types', function (\Illuminate\Database\Eloquent\Builder $query) {
-            return $query->where('account_type', 'like', "%head%");
-        })->where('id', '!=', Auth::user()->id)->get();
-        $this->users2 = User::whereHas('account_types', function (\Illuminate\Database\Eloquent\Builder $query) {
-            return $query->where('account_type', 'like', "%head%");
-        })->where('id', '!=', Auth::user()->id)->get();
+        $users1 = User::query();
+        $users2 = User::query();
+        
+        foreach (Auth::user()->account_types as $account_type) {
+            $users1->whereHas('account_types', function(\Illuminate\Database\Eloquent\Builder $query) use ($account_type) {
+                return $query->where('rank', '<=', $account_type->rank);
+            })->where('id', '!=', Auth::user()->id);
+            $users2->whereHas('account_types', function(\Illuminate\Database\Eloquent\Builder $query) use ($account_type) {
+                return $query->where('rank', '<=', $account_type->rank);
+            })->where('id', '!=', Auth::user()->id);
+        }
+
+        $this->users1 = $users1->distinct()->get();
+        $this->users2 = $users2->distinct()->get();
+
         $this->duration = Duration::orderBy('id', 'DESC')->where('start_date', '<=', date('Y-m-d'))->first();
     }
     public function render()
@@ -478,14 +487,28 @@ class OpcrLivewire extends Component
 
     public function changeUser()
     {
-        if ($this->superior1_id != '') {
-            $this->users2 = User::whereHas('account_types', function (\Illuminate\Database\Eloquent\Builder $query) {
-                return $query->where('account_type', 'like', "%head%");
-            })->where('id', '!=', $this->superior1_id)->where('id', '!=', Auth::user()->id)->get();
-        } elseif ($this->superior2_id != '') {
-            $this->users1 = User::whereHas('account_types', function (\Illuminate\Database\Eloquent\Builder $query) {
-                return $query->where('account_type', 'like', "%head%");
-            })->where('id', '!=', $this->superior2_id)->where('id', '!=', Auth::user()->id)->get();
+        if($this->superior1_id != ''){
+
+            $users2 = User::query();
+            
+            foreach (Auth::user()->account_types as $account_type) {
+                $users2->whereHas('account_types', function(\Illuminate\Database\Eloquent\Builder $query) use ($account_type) {
+                    return $query->where('rank', '<=', $account_type->rank);
+                })->where('id', '!=', $this->superior1_id)->where('id', '!=', Auth::user()->id);
+            }
+
+            $this->users2 = $users2->distinct()->get();
+        } elseif ($this->superior2_id != ''){
+
+            $users1 = User::query();
+            
+            foreach (Auth::user()->account_types as $account_type) {
+                $users1->whereHas('account_types', function(\Illuminate\Database\Eloquent\Builder $query) use ($account_type) {
+                    return $query->where('rank', '<=', $account_type->rank);
+                })->where('id', '!=', $this->superior2_id)->where('id', '!=', Auth::user()->id);
+            }
+
+            $this->users1 = $users1->distinct()->get();
         }
     }
 

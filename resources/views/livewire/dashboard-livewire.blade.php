@@ -59,7 +59,7 @@
                                         <h6 class="text-muted font-semibold">Assignments</h6>
                                         <h6 class="font-extrabold mb-0">
                                             @if ($duration)
-                                                {{ count($finished) }} / {{ count($assignemnts) }}
+                                                {{ count($finished) }} / {{ count($assignments) }}
                                             @else
                                                 Semester's not started yet.
                                             @endif

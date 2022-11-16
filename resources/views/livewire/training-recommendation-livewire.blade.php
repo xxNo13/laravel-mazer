@@ -26,17 +26,27 @@
                     <table class="table table-lg text-center">
                         <thead>
                             <tr>
-                                <th>TARGET FAILED</th>
-                                <th>TRAINING TITLE</th>
+                                <th>TRAININGS</th>
                                 <th>LINKS</th>
+                                <th>USER ADDED</th>
+                                <th>POSSIBLE TARGETS</th>
+                                <th>POSTED</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>Target 1</td>
-                                <td>Training 1</td>
-                                <td><a href="https://www.trainingexample.com/training/1">https://www.trainingexample.com/training/1</a></td>
-                            </tr>
+                            @forelse ($trainings as $training)
+                                <tr>
+                                    <td>{{ $training->training }}</td>
+                                    <td>{{ $training->link }}</td>
+                                    <td>{{ $training->user->name }}</td>
+                                    <td>{{ $training->possible_target }}</td>
+                                    <td>{{ $training->created_at->diffForHumans() }}</td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="5">No record available!</td>
+                                </tr>
+                            @endforelse
                         </tbody>
                     </table>
                 </div>

@@ -3,6 +3,7 @@
 namespace App\Http\Livewire;
 
 use App\Models\Office;
+use App\Models\ScoreEq;
 use Livewire\Component;
 use App\Models\Duration;
 use App\Models\AccountType;
@@ -27,15 +28,38 @@ class ConfigureLivewire extends Component
     public $building;
     public $account_type_id;
     public $account_type;
+    public $rank;
     public $duration_id;
     public $start_date;
     public $end_date;
     public $duration;
+    public $scoreEq_id;
+    public $out_from;
+    public $out_to;
+    public $verysat_from;
+    public $verysat_to;
+    public $sat_from;
+    public $sat_to;
+    public $unsat_from;
+    public $unsat_to;
+    public $poor_from;
+    public $poor_to;
 
     protected $rules = [
         'office' => ['required_if:type,office'],
         'building' =>  ['required_if:type,office'],
-        'account_type' => ['required_if:type,account_type']
+        'account_type' => ['required_if:type,account_type'],
+        'rank' => ['nullable', 'required_if:type,account_type', 'integer'],
+        'out_from' => ['nullable', 'required_if:type,scoreEq', 'numeric', 'max:5', 'gte:verysat_to'],
+        'out_to' => ['nullable', 'required_if:type,scoreEq', 'numeric', 'max:5', 'gt:out_from'],
+        'verysat_from' => ['nullable', 'required_if:type,scoreEq', 'numeric', 'max:5', 'gte:sat_to'],
+        'verysat_to' => ['nullable', 'required_if:type,scoreEq', 'numeric', 'max:5', 'gt:verysat_from'],
+        'sat_from' => ['nullable', 'required_if:type,scoreEq', 'numeric', 'max:5', 'gte:unsat_to'],
+        'sat_to' => ['nullable', 'required_if:type,scoreEq', 'numeric', 'max:5', 'gt:sat_from'],
+        'unsat_from' => ['nullable', 'required_if:type,scoreEq', 'numeric', 'max:5', 'gte:poor_to'],
+        'unsat_to' => ['nullable', 'required_if:type,scoreEq', 'numeric', 'max:5', 'gt:unsat_from'],
+        'poor_from' => ['nullable', 'required_if:type,scoreEq', 'numeric', 'max:5', 'lt:poor_to'],
+        'poor_to' => ['nullable', 'required_if:type,scoreEq', 'numeric', 'max:5', 'gt:poor_from'],
     ];
 
     public function updated($property)
@@ -61,7 +85,8 @@ class ConfigureLivewire extends Component
             'offices' => $offices->orderBy($this->sortOffice, $this->ascOffice)->paginate($this->pageOffice),
             'account_types' => $account_types->orderBy($this->sortAccType, $this->ascAccType)->paginate($this->pageAccType),
             'durations' => Duration::orderBy('id', 'desc')->paginate(10),
-            'startDate' => $this->start_date
+            'startDate' => $this->start_date,
+            'scoreEq' => ScoreEq::first(),
         ]);
     }
 
@@ -90,13 +115,15 @@ class ConfigureLivewire extends Component
             session()->flash('message', 'Added Successfully!');
         } elseif ($this->category == 'edit' && $this->type == 'account_type') {
             AccountType::where('id', $this->account_type_id)->update([
-                'account_type' => $this->account_type
+                'account_type' => $this->account_type,
+                'rank' => $this->rank,
             ]);
 
             session()->flash('message', 'Updated Successfully!');
         } elseif ($this->type == 'account_type') {
             AccountType::create([
-                'account_type' => $this->account_type
+                'account_type' => $this->account_type,
+                'rank' => $this->rank,
             ]);
 
             session()->flash('message', 'Added Successfully!');
@@ -115,6 +142,21 @@ class ConfigureLivewire extends Component
 
             session()->flash('message', 'Added Successfully!');
             return redirect(request()->header('Referer'));
+        } elseif ($this->type == 'scoreEq' && $this->category == 'edit') {
+            ScoreEq::where('id', $this->scoreEq_id)->update([
+                'out_from' => $this->out_from,
+                'out_to' => $this->out_to,
+                'verysat_from' => $this->verysat_from,
+                'verysat_to' => $this->verysat_to,
+                'sat_from' => $this->sat_from,
+                'sat_to' => $this->sat_to,
+                'unsat_from' => $this->unsat_from,
+                'unsat_to' => $this->unsat_to,
+                'poor_from' => $this->poor_from,
+                'poor_to' => $this->poor_to,
+            ]);
+
+            session()->flash('message', 'Updated Successfully!');
         }
 
         $this->resetInput();
@@ -142,6 +184,7 @@ class ConfigureLivewire extends Component
                 $data = AccountType::find($this->account_type_id);
 
                 $this->account_type = $data->account_type;
+                $this->rank = $data->rank;
             }
         } elseif ($type == 'duration') {
             $this->duration_id = $id;
@@ -153,6 +196,22 @@ class ConfigureLivewire extends Component
                 $this->start_date = $data->start_date;
                 $this->end_date = $data->end_date;
             }
+        } elseif ($type == 'scoreEq') {
+            $this->scoreEq_id = $id;
+            $this->category = $category;
+
+            $data = ScoreEq::find($this->scoreEq_id);
+
+            $this->out_from = $data->out_from;
+            $this->out_to = $data->out_to;
+            $this->verysat_from = $data->verysat_from;
+            $this->verysat_to = $data->verysat_to;
+            $this->sat_from = $data->sat_from;
+            $this->sat_to = $data->sat_to;
+            $this->unsat_from = $data->unsat_from;
+            $this->unsat_to = $data->unsat_to;
+            $this->poor_from = $data->poor_from;
+            $this->poor_to = $data->poor_to;
         }
     }
 
@@ -187,6 +246,16 @@ class ConfigureLivewire extends Component
         $this->duration_id = '';
         $this->start_date = '';
         $this->end_date = '';
+        $this->out_from = '';
+        $this->out_to = '';
+        $this->verysat_from = '';
+        $this->verysat_to = '';
+        $this->sat_from = '';
+        $this->sat_to = '';
+        $this->unsat_from = '';
+        $this->unsat_to = '';
+        $this->poor_from = '';
+        $this->poor_to = '';
     }
 
     public function closeModal(){

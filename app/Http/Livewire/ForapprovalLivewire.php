@@ -165,6 +165,9 @@ class ForapprovalLivewire extends Component
                     'approvals' => $approvals->orderBy('id','DESC')->where('duration_id', $this->duration->id)->paginate(10),
                 ]);
             }
+            return view('livewire.forapproval-livewire', [
+                'approvals' => $approvals->orderBy('id','DESC')->paginate(10),
+            ]);
         }
     }
 

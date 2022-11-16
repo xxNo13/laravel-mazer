@@ -85,4 +85,7 @@ class User extends Authenticatable
     public function percentage(){
         return $this->hasOne(Percentage::class);
     }
+    public function trainings(){
+        return $this->hasMany(Training::class);
+    }
 }

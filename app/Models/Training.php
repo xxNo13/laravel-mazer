@@ -8,4 +8,15 @@ use Illuminate\Database\Eloquent\Model;
 class Training extends Model
 {
     use HasFactory;
+
+    protected $fillable = [
+        'training',
+        'link',
+        'user_id',
+        'possible_target'
+    ];
+
+    public function user() {
+        return $this->belongsTo(User::class);
+    }
 }

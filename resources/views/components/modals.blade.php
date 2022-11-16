@@ -1344,6 +1344,14 @@
                                     <p class="text-danger">{{ $message }}</p>
                                 @enderror
                         </div>
+                        <label>Rank (1 is highest): </label>
+                        <div class="form-group">
+                            <input type="text" placeholder="Rank" class="form-control"
+                                wire:model="rank">
+                                @error('rank')
+                                    <p class="text-danger">{{ $message }}</p>
+                                @enderror
+                        </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-light-secondary" wire:click="closeModal">
@@ -1378,6 +1386,14 @@
                             <input type="text" placeholder="Account Type" class="form-control"
                                 wire:model="account_type">
                                 @error('account_type')
+                                    <p class="text-danger">{{ $message }}</p>
+                                @enderror
+                        </div>
+                        <label>Rank (1 is highest): </label>
+                        <div class="form-group">
+                            <input type="text" placeholder="Rank" class="form-control"
+                                wire:model="rank">
+                                @error('rank')
                                     <p class="text-danger">{{ $message }}</p>
                                 @enderror
                         </div>
@@ -1868,6 +1884,253 @@
                             @error('message')
                                 <p class="text-danger">{{ $message }}</p>
                             @enderror
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-light-secondary" wire:click="closeModal">
+                            <i class="bx bx-x d-block d-sm-none"></i>
+                            <span class="d-none d-sm-block">Close</span>
+                        </button>
+                        <button type="submit" wire:loading.attr="disabled" class="btn btn-success ml-1">
+                            <i class="bx bx-check d-block d-sm-none"></i>
+                            <span class="d-none d-sm-block">Update</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    {{-- Add Training Modal --}}
+    <div wire:ignore.self class="modal fade text-left" id="AddTrainingModal" tabindex="-1" role="dialog"
+        aria-labelledby="myModalLabel33" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="myModalLabel33">Add Training</h4>
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                        <i data-feather="x"></i>
+                    </button>
+                </div>
+                <form wire:submit.prevent="save">
+                    <div class="modal-body">
+                        <label>Training Name: </label>
+                        <div class="form-group">
+                            <input type="text" placeholder="Training Name" class="form-control"
+                            wire:model="training">
+                            @error('training')
+                                <p class="text-danger">{{ $message }}</p>
+                            @enderror
+                        </div>
+                        <label>Links: </label>
+                        <div class="form-group">
+                            <textarea placeholder="Links" class="form-control"
+                                wire:model="link">
+                            </textarea>
+                            @error('link')
+                                <p class="text-danger">{{ $message }}</p>
+                            @enderror
+                        </div>
+                        <label>Possible Tragets (Seperate with ,): </label>
+                        <div class="form-group">
+                            <textarea placeholder="Possible Tragets" class="form-control"
+                                wire:model="possible_target">
+                            </textarea>
+                            @error('possible_target')
+                                <p class="text-danger">{{ $message }}</p>
+                            @enderror
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-light-secondary" wire:click="closeModal">
+                            <i class="bx bx-x d-block d-sm-none"></i>
+                            <span class="d-none d-sm-block">Close</span>
+                        </button>
+                        <button type="submit" wire:loading.attr="disabled" class="btn btn-primary ml-1">
+                            <i class="bx bx-check d-block d-sm-none"></i>
+                            <span class="d-none d-sm-block">save</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    {{-- Edit Training Modal --}}
+    <div wire:ignore.self class="modal fade text-left" id="EditTrainingModal" tabindex="-1" role="dialog"
+        aria-labelledby="myModalLabel33" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="myModalLabel33">Update Training</h4>
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                        <i data-feather="x"></i>
+                    </button>
+                </div>
+                <form wire:submit.prevent="update">
+                    <div class="modal-body">
+                        <label>Training Name: </label>
+                        <div class="form-group">
+                            <input type="text" placeholder="Training Name" class="form-control"
+                            wire:model="training">
+                            @error('training')
+                                <p class="text-danger">{{ $message }}</p>
+                            @enderror
+                        </div>
+                        <label>Links: </label>
+                        <div class="form-group">
+                            <textarea placeholder="Links" class="form-control"
+                                wire:model="link">
+                            </textarea>
+                            @error('link')
+                                <p class="text-danger">{{ $message }}</p>
+                            @enderror
+                        </div>
+                        <label>Possible Tragets (Seperate with ,): </label>
+                        <div class="form-group">
+                            <textarea placeholder="Possible Tragets" class="form-control"
+                                wire:model="possible_target">
+                            </textarea>
+                            @error('possible_target')
+                                <p class="text-danger">{{ $message }}</p>
+                            @enderror
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-light-secondary" wire:click="closeModal">
+                            <i class="bx bx-x d-block d-sm-none"></i>
+                            <span class="d-none d-sm-block">Close</span>
+                        </button>
+                        <button type="submit" wire:loading.attr="disabled" class="btn btn-success ml-1">
+                            <i class="bx bx-check d-block d-sm-none"></i>
+                            <span class="d-none d-sm-block">Update</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    {{-- Edit Score Equivalent Modal --}}
+    <div wire:ignore.self class="modal fade text-left" id="EditScoreEqModal" tabindex="-1" role="dialog"
+        aria-labelledby="myModalLabel33" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="myModalLabel33">Update Score Equivalent</h4>
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                        <i data-feather="x"></i>
+                    </button>
+                </div>
+                <form wire:submit.prevent="save">
+                    <div class="modal-body">
+                        <div class="d-flex justify-content-around gap-2">
+                            <div class="w-100 text-center">Equivalent: </div>
+                            <div class="vr"></div>
+                            <div class="w-100 text-center">Score From: </div>
+                            <div class="vr"></div>
+                            <div class="w-100 text-center">Score To: </div>
+                        </div>
+                        <hr>
+
+                        <div class="d-flex justify-content-around gap-2">
+                            <div class="gap-4 w-100">
+                                <div class="fs-5">Outstanding: </div>
+                            </div>
+                            <div class="vr"></div>
+                            <div class="gap-4 w-100 form-group">
+                                <input type="text" class="form-control" wire:model="out_from">
+                                @error('out_from')
+                                    <p class="text-danger">{{ $message }}</p>
+                                @enderror
+                            </div>
+                            <div class="vr"></div>
+                            <div class="gap-4 w-100 form-group">
+                                <input type="text" class="form-control" wire:model="out_to">
+                                @error('out_to')
+                                    <p class="text-danger">{{ $message }}</p>
+                                @enderror
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-around gap-2">
+                            <div class="gap-4 w-100">
+                                <div class="fs-5">Very Satsifactory: </div>
+                            </div>
+                            <div class="vr"></div>
+                            <div class="gap-4 w-100 form-group">
+                                <input type="text" class="form-control" wire:model="verysat_from">
+                                @error('verysat_from')
+                                    <p class="text-danger">{{ $message }}</p>
+                                @enderror
+                            </div>
+                            <div class="vr"></div>
+                            <div class="gap-4 w-100 form-group">
+                                <input type="text" class="form-control" wire:model="verysat_to">
+                                @error('verysat_to')
+                                    <p class="text-danger">{{ $message }}</p>
+                                @enderror
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-around gap-2">
+                            <div class="gap-4 w-100">
+                                <div class="fs-5">Satisfactory: </div>
+                            </div>
+                            <div class="vr"></div>
+                            <div class="gap-4 w-100 form-group">
+                                <input type="text" class="form-control" wire:model="sat_from">
+                                @error('sat_from')
+                                    <p class="text-danger">{{ $message }}</p>
+                                @enderror
+                            </div>
+                            <div class="vr"></div>
+                            <div class="gap-4 w-100 form-group">
+                                <input type="text" class="form-control" wire:model="sat_to">
+                                @error('sat_to')
+                                    <p class="text-danger">{{ $message }}</p>
+                                @enderror
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-around gap-2">
+                            <div class="gap-4 w-100">
+                                <div class="fs-5">Unatisfactory: </div>
+                            </div>
+                            <div class="vr"></div>
+                            <div class="gap-4 w-100 form-group">
+                                <input type="text" class="form-control" wire:model="unsat_from">
+                                @error('unsat_from')
+                                    <p class="text-danger">{{ $message }}</p>
+                                @enderror
+                            </div>
+                            <div class="vr"></div>
+                            <div class="gap-4 w-100 form-group">
+                                <input type="text" class="form-control" wire:model="unsat_to">
+                                @error('unsat_to')
+                                    <p class="text-danger">{{ $message }}</p>
+                                @enderror
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-around gap-2">
+                            <div class="gap-4 w-100">
+                                <div class="fs-5">Poor: </div>
+                            </div>
+                            <div class="vr"></div>
+                            <div class="gap-4 w-100 form-group">
+                                <input type="text" class="form-control" wire:model="poor_from">
+                                @error('poor_from')
+                                    <p class="text-danger">{{ $message }}</p>
+                                @enderror
+                            </div>
+                            <div class="vr"></div>
+                            <div class="gap-4 w-100 form-group">
+                                <input type="text" class="form-control" wire:model="poor_to">
+                                @error('poor_to')
+                                    <p class="text-danger">{{ $message }}</p>
+                                @enderror
+                            </div>
                         </div>
                     </div>
                     <div class="modal-footer">

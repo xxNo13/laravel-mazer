@@ -6,6 +6,7 @@ use PDF;
 use App\Models\User;
 use App\Models\Funct;
 use App\Models\Target;
+use App\Models\ScoreEq;
 use App\Models\Approval;
 use App\Models\Duration;
 use App\Models\Percentage;
@@ -67,12 +68,10 @@ class PDFController extends Controller
         }
 
         $functs = Funct::all();
-        
+        $scoreEq = ScoreEq::first();
+
         $data = [
             'functs' => $functs,
-            'core' => $request->core,
-            'strategic' => $request->strategic,
-            'support' => $request->support,
             'userType' => $request->userType,
             'superior1' => $superior1,
             'superior2' => $superior2,
@@ -82,6 +81,7 @@ class PDFController extends Controller
             'assess' => $assess,
             'assess1' => $assess1,
             'assess2' => $assess2,
+            'scoreEq' => $scoreEq,
         ];
 
         if ($print == 'ipcr') {

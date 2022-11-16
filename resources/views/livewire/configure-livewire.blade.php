@@ -14,6 +14,14 @@
                 </nav>
             </div>
         </div>
+        <div class="row my-3">
+            <div class="col-12 hstack gap-5 justify-content-center">
+                <a href="#duration" class="btn btn-outline-primary">Semester Duration</a>
+                <a href="#scoreEq" class="btn btn-outline-primary">Score Equivalent</a>
+                <a href="#offices" class="btn btn-outline-primary">Offices</a>
+                <a href="#account_types" class="btn btn-outline-primary">Account Types</a>
+            </div>
+        </div>
     </div>
 
     @if (session()->has('message'))
@@ -25,7 +33,7 @@
     @endif
 
     <section class="section pt-3">
-        <div class="card">
+        <div class="card" id="duration">
             <div class="accordion accordion-flush card-header" id="durationAccordion">
                 <div class="accordion-item">
                     <div class="accordion-header hstack gap-2" id="flush-headingOne" wire:ignore.self>
@@ -99,7 +107,74 @@
             </div>
         </div>
 
-        <div class="card">
+        <div class="card" id="scoreEq">
+            <div class="accordion accordion-flush card-header" id="scoreEqAccordion">
+                <div class="accordion-item">
+                    <div class="accordion-header hstack gap-2" id="flush-headingOne" wire:ignore.self>
+                        <div class="accordion-button" data-bs-toggle="collapse" data-bs-target="#scoreEq"
+                            wire:ignore.self aria-expanded="false" aria-controls="scoreEq" role="button">
+                            <h4>Score Equivalent</h4>
+                        </div>
+                    </div>
+                    <div id="scoreEq" class="accordion-collapse collapse show" aria-labelledby="flush-headingOne"
+                        wire:ignore.self data-bs-parent="#scoreEqAccordion">
+                        <div class="acordion-header mt-2 row">    
+                            <div class="hstack justify-content-center gap-2 mt-2 col-12">
+                                <button type="button" class="ms-md-auto btn icon btn-success"
+                                    wire:click="select('{{ 'scoreEq' }}', {{ $scoreEq->id }}, '{{ 'edit' }}')"
+                                    data-bs-toggle="modal" data-bs-target="#EditScoreEqModal">
+                                    <i class="bi bi-pencil-square"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="accordion-body">
+                            <div class="table-responsive">
+                                <table class="table table-lg text-center">
+                                    <thead>
+                                        <tr>
+                                            <th>Equivalent</th>
+                                            <th>Score From</th>
+                                            <th>Score To</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>Outstanding</td>
+                                            <td>{{ $scoreEq->out_from }}</td>
+                                            <td>{{ $scoreEq->out_to }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Very Satisfactory</td>
+                                            <td>{{ $scoreEq->verysat_from }}</td>
+                                            <td>{{ $scoreEq->verysat_to }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Satisfactory</td>
+                                            <td>{{ $scoreEq->sat_from }}</td>
+                                            <td>{{ $scoreEq->sat_to }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Unsatisfactory</td>
+                                            <td>{{ $scoreEq->unsat_from }}</td>
+                                            <td>{{ $scoreEq->unsat_to }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Poor</td>
+                                            <td>{{ $scoreEq->poor_from }}</td>
+                                            <td>{{ $scoreEq->poor_to }}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer">
+            </div>
+        </div>
+
+        <div class="card" id="offices">
             <div class="accordion accordion-flush card-header" id="officeAccordion">
                 <div class="accordion-item">
                     <div class="accordion-header hstack gap-2" id="flush-headingOne" wire:ignore.self>
@@ -185,7 +260,7 @@
                                             </tr>
                                         @empty
                                             <tr>
-                                                <td colspan="3">No record available!</td>
+                                                <td colspan="4">No record available!</td>
                                             </tr>
                                         @endforelse
                                     </tbody>
@@ -200,7 +275,7 @@
             </div>
         </div>
 
-        <div class="card">
+        <div class="card" id="account_types">
             <div class="accordion accordion-flush card-header" id="account_typeAccordion">
                 <div class="accordion-item">
                     <div class="accordion-header hstack gap-2" id="flush-headingOne" wire:ignore.self>
@@ -225,6 +300,7 @@
                                     <select class="form-control" wire:model="sortAccType" id="sortAccType">
                                         <option value="id">ID</option>
                                         <option value="account_type">Account Type</option>
+                                        <option value="rank">Rank</option>
                                     </select>
                                 </div>
                                 <div class="my-auto form-group position-relative">
@@ -260,6 +336,7 @@
                                         <tr>
                                             <th>ID</th>
                                             <th>NAME</th>
+                                            <th>RANK</th>
                                             <th>ACTION</th>
                                         </tr>
                                     </thead>
@@ -268,6 +345,7 @@
                                             <tr>
                                                 <td>{{ $account_type->id }}</td>
                                                 <td>{{ $account_type->account_type }}</td>
+                                                <td>{{ $account_type->rank }}</td>
                                                 <td>
                                                     <button type="button" class="btn icon btn-success"
                                                         wire:click="select('{{ 'account_type' }}', {{ $account_type->id }}, '{{ 'edit' }}')"
@@ -283,7 +361,7 @@
                                             </tr>
                                         @empty
                                             <tr>
-                                                <td colspan="3">No record available!</td>
+                                                <td colspan="4">No record available!</td>
                                             </tr>
                                         @endforelse
                                     </tbody>

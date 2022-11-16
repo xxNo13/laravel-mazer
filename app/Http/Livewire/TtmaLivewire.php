@@ -37,7 +37,15 @@ class TtmaLivewire extends Component
 
     public function render()
     {   
-        $this->users = User::where('id', '!=', Auth::user()->id)->get();
+        $users = User::query();
+        
+        foreach (Auth::user()->account_types as $account_type) {
+            $users->whereHas('account_types', function(\Illuminate\Database\Eloquent\Builder $query) use ($account_type) {
+                return $query->where('rank', '>=', $account_type->rank);
+            })->where('id', '!=', Auth::user()->id);
+        }
+
+        $this->users = $users->distinct()->get();
         $this->duration = Duration::orderBy('id', 'DESC')->where('start_date', '<=', date('Y-m-d'))->first();
     
         $search = $this->search;

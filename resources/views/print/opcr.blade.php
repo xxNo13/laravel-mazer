@@ -168,21 +168,19 @@
                         {{ $funct->funct }}
                         @switch(strtolower($funct->funct))
                             @case('core function')
-                                {{ $core }} {{ $percentage->core }}%
+                                {{ $percentage->core }}%
                             @break
 
                             @case('strategic function')
-                                {{ $strategic }} {{ $percentage->strategic }}%
+                                {{ $percentage->strategic }}%
                             @break
 
                             @case('support function')
-                                {{ $support }} {{ $percentage->support }}%
+                                {{ $percentage->support }}%
                             @break
                         @endswitch
                     </th>
                     <th rowspan="2">Success Indicator (Target + Measure)</th>
-                    <th rowspan="2">Alloted Budget</th>
-                    <th rowspan="2">Responsible Office/Person</th>
                     <th rowspan="2">Actual Accomplishment</th>
                     <th colspan="4">Rating</th>
                     <th rowspan="2">Remarks</th>
@@ -211,7 +209,7 @@
                             <tr>
                                 <td colspan="2">
                                     @foreach ($percentage->supports as $support)
-                                        @if ($subFunct->sub_funct == $support->name)
+                                        @if ($subFunct->sub_funct == $support->name && $subFunct->id == $support->sub_funct_id)
                                             {{ $subFunct->sub_funct }} {{ $support->percent }}%
                                             @php
                                                 $percent = $support->percent;
@@ -219,7 +217,7 @@
                                         @endif
                                     @endforeach
                                 </td>
-                                <td colspan="9">
+                                <td colspan="7">
 
                                 </td>
                             </tr>
@@ -240,7 +238,7 @@
                                                 <td>
                                                     {{ $output->output }}
                                                 </td>
-                                                <td colspan="9"></td>
+                                                <td colspan="7"></td>
                                             </tr>
                                             <tr>
                                                 <td colspan="2" rowspan="{{ count($suboutput->targets) }}">
@@ -257,8 +255,6 @@
                                                         $target->duration_id == $duration->id)
                                                         @if ($first)
                                                             <td>{{ $target->target }}</td>
-                                                            <td>{{ $target->rating->alloted_budget }}</td>
-                                                            <td>{{ $target->rating->responsible }}</td>
                                                             <td>{{ $target->rating->accomplishment }}</td>
                                                             <td>
                                                                 @if ($target->rating->efficiency)
@@ -289,8 +285,6 @@
                                                         @else
                                                             <tr>
                                                                 <td>{{ $target->target }}</td>
-                                                                <td>{{ $target->rating->alloted_budget }}</td>
-                                                                <td>{{ $target->rating->responsible }}</td>
                                                                 <td>{{ $target->rating->accomplishment }}</td>
                                                                 <td>
                                                                     @if ($target->rating->efficiency)
@@ -320,13 +314,15 @@
                                                         @switch($funct->funct)
                                                             @case('Core Function')
                                                                 @php
-                                                                    $totalCF += $target->rating->average;
+                                                                    $total += $target->rating->average;
+                                                                    $numberSubF++;
                                                                     $numberCF++;
                                                                 @endphp
                                                                 @break
                                                             @case('Strategic Function')
                                                                 @php
-                                                                    $totalSTF += $target->rating->average;
+                                                                    $total += $target->rating->average;
+                                                                    $numberSubF++;
                                                                     $numberSTF++;
                                                                 @endphp
                                                                 @break
@@ -361,8 +357,6 @@
                                                     $target->duration_id == $duration->id)
                                                     @if ($first)
                                                         <td>{{ $target->target }}</td>
-                                                        <td>{{ $target->rating->alloted_budget }}</td>
-                                                        <td>{{ $target->rating->responsible }}</td>
                                                         <td>{{ $target->rating->accomplishment }}</td>
                                                         <td>
                                                             @if ($target->rating->efficiency)
@@ -393,8 +387,6 @@
                                                     @else
                                                         <tr>
                                                             <td>{{ $target->target }}</td>
-                                                            <td>{{ $target->rating->alloted_budget }}</td>
-                                                            <td>{{ $target->rating->responsible }}</td>
                                                             <td>{{ $target->rating->accomplishment }}</td>
                                                             <td>
                                                                 @if ($target->rating->efficiency)
@@ -424,13 +416,15 @@
                                                     @switch($funct->funct)
                                                         @case('Core Function')
                                                             @php
-                                                                $totalCF += $target->rating->average;
+                                                                $total += $target->rating->average;
+                                                                $numberSubF++;
                                                                 $numberCF++;
                                                             @endphp
                                                             @break
                                                         @case('Strategic Function')
                                                             @php
-                                                                $totalSTF += $target->rating->average;
+                                                                $total += $target->rating->average;
+                                                                $numberSubF++;
                                                                 $numberSTF++;
                                                             @endphp
                                                             @break
@@ -449,39 +443,93 @@
                                 @endif
                             @endforeach
                             <tr>
-                                <td colspan="9" class="text-end">Total {{ $subFunct->sub_funct }}</td>
+                                <td colspan="7" class="text-end">Total {{ $subFunct->sub_funct }}</td>
                                 <td>{{ $total }}</td>
                                 <td></td>
                             </tr>
                             <tr>
-                                <td colspan="9" class="text-end">Total / {{ $numberSubF }} x {{ $percent }}% x {{ $percentage->support }}%</td>
+                                <td colspan="7" class="text-end">Total / {{ $numberSubF }} x {{ $percent }}% x 
+                                    @switch($funct->funct)
+                                        @case('Core Function')
+                                            {{ $percentage->core }}
+                                            @break
+                                        @case('Strategic Function')
+                                            {{ $percentage->strategic }}
+                                            @break
+                                        @case('Support Function')
+                                            {{ $percentage->support }}
+                                            @break
+                                            
+                                    @endswitch
+                                    %</td>
                                 <td>
-                                    {{ (($total/$numberSubF)*($percent/100))*($percentage->support/100) }}
-                                    @php
-                                        $totalSF += (($total/$numberSubF)*($percent/100))*($percentage->support/100)
-                                    @endphp
+                                    @switch($funct->funct)
+                                        @case('Core Function')
+                                            {{ (($total/$numberSubF)*($percent/100))*($percentage->core/100) }}
+                                            @php
+                                                $totalCF += (($total/$numberSubF)*($percent/100))*($percentage->core/100)
+                                            @endphp
+                                            @break
+                                        @case('Strategic Function')
+                                            {{ (($total/$numberSubF)*($percent/100))*($percentage->strategic/100) }}
+                                            @php
+                                                $totalSTF += (($total/$numberSubF)*($percent/100))*($percentage->strategic/100)
+                                            @endphp
+                                            @break
+                                        @case('Support Function')
+                                            {{ (($total/$numberSubF)*($percent/100))*($percentage->support/100) }}
+                                            @php
+                                                $totalSF += (($total/$numberSubF)*($percent/100))*($percentage->support/100)
+                                            @endphp
+                                            @break
+                                    @endswitch
                                 </td>
-                                <td></td>
-                            </tr>
-                        @endif
-                        @if ($loop->last)
-                            <tr>
-                                <td colspan="9" class="text-end">
-                                    Total {{ $funct->funct }} (
-                                    @foreach ($percentage->supports as $support)
-                                        @if ($loop->last)
-                                            {{ $support->percent }}%
-                                        @else
-                                            {{ $support->percent }}% +
-                                        @endif
-                                    @endforeach
-                                    )
-                                </td>
-                                <td>{{ $totalSF }}</td>
                                 <td></td>
                             </tr>
                         @endif
                     @endforeach
+                    <tr>
+                        @php
+                            $x = 0;
+                        @endphp
+                        <td colspan="7" class="text-end">
+                            Total {{ $funct->funct }} (
+                            @foreach ($funct->subFuncts as $subFunct)
+                                @if ($subFunct->user_id == Auth::user()->id &&
+                                $subFunct->user_type == $userType  &&
+                                $subFunct->type == 'opcr' &&
+                                $subFunct->duration_id == $duration->id)
+                                    @foreach ($percentage->supports as $support)
+                                        @if ($support->sub_funct_id == $subFunct->id)
+                                            @if ($x)
+                                                + {{ $support->percent }}%
+                                            @else
+                                                {{ $support->percent }}% 
+                                                @php
+                                                    $x++;
+                                                @endphp
+                                            @endif
+                                        @endif
+                                    @endforeach
+                                @endif
+                            @endforeach
+                            )
+                        </td>
+                        <td>
+                            @switch($funct->funct)
+                                @case('Core Function')
+                                    {{ $totalCF }}
+                                    @break
+                                @case('Strategic Function')
+                                    {{ $totalSTF }}
+                                    @break
+                                @case('Support Function')
+                                    {{ $totalSF }}
+                                    @break
+                            @endswitch
+                        </td>
+                        <td></td>
+                    </tr>
                 @endif
                 @foreach ($funct->outputs as $output)
                     @if ($output->user_id == Auth::user()->id &&
@@ -500,7 +548,7 @@
                                     <td>
                                         {{ $output->output }}
                                     </td>
-                                    <td colspan="9"></td>
+                                    <td colspan="7"></td>
                                 </tr>
                                 <tr>
                                     <td colspan="2" rowspan="{{ count($suboutput->targets) }}">
@@ -517,8 +565,6 @@
                                             $target->duration_id == $duration->id)
                                             @if ($first)
                                                 <td>{{ $target->target }}</td>
-                                                <td>{{ $target->rating->alloted_budget }}</td>
-                                                <td>{{ $target->rating->responsible }}</td>
                                                 <td>{{ $target->rating->accomplishment }}</td>
                                                 <td>
                                                     @if ($target->rating->efficiency)
@@ -549,8 +595,6 @@
                                             @else
                                                 <tr>
                                                     <td>{{ $target->target }}</td>
-                                                    <td>{{ $target->rating->alloted_budget }}</td>
-                                                    <td>{{ $target->rating->responsible }}</td>
                                                     <td>{{ $target->rating->accomplishment }}</td>
                                                     <td>
                                                         @if ($target->rating->efficiency)
@@ -620,8 +664,6 @@
                                         $target->duration_id == $duration->id)
                                         @if ($first)
                                             <td>{{ $target->target }}</td>
-                                            <td>{{ $target->rating->alloted_budget }}</td>
-                                            <td>{{ $target->rating->responsible }}</td>
                                             <td>{{ $target->rating->accomplishment }}</td>
                                             <td>
                                                 @if ($target->rating->efficiency)
@@ -652,8 +694,6 @@
                                         @else
                                             <tr>
                                                 <td>{{ $target->target }}</td>
-                                                <td>{{ $target->rating->alloted_budget }}</td>
-                                                <td>{{ $target->rating->responsible }}</td>
                                                 <td>{{ $target->rating->accomplishment }}</td>
                                                 <td>
                                                     @if ($target->rating->efficiency)
@@ -710,7 +750,7 @@
                 @switch($funct->funct)
                     @case('Core Function')
                         <tr>
-                            <td colspan="9" class="text-end">
+                            <td colspan="7" class="text-end">
                                 Total {{ $funct->funct }}
                             </td>
                             <td>{{ $totalCF }}</td>
@@ -719,98 +759,179 @@
                         @break
                     @case('Strategic Function')
                         <tr>
-                            <td colspan="9" class="text-end">
+                            <td colspan="7" class="text-end">
                                 Total {{ $funct->funct }}
                             </td>
                             <td>{{ $totalSTF }}</td>
                             <td></td>
                         </tr>
                         @break
+                    @case('Support Function')
+                        <tr>
+                            <td colspan="7" class="text-end">
+                                Total {{ $funct->funct }}
+                            </td>
+                            <td>{{ $totalSF }}</td>
+                            <td></td>
+                        </tr>
+                        @break
                 @endswitch
+                <tr>
+                    <td colspan="9"></td>
+                </tr>
+                <tr>
+                    <td colspan="9"></td>
+                </tr>
             </tbody>
         @endforeach
 
         <tfoot>
             <tr>
-                <th colspan="5">Category</th>
+                <th colspan="3">Category</th>
                 <th>Average</th>
                 <th colspan="3">MFO (tot. no.)</th>
                 <th>Percentage</th>
                 <th>Total</th>
             </tr>
-            <tr>
-                <td colspan="5" class="text-start">Core Function</td>
-                <td style="border-right: none;">{{ $totalCF }}</td>
-                <td style="border-right: none; border-left: none;">/</td>
-                <td style="border-right: none; border-left: none;">{{ $numberCF }}</td>
-                <td style="border-left: none;">X</td>
-                <td>{{ $percentage->core/100 }}</td>
-                <td>
-                    @if ($numberCF == 0)
-                        {{ $total1 = 0 }}
+            @foreach ($functs as $funct)
+                @if ($funct->funct == 'Core Function')
+                    @if ($funct->subFuncts)
+                        <tr>
+                            <td colspan="3" class="text-start">{{ $funct->funct }}</td>
+                            <td style="border-right: none;">
+                                @if ($percentage->core != 0)
+                                    {{ ($totalCF*$numberCF)/($percentage->core/100) }}
+                                @else
+                                    0
+                                @endif
+                            </td>
+                            <td style="border-right: none; border-left: none;">/</td>
+                            <td style="border-right: none; border-left: none;">{{ $numberCF }}</td>
+                            <td style="border-left: none;">X</td>
+                            <td>{{ $percentage->core/100 }}</td>
+                            <td>{{ $total1 = $totalCF }}</td>
+                        </tr>
                     @else
-                        {{ $total1 = ($totalCF/$numberCF)*($percentage->core/100) }}
+                        <tr>
+                            <td colspan="3" class="text-start">{{ $funct->funct }}</td>
+                            <td style="border-right: none;">{{ $totalCF }}</td>
+                            <td style="border-right: none; border-left: none;">/</td>
+                            <td style="border-right: none; border-left: none;">{{ $numberCF }}</td>
+                            <td style="border-left: none;">X</td>
+                            <td>{{ $percentage->core/100 }}</td>
+                            <td>
+                                @if ($numberCF == 0)
+                                    {{ $total1 = 0 }}
+                                @else
+                                    {{ $total1 = ($totalCF/$numberCF)*($percentage->core/100) }}
+                                @endif
+                            </td>
+                        </tr>
                     @endif
-                </td>
-            </tr>
-            <tr>
-                <td colspan="5" class="text-start">Strategic Function</td>
-                <td style="border-right: none;">{{ $totalSTF }}</td>
-                <td style="border: none;">/</td>
-                <td style="border: none;">{{ $numberSTF }}</td>
-                <td style="border-left: none;">X</td>
-                <td>{{ $percentage->strategic/100 }}</td>
-                <td>
-                    @if ($numberSTF == 0)
-                        {{ $total2 = 0 }}
+                @elseif ($funct->funct == 'Strategic Function')
+                    @if ($funct->subFuncts)
+                        <tr>
+                            <td colspan="3" class="text-start">{{ $funct->funct }}</td>
+                            <td style="border-right: none;">
+                                @if ($percentage->strategic != 0)
+                                    {{ ($totalSTF*$numberSTF)/($percentage->strategic/100) }}
+                                @else
+                                    0
+                                @endif
+                            </td>
+                            <td style="border: none;">/</td>
+                            <td style="border: none;">{{ $numberSTF }}</td>
+                            <td style="border-left: none;">X</td>
+                            <td>{{ $percentage->strategic/100 }}</td>
+                            <td>{{ $total2 = $totalSTF }}</td>
+                        </tr>
                     @else
-                        {{ $total2 = ($totalSTF/$numberSTF)*($percentage->strategic/100) }}
+                        <tr>
+                            <td colspan="3" class="text-start">{{ $funct->funct }}</td>
+                            <td style="border-right: none;">{{ $totalSTF }}</td>
+                            <td style="border: none;">/</td>
+                            <td style="border: none;">{{ $numberSTF }}</td>
+                            <td style="border-left: none;">X</td>
+                            <td>{{ $percentage->strategic/100 }}</td>
+                            <td>
+                                @if ($numberSTF == 0)
+                                    {{ $total2 = 0 }}
+                                @else
+                                    {{ $total2 = ($totalSTF/$numberSTF)*($percentage->strategic/100) }}
+                                @endif
+                            </td>
+                        </tr>
                     @endif
-                </td>
-            </tr>
+                @elseif ($funct->funct == 'Support Function')
+                    @if ($funct->subFuncts)
+                        <tr>
+                            <td colspan="3" class="text-start">{{ $funct->funct }}</td>
+                            <td style="border-right: none;">
+                                @if ($percentage->support != 0)
+                                    {{ ($totalSF*$numberSF)/($percentage->support/100) }}
+                                @else
+                                    0
+                                @endif
+                            </td>
+                            <td style="border-right: none; border-left: none;">/</td>
+                            <td style="border-right: none; border-left: none;">{{ $numberSF }}</td>
+                            <td style="border-left: none;">X</td>
+                            <td>{{ $percentage->support/100 }}</td>
+                            <td>{{ $total3 = $totalSF }}</td>
+                        </tr>
+                    @else
+                        <tr>
+                            <td colspan="3" class="text-start">{{ $funct->funct }}</td>
+                            <td style="border-right: none;">{{ $totalSF }}</td>
+                            <td style="border-right: none; border-left: none;">/</td>
+                            <td style="border-right: none; border-left: none;">{{ $numberSF }}</td>
+                            <td style="border-left: none;">X</td>
+                            <td>{{ $percentage->support/100 }}</td>
+                            <td>
+                                @if ($numberSF == 0)
+                                    {{ $total3 = 0 }}
+                                @else
+                                    {{ $total3 = ($totalSF/$numberSF)*($percentage->support/100) }}
+                                @endif
+                            </td>
+                        </tr>
+                    @endif
+                @endif
+            @endforeach
             <tr>
-                <td colspan="5" class="text-start">Support Function</td>
-                <td style="border-right: none;">0</td>
-                <td style="border-right: none; border-left: none;">/</td>
-                <td style="border-right: none; border-left: none;">{{ $numberCF }}</td>
-                <td style="border-left: none;">X</td>
-                <td>{{ $percentage->support/100 }}</td>
-                <td>{{ $total3 = $totalSF }}</td>
+                <td colspan="2"></td>
+                <td colspan="6" class="text-start">Total/Final Overall Rating</td>
+                <td>{{ $total = round($total1+$total2+$total3, 2) }}</td>
             </tr>
             <tr>
                 <td colspan="2"></td>
-                <td colspan="8" class="text-start">Total/Final Overall Rating</td>
-                <td>{{ $total = $total1+$total2+$total3 }}</td>
+                <td colspan="6" class="text-start">Final Average Rating</td>
+                <td>{{ $total = round($total1+$total2+$total3, 2) }}</td>
             </tr>
             <tr>
                 <td colspan="2"></td>
-                <td colspan="8" class="text-start">Final Average Rating</td>
-                <td>{{ $total = $total1+$total2+$total3 }}</td>
-            </tr>
-            <tr>
-                <td colspan="2"></td>
-                <td colspan="8" class="text-start">Adjectival Rating</td>
+                <td colspan="6" class="text-start">Adjectival Rating</td>
                 <td>
-                    @if ($total == 5)
+                    @if ($total >= $scoreEq->out_from && $total <= $scoreEq->out_to)
                         Outstanding
-                    @elseif ($total < 5 && $total >= 4)
+                    @elseif ($total >= $scoreEq->verysat_from && $total <= $scoreEq->verysat_to)
                         Very Satisfactory
-                    @elseif ($total < 4 && $total >= 3)
+                    @elseif ($total >= $scoreEq->sat_from && $total <= $scoreEq->sat_to)
                         Satisfactory
-                    @elseif ($total < 3 && $total >= 2)
+                    @elseif ($total >= $scoreEq->unsat_from && $total <= $scoreEq->unsat_to)
                         Unsatisfactory
-                    @elseif ($total < 2)
+                    @elseif ($total >= $scoreEq->poor_from && $total <= $scoreEq->poor_to)
                         Poor
                     @endif
                 </td>
             </tr>
             
             <tr>
-                <td colspan="6" class="text-start">Discussed with:</td>
+                <td colspan="4" class="text-start">Discussed with:</td>
                 <td colspan="5" class="text-start">Assessed by:</td>
             </tr>
             <tr>
-                <td colspan="4">
+                <td colspan="2">
                     <p><u>{{ Auth::user()->name }}</u></p>
                     <p>{{ Auth::user()->title }}</p>
                 </td>

@@ -41,6 +41,9 @@
         $('#DisapproveModal').modal('hide');
         $('#MessageTTMAModal').modal('hide');
         $('#EditMessageTTMAModal').modal('hide');
+        $('#AddTrainingModal').modal('hide');
+        $('#EditTrainingModal').modal('hide');
+        $('#EditScoreEqModal').modal('hide');
     });
 </script>
 

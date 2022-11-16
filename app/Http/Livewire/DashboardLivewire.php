@@ -69,7 +69,7 @@ class DashboardLivewire extends Component
             $this->standards = Standard::where('user_id', Auth::user()->id)
                             ->where('duration_id', $this->duration->id)
                             ->get();
-            $this->assignemnts = Ttma::where('user_id', Auth::user()->id)
+            $this->assignments = Ttma::where('user_id', Auth::user()->id)
                             ->where('duration_id', $this->duration->id)
                             ->get();
             $this->finished = Ttma::where('user_id', Auth::user()->id)

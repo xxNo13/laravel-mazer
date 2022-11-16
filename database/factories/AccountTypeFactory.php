@@ -17,7 +17,8 @@ class AccountTypeFactory extends Factory
     public function definition()
     {
         return [
-            'account_type' => $this->faker->text(5)
+            'account_type' => $this->faker->text(5),
+            'rank' => rand(1,5),
         ];
     }
 }
