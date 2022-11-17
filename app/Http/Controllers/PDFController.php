@@ -103,6 +103,70 @@ class PDFController extends Controller
         }
     }
 
+    public function rankings(Request $request) {
+        $superior1 = '';
+        $superior2 = '';
+        $assess = '';
+        $assess1 = '';
+        $assess2 = '';
+        $duration = Duration::orderBy('id', 'DESC')
+            ->where('start_date', '<=', date('Y-m-d'))
+            ->first();
+        $percentage = Percentage::where('user_id', Auth::user()->id)
+            ->where('type', 'ipcr')
+            ->where('duration_id', $duration->id)
+            ->where('userType', $request->userType)
+            ->first();
+        $users = User::where('office_id', Auth::user()->office_id)->get();
+
+        if ($duration) {
+            $approval = Approval::orderBy('id', 'DESC')
+                ->where('name', 'approval')
+                ->where('user_id', Auth::user()->id)
+                ->where('type', 'ipcr')
+                ->where('duration_id', $duration->id)
+                ->where('user_type', $request->userType)
+                ->first();
+
+            $superior1 = User::where('id', $approval->superior1_id)->first();
+            $superior2 = User::where('id', $approval->superior2_id)->first();
+
+                $assess = Approval::orderBy('id', 'DESC')
+                    ->where('name', 'assess')
+                    ->where('user_id', Auth::user()->id)
+                    ->where('type', 'ipcr')
+                    ->where('duration_id', $duration->id)
+                    ->where('user_type', $request->userType)
+                    ->first();
+
+                $assess1 = User::where('id', $assess->superior1_id)->first();
+                $assess2 = User::where('id', $assess->superior2_id)->first();
+            
+        }
+
+        $functs = Funct::all();
+        $scoreEq = ScoreEq::first();
+
+        $data = [
+            'functs' => $functs,
+            'userType' => $request->userType,
+            'approval' => $approval,
+            'duration' => $duration,
+            'percentage' => $percentage,
+            'assess' => $assess,
+            'assess1' => $assess1,
+            'assess2' => $assess2,
+            'superior1' => $superior1,
+            'superior2' => $superior2,
+            'scoreEq' => $scoreEq,
+            'users' => $users
+        ];
+
+        
+        $pdf = PDF::loadView('print.rankings', $data)->setPaper('a4');
+        return $pdf->stream('rankings.pdf');
+    }
+
     public function calculation() {
         $duration = Duration::orderBy('id', 'DESC')->where('start_date', '<=', date('Y-m-d'))->first();
         $percentage = Percentage::where('user_id', Auth::user()->id)

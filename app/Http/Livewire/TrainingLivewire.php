@@ -16,6 +16,7 @@ class TrainingLivewire extends Component
     public $possible_target;
     public $training_id;
     public $search;
+    public $targets;
 
     protected  $queryString = ['search'];
 

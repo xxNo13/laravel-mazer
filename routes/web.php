@@ -39,6 +39,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::get('/dashboard', DashboardLivewire::class)->name('dashboard');
     Route::get('/training-recommendation', TrainingRecommendationLivewire::class)->name('training.recommendation');
     Route::get('/ttma', TtmaLivewire::class)->name('ttma');
+    Route::get('/print/rankings', [PDFController::class, 'rankings'])->name('rankings');
     Route::get('/print/{print}', [PDFController::class, 'print'])->name('print');
 
 

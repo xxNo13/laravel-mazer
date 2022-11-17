@@ -24,6 +24,9 @@
                     <div class="form-control-icon">
                         <i class="bi bi-search"></i>
                     </div>
+                    <a href="/print/rankings?userType=staff" target="_blank" class="ms-auto btn icon btn-primary" title="Print IPCR">
+                        <i class="bi bi-printer"></i>
+                    </a>
                 </div>
             </div>
             <div class="card-body">

@@ -20,13 +20,13 @@ class ScoreEqFactory extends Factory
             'out_from' => 4,
             'out_to' => 5,
             'verysat_from' => 3,
-            'verysat_to' => 4,
+            'verysat_to' => 3.99,
             'sat_from' => 2,
-            'sat_to' => 3,
+            'sat_to' => 2.99,
             'unsat_from' => 1,
-            'unsat_to' => 2,
-            'poor_from' => 1,
-            'poor_to' => 1,
+            'unsat_to' => 1.99,
+            'poor_from' => 0,
+            'poor_to' => 0.99,
         ];
     }
 }
