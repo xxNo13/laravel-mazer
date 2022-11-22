@@ -117,7 +117,7 @@ class PDFController extends Controller
             ->where('duration_id', $duration->id)
             ->where('userType', $request->userType)
             ->first();
-        $users = User::where('office_id', Auth::user()->office_id)->get();
+        $users = User::orderBy('name', 'ASC')->where('office_id', Auth::user()->office_id)->get();
 
         if ($duration) {
             $approval = Approval::orderBy('id', 'DESC')

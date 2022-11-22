@@ -789,23 +789,29 @@
             </tr>
             @foreach ($functs as $funct)
                 @if ($funct->funct == 'Core Function')
-                    @if ($funct->subFuncts)
-                        <tr>
-                            <td colspan="3" class="text-start">{{ $funct->funct }}</td>
-                            <td style="border-right: none;">
-                                @if ($percentage->core != 0)
-                                    {{ ($totalCF*$numberCF)/($percentage->core/100) }}
-                                @else
-                                    0
-                                @endif
-                            </td>
-                            <td style="border-right: none; border-left: none;">/</td>
-                            <td style="border-right: none; border-left: none;">{{ $numberCF }}</td>
-                            <td style="border-left: none;">X</td>
-                            <td>{{ $percentage->core/100 }}</td>
-                            <td>{{ $total1 = $totalCF }}</td>
-                        </tr>
-                    @else
+                    @forelse ($funct->subFuncts as $sub_funct)
+                        @if ($subFunct->user_id == Auth::user()->id &&
+                        $subFunct->user_type == $userType  &&
+                        $subFunct->type == 'ipcr' &&
+                        $subFunct->duration_id == $duration->id)
+                            <tr>
+                                <td colspan="3" class="text-start">{{ $funct->funct }}</td>
+                                <td style="border-right: none;">
+                                    @if ($percentage->core != 0)
+                                        {{ ($totalCF*$numberCF)/($percentage->core/100) }}
+                                    @else
+                                        0
+                                    @endif
+                                </td>
+                                <td style="border-right: none; border-left: none;">/</td>
+                                <td style="border-right: none; border-left: none;">{{ $numberCF }}</td>
+                                <td style="border-left: none;">X</td>
+                                <td>{{ $percentage->core/100 }}</td>
+                                <td>{{ $total1 = $totalCF }}</td>
+                            </tr>
+                            @break
+                        @endif
+                    @empty
                         <tr>
                             <td colspan="3" class="text-start">{{ $funct->funct }}</td>
                             <td style="border-right: none;">{{ $totalCF }}</td>
@@ -821,25 +827,31 @@
                                 @endif
                             </td>
                         </tr>
-                    @endif
+                    @endforelse
                 @elseif ($funct->funct == 'Strategic Function')
-                    @if ($funct->subFuncts)
-                        <tr>
-                            <td colspan="3" class="text-start">{{ $funct->funct }}</td>
-                            <td style="border-right: none;">
-                                @if ($percentage->strategic != 0)
-                                    {{ ($totalSTF*$numberSTF)/($percentage->strategic/100) }}
-                                @else
-                                    0
-                                @endif
-                            </td>
-                            <td style="border: none;">/</td>
-                            <td style="border: none;">{{ $numberSTF }}</td>
-                            <td style="border-left: none;">X</td>
-                            <td>{{ $percentage->strategic/100 }}</td>
-                            <td>{{ $total2 = $totalSTF }}</td>
-                        </tr>
-                    @else
+                    @forelse ($funct->subFuncts as $sub_funct)
+                        @if ($subFunct->user_id == Auth::user()->id &&
+                        $subFunct->user_type == $userType  &&
+                        $subFunct->type == 'ipcr' &&
+                        $subFunct->duration_id == $duration->id)
+                            <tr>
+                                <td colspan="3" class="text-start">{{ $funct->funct }}</td>
+                                <td style="border-right: none;">
+                                    @if ($percentage->strategic != 0)
+                                        {{ ($totalSTF*$numberSTF)/($percentage->strategic/100) }}
+                                    @else
+                                        0
+                                    @endif
+                                </td>
+                                <td style="border: none;">/</td>
+                                <td style="border: none;">{{ $numberSTF }}</td>
+                                <td style="border-left: none;">X</td>
+                                <td>{{ $percentage->strategic/100 }}</td>
+                                <td>{{ $total2 = $totalSTF }}</td>
+                            </tr>
+                            @break
+                        @endif
+                    @empty
                         <tr>
                             <td colspan="3" class="text-start">{{ $funct->funct }}</td>
                             <td style="border-right: none;">{{ $totalSTF }}</td>
@@ -855,25 +867,31 @@
                                 @endif
                             </td>
                         </tr>
-                    @endif
+                    @endforelse
                 @elseif ($funct->funct == 'Support Function')
-                    @if ($funct->subFuncts)
-                        <tr>
-                            <td colspan="3" class="text-start">{{ $funct->funct }}</td>
-                            <td style="border-right: none;">
-                                @if ($percentage->support != 0)
-                                    {{ ($totalSF*$numberSF)/($percentage->support/100) }}
-                                @else
-                                    0
-                                @endif
-                            </td>
-                            <td style="border-right: none; border-left: none;">/</td>
-                            <td style="border-right: none; border-left: none;">{{ $numberSF }}</td>
-                            <td style="border-left: none;">X</td>
-                            <td>{{ $percentage->support/100 }}</td>
-                            <td>{{ $total3 = $totalSF }}</td>
-                        </tr>
-                    @else
+                    @forelse ($funct->subFuncts as $sub_funct)
+                        @if ($subFunct->user_id == Auth::user()->id &&
+                        $subFunct->user_type == $userType  &&
+                        $subFunct->type == 'ipcr' &&
+                        $subFunct->duration_id == $duration->id)
+                            <tr>
+                                <td colspan="3" class="text-start">{{ $funct->funct }}</td>
+                                <td style="border-right: none;">
+                                    @if ($percentage->support != 0)
+                                        {{ ($totalSF*$numberSF)/($percentage->support/100) }}
+                                    @else
+                                        0
+                                    @endif
+                                </td>
+                                <td style="border-right: none; border-left: none;">/</td>
+                                <td style="border-right: none; border-left: none;">{{ $numberSF }}</td>
+                                <td style="border-left: none;">X</td>
+                                <td>{{ $percentage->support/100 }}</td>
+                                <td>{{ $total3 = $totalSF }}</td>
+                            </tr>
+                            @break
+                        @endif
+                    @empty
                         <tr>
                             <td colspan="3" class="text-start">{{ $funct->funct }}</td>
                             <td style="border-right: none;">{{ $totalSF }}</td>
@@ -889,7 +907,7 @@
                                 @endif
                             </td>
                         </tr>
-                    @endif
+                    @endforelse
                 @endif
             @endforeach
             <tr>

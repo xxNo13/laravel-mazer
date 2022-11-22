@@ -16,11 +16,11 @@
     </div>
 
     @if (session()->has('message'))
-        <div x-data="{show: true}" x-init="setTimeout(() => show = false, 3000)" x-show="show" class="toastify on  toastify-right toastify-bottom" aria-live="polite" style="background: #41bbdd; transform: translate(0px, 0px); bottom: 15px;">
+        <div x-data="{show: true}" x-init="setTimeout(() => show = false, 3000)" x-show="show" class="toastify on  toastify-right toastify-bottom" aria-live="polite" style="background: rgb(79, 190, 135); transform: translate(0px, 0px); bottom: 15px;">
             {{ session('message') }}
         </div>
     @endif
-
+    
     <section class="section pt-3">
         <div class="card">
             <div class="card-header hstack">
@@ -45,7 +45,7 @@
                             <tr>
                                 <th>TRAININGS</th>
                                 <th>LINKS</th>
-                                <th>USER ADDED</th>
+                                <th>ADDED BY</th>
                                 <th>POSSIBLE TARGETS</th>
                                 <th>POSTED</th>
                                 <th>ACTION</th>
@@ -55,7 +55,11 @@
                             @forelse ($trainings as $training)
                                 <tr>
                                     <td>{{ $training->training }}</td>
-                                    <td>{{ $training->link }}</td>
+                                    <td>
+                                        @foreach (explode("\n", $training->link) as $link)
+                                            <a href="{{ $link }}" target="_blank">{{ $link }}</a><br />
+                                        @endforeach
+                                    </td>
                                     <td>{{ $training->user->name }}</td>
                                     <td>{{ $training->possible_target }}</td>
                                     <td>{{ $training->created_at->diffForHumans() }}</td>

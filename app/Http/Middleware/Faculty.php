@@ -17,7 +17,7 @@ class Faculty
      */
     public function handle(Request $request, Closure $next)
     {
-        if(!Auth::user()->account_types->contains(1))
+        if(!Auth::user()->account_types->contains(1) && !Auth::user()->account_types->contains(6))
         {
             abort(403);
         }

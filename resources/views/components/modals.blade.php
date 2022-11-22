@@ -1,7 +1,7 @@
 <div>
     @if (isset($selected))
         {{-- Add Output/Suboutput/Target Modal --}}
-        <div wire:ignore.self class="modal fade text-left" id="AddIPCROSTModal" tabindex="-1" role="dialog"
+        <div wire:ignore.self data-bs-backdrop="static" class="modal fade text-left" id="AddIPCROSTModal" tabindex="-1" role="dialog"
             aria-labelledby="myModalLabel33" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content">
@@ -246,7 +246,7 @@
         </div>
 
         {{-- Edit Output/Suboutput/Target Modal --}}
-        <div wire:ignore.self class="modal fade text-left" id="EditIPCROSTModal" tabindex="-1" role="dialog"
+        <div wire:ignore.self data-bs-backdrop="static" class="modal fade text-left" id="EditIPCROSTModal" tabindex="-1" role="dialog"
             aria-labelledby="myModalLabel33" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content">
@@ -303,9 +303,9 @@
                                 <i class="bx bx-x d-block d-sm-none"></i>
                                 <span class="d-none d-sm-block">Close</span>
                             </button>
-                            <button type="submit" wire:loading.attr="disabled" class="btn btn-primary ml-1">
+                            <button type="submit" wire:loading.attr="disabled" class="btn btn-success ml-1">
                                 <i class="bx bx-check d-block d-sm-none"></i>
-                                <span class="d-none d-sm-block">Save</span>
+                                <span class="d-none d-sm-block">Update</span>
                             </button>
                         </div>
                     </form>
@@ -314,7 +314,7 @@
         </div>
 
         {{-- Add Output/Suboutput/Target Modal --}}
-        <div wire:ignore.self class="modal fade text-left" id="AddOPCROSTModal" tabindex="-1" role="dialog"
+        <div wire:ignore.self data-bs-backdrop="static" class="modal fade text-left" id="AddOPCROSTModal" tabindex="-1" role="dialog"
             aria-labelledby="myModalLabel33" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content">
@@ -497,7 +497,7 @@
         </div>
 
         {{-- Edit Output/Suboutput/Target Modal --}}
-        <div wire:ignore.self class="modal fade text-left" id="EditOPCROSTModal" tabindex="-1" role="dialog"
+        <div wire:ignore.self data-bs-backdrop="static" class="modal fade text-left" id="EditOPCROSTModal" tabindex="-1" role="dialog"
             aria-labelledby="myModalLabel33" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content">
@@ -570,9 +570,9 @@
                                 <i class="bx bx-x d-block d-sm-none"></i>
                                 <span class="d-none d-sm-block">Close</span>
                             </button>
-                            <button type="submit" wire:loading.attr="disabled" class="btn btn-primary ml-1">
+                            <button type="submit" wire:loading.attr="disabled" class="btn btn-success ml-1">
                                 <i class="bx bx-check d-block d-sm-none"></i>
-                                <span class="d-none d-sm-block">Save</span>
+                                <span class="d-none d-sm-block">Update</span>
                             </button>
                         </div>
                     </form>
@@ -582,15 +582,12 @@
     @endif
 
     {{-- Delete Modal --}}
-    <div wire:ignore.self class="modal fade text-left" id="DeleteModal" tabindex="-1" role="dialog"
+    <div wire:ignore.self data-bs-backdrop="static" class="modal fade text-left" id="DeleteModal" tabindex="-1" role="dialog"
         aria-labelledby="myModalLabel33" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h4 class="modal-title" id="myModalLabel33">Delete Modal</h4>
-                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                        <i data-feather="x"></i>
-                    </button>
                 </div>
                 <form wire:submit.prevent="delete">
                     <div class="modal-body">
@@ -614,7 +611,7 @@
 
     @if (isset($type))
         {{-- Add Rating Modal --}}
-        <div wire:ignore.self class="modal fade text-left" id="AddRatingModal" tabindex="-1" role="dialog"
+        <div wire:ignore.self data-bs-backdrop="static" class="modal fade text-left" id="AddRatingModal" tabindex="-1" role="dialog"
             aria-labelledby="myModalLabel33" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content">
@@ -676,7 +673,7 @@
         </div>
 
         {{-- Edit Rating Modal --}}
-        <div wire:ignore.self class="modal fade text-left" id="EditRatingModal" tabindex="-1" role="dialog"
+        <div wire:ignore.self data-bs-backdrop="static" class="modal fade text-left" id="EditRatingModal" tabindex="-1" role="dialog"
             aria-labelledby="myModalLabel33" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content">
@@ -739,15 +736,12 @@
     @endif
 
     {{-- Add Standard Modal --}}
-    <div wire:ignore.self class="modal fade text-left" id="AddStandardModal" tabindex="-1" role="dialog"
+    <div wire:ignore.self data-bs-backdrop="static" class="modal fade text-left" id="AddStandardModal" tabindex="-1" role="dialog"
         aria-labelledby="myModalLabel33" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h4 class="modal-title" id="myModalLabel33">Add Standard</h4>
-                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                        <i data-feather="x"></i>
-                    </button>
                 </div>
                 <form wire:submit.prevent="save('{{ 'add' }}')">
                     <div class="modal-body">
@@ -857,15 +851,12 @@
     </div>
 
     {{-- Edit Standard Modal --}}
-    <div wire:ignore.self class="modal fade text-left" id="EditStandardModal" tabindex="-1" role="dialog"
+    <div wire:ignore.self data-bs-backdrop="static" class="modal fade text-left" id="EditStandardModal" tabindex="-1" role="dialog"
         aria-labelledby="myModalLabel33" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h4 class="modal-title" id="myModalLabel33">Edit Standard</h4>
-                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                        <i data-feather="x"></i>
-                    </button>
                 </div>
                 <form wire:submit.prevent="save('{{ 'edit' }}')">
                     <div class="modal-body">
@@ -976,7 +967,7 @@
 
     @if (isset($users1) && isset($users2))
         {{-- Submit IPCR/Standard/OPCR Modal --}}
-        <div wire:ignore.self class="modal fade text-left" id="SubmitISOModal" tabindex="-1" role="dialog"
+        <div wire:ignore.self data-bs-backdrop="static" class="modal fade text-left" id="SubmitISOModal" tabindex="-1" role="dialog"
             aria-labelledby="myModalLabel33" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content">
@@ -1032,7 +1023,7 @@
         </div>
 
         {{-- Assess IPCR/Standard/OPCR Modal --}}
-        <div wire:ignore.self class="modal fade text-left" id="AssessISOModal" tabindex="-1" role="dialog"
+        <div wire:ignore.self data-bs-backdrop="static" class="modal fade text-left" id="AssessISOModal" tabindex="-1" role="dialog"
             aria-labelledby="myModalLabel33" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content">
@@ -1093,7 +1084,7 @@
 
     @if (isset($users))
         {{-- Add TTMA Modal --}}
-        <div wire:ignore.self class="modal fade text-left" id="AddTTMAModal" tabindex="-1" role="dialog"
+        <div wire:ignore.self data-bs-backdrop="static" class="modal fade text-left" id="AddTTMAModal" tabindex="-1" role="dialog"
             aria-labelledby="myModalLabel33" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content">
@@ -1141,7 +1132,7 @@
                             </button>
                             <button type="submit" wire:loading.attr="disabled" class="btn btn-primary ml-1">
                                 <i class="bx bx-check d-block d-sm-none"></i>
-                                <span class="d-none d-sm-block">Add</span>
+                                <span class="d-none d-sm-block">Save</span>
                             </button>
                         </div>
                     </form>
@@ -1150,7 +1141,7 @@
         </div>
 
         {{-- Edit TTMA Modal --}}
-        <div wire:ignore.self class="modal fade text-left" id="EditTTMAModal" tabindex="-1" role="dialog"
+        <div wire:ignore.self data-bs-backdrop="static" class="modal fade text-left" id="EditTTMAModal" tabindex="-1" role="dialog"
             aria-labelledby="myModalLabel33" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content">
@@ -1208,15 +1199,12 @@
     @endif
 
     {{-- Done Modal --}}
-    <div wire:ignore.self class="modal fade text-left" id="DoneModal" tabindex="-1" role="dialog"
+    <div wire:ignore.self data-bs-backdrop="static" class="modal fade text-left" id="DoneModal" tabindex="-1" role="dialog"
         aria-labelledby="myModalLabel33" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h4 class="modal-title" id="myModalLabel33">Done</h4>
-                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                        <i data-feather="x"></i>
-                    </button>
                 </div>
                 <form wire:submit.prevent="done">
                     <div class="modal-body">
@@ -1238,15 +1226,12 @@
     </div>
 
     {{-- Add Office Modal --}}
-    <div wire:ignore.self class="modal fade text-left" id="AddOfficeModal" tabindex="-1" role="dialog"
+    <div wire:ignore.self data-bs-backdrop="static" class="modal fade text-left" id="AddOfficeModal" tabindex="-1" role="dialog"
         aria-labelledby="myModalLabel33" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h4 class="modal-title" id="myModalLabel33">Add Office</h4>
-                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                        <i data-feather="x"></i>
-                    </button>
                 </div>
                 <form wire:submit.prevent="save">
                     <div class="modal-body">
@@ -1281,15 +1266,12 @@
     </div>
 
     {{-- Edit Office Modal --}}
-    <div wire:ignore.self class="modal fade text-left" id="EditOfficeModal" tabindex="-1" role="dialog"
+    <div wire:ignore.self data-bs-backdrop="static" class="modal fade text-left" id="EditOfficeModal" tabindex="-1" role="dialog"
         aria-labelledby="myModalLabel33" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h4 class="modal-title" id="myModalLabel33">Edit Office</h4>
-                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                        <i data-feather="x"></i>
-                    </button>
                 </div>
                 <form wire:submit.prevent="save">
                     <div class="modal-body">
@@ -1324,15 +1306,12 @@
     </div>
 
     {{-- Add Account Type Modal --}}
-    <div wire:ignore.self class="modal fade text-left" id="AddAccountTypeModal" tabindex="-1" role="dialog"
+    <div wire:ignore.self data-bs-backdrop="static" class="modal fade text-left" id="AddAccountTypeModal" tabindex="-1" role="dialog"
         aria-labelledby="myModalLabel33" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h4 class="modal-title" id="myModalLabel33">Add Account Type</h4>
-                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                        <i data-feather="x"></i>
-                    </button>
                 </div>
                 <form wire:submit.prevent="save">
                     <div class="modal-body">
@@ -1369,15 +1348,12 @@
     </div>
 
     {{-- Edit Account Type Modal --}}
-    <div wire:ignore.self class="modal fade text-left" id="EditAccountTypeModal" tabindex="-1" role="dialog"
+    <div wire:ignore.self data-bs-backdrop="static" class="modal fade text-left" id="EditAccountTypeModal" tabindex="-1" role="dialog"
         aria-labelledby="myModalLabel33" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h4 class="modal-title" id="myModalLabel33">Edit Account Type</h4>
-                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                        <i data-feather="x"></i>
-                    </button>
                 </div>
                 <form wire:submit.prevent="save">
                     <div class="modal-body">
@@ -1414,15 +1390,12 @@
     </div>
 
     {{-- Add Duration Modal --}}
-    <div wire:ignore.self class="modal fade text-left" id="AddDurationModal" tabindex="-1" role="dialog"
+    <div wire:ignore.self data-bs-backdrop="static" class="modal fade text-left" id="AddDurationModal" tabindex="-1" role="dialog"
         aria-labelledby="myModalLabel33" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h4 class="modal-title" id="myModalLabel33">Add Duration</h4>
-                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                        <i data-feather="x"></i>
-                    </button>
                 </div>
                 <form wire:submit.prevent="save">
                     <div class="modal-body">
@@ -1466,15 +1439,12 @@
     </div>
 
     {{-- Edit Duration Modal --}}
-    <div wire:ignore.self class="modal fade text-left" id="EditDurationModal" tabindex="-1" role="dialog"
+    <div wire:ignore.self data-bs-backdrop="static" class="modal fade text-left" id="EditDurationModal" tabindex="-1" role="dialog"
         aria-labelledby="myModalLabel33" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h4 class="modal-title" id="myModalLabel33">Edit Duration</h4>
-                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                        <i data-feather="x"></i>
-                    </button>
                 </div>
                 <form wire:submit.prevent="save">
                     <div class="modal-body">
@@ -1515,15 +1485,12 @@
     </div>
 
     {{-- Reset IPCR Modal --}}
-    <div wire:ignore.self class="modal fade text-left" id="ResetIPCRModal" tabindex="-1" role="dialog"
+    <div wire:ignore.self data-bs-backdrop="static" class="modal fade text-left" id="ResetIPCRModal" tabindex="-1" role="dialog"
         aria-labelledby="myModalLabel33" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h4 class="modal-title" id="myModalLabel33">Reset IPR</h4>
-                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                        <i data-feather="x"></i>
-                    </button>
                 </div>
                 <form wire:submit.prevent="resetIPCR">
                     <div class="modal-body">
@@ -1545,15 +1512,12 @@
     </div>
 
     {{-- Add Percentage Modal --}}
-    <div wire:ignore.self class="modal fade text-left" id="AddPercentageModal" tabindex="-1" role="dialog"
+    <div wire:ignore.self data-bs-backdrop="static" class="modal fade text-left" id="AddPercentageModal" tabindex="-1" role="dialog"
         aria-labelledby="myModalLabel33" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h4 class="modal-title" id="myModalLabel33">Add Percentage</h4>
-                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                        <i data-feather="x"></i>
-                    </button>
                 </div>
                 <form wire:submit.prevent="savePercent">
                     <div class="modal-body">
@@ -1649,15 +1613,12 @@
     </div>
 
     {{-- Edit Percentage Modal --}}
-    <div wire:ignore.self class="modal fade text-left" id="EditPercentageModal" tabindex="-1" role="dialog"
+    <div wire:ignore.self data-bs-backdrop="static" class="modal fade text-left" id="EditPercentageModal" tabindex="-1" role="dialog"
         aria-labelledby="myModalLabel33" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h4 class="modal-title" id="myModalLabel33">Edit Percentage</h4>
-                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                        <i data-feather="x"></i>
-                    </button>
                 </div>
                 <form wire:submit.prevent="updatePercent">
                     <div class="modal-body">
@@ -1757,15 +1718,12 @@
     </div>
 
     {{-- Delete Percentage Modal --}}
-    <div wire:ignore.self class="modal fade text-left" id="DeletePercentageModal" tabindex="-1" role="dialog"
+    <div wire:ignore.self data-bs-backdrop="static" class="modal fade text-left" id="DeletePercentageModal" tabindex="-1" role="dialog"
         aria-labelledby="myModalLabel33" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h4 class="modal-title" id="myModalLabel33">Delete Modal</h4>
-                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                        <i data-feather="x"></i>
-                    </button>
                 </div>
                 <form wire:submit.prevent="deletePercentage">
                     <div class="modal-body">
@@ -1788,15 +1746,12 @@
     </div>
 
     {{-- Disapprove Modal --}}
-    <div wire:ignore.self class="modal fade text-left" id="DisapproveModal" tabindex="-1" role="dialog"
+    <div wire:ignore.self data-bs-backdrop="static" class="modal fade text-left" id="DisapproveModal" tabindex="-1" role="dialog"
         aria-labelledby="myModalLabel33" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h4 class="modal-title" id="myModalLabel33">Disapproving Message</h4>
-                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                        <i data-feather="x"></i>
-                    </button>
                 </div>
                 <form wire:submit.prevent="disapproved">
                     <div class="modal-body">
@@ -1826,15 +1781,12 @@
     </div>
 
     {{-- MessageTTMA Modal --}}
-    <div wire:ignore.self class="modal fade text-left" id="MessageTTMAModal" tabindex="-1" role="dialog"
+    <div wire:ignore.self data-bs-backdrop="static" class="modal fade text-left" id="MessageTTMAModal" tabindex="-1" role="dialog"
         aria-labelledby="myModalLabel33" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h4 class="modal-title" id="myModalLabel33">Done Message</h4>
-                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                        <i data-feather="x"></i>
-                    </button>
                 </div>
                 <form wire:submit.prevent="message">
                     <div class="modal-body">
@@ -1864,15 +1816,12 @@
     </div>
 
     {{-- EditMessageTTMA Modal --}}
-    <div wire:ignore.self class="modal fade text-left" id="EditMessageTTMAModal" tabindex="-1" role="dialog"
+    <div wire:ignore.self data-bs-backdrop="static" class="modal fade text-left" id="EditMessageTTMAModal" tabindex="-1" role="dialog"
         aria-labelledby="myModalLabel33" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h4 class="modal-title" id="myModalLabel33">Done Message</h4>
-                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                        <i data-feather="x"></i>
-                    </button>
                 </div>
                 <form wire:submit.prevent="message">
                     <div class="modal-body">
@@ -1902,15 +1851,12 @@
     </div>
 
     {{-- Add Training Modal --}}
-    <div wire:ignore.self class="modal fade text-left" id="AddTrainingModal" tabindex="-1" role="dialog"
+    <div wire:ignore.self data-bs-backdrop="static" class="modal fade text-left" id="AddTrainingModal" tabindex="-1" role="dialog"
         aria-labelledby="myModalLabel33" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h4 class="modal-title" id="myModalLabel33">Add Training</h4>
-                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                        <i data-feather="x"></i>
-                    </button>
                 </div>
                 <form wire:submit.prevent="save">
                     <div class="modal-body">
@@ -1948,7 +1894,7 @@
                         </button>
                         <button type="submit" wire:loading.attr="disabled" class="btn btn-primary ml-1">
                             <i class="bx bx-check d-block d-sm-none"></i>
-                            <span class="d-none d-sm-block">save</span>
+                            <span class="d-none d-sm-block">Save</span>
                         </button>
                     </div>
                 </form>
@@ -1957,15 +1903,12 @@
     </div>
 
     {{-- Edit Training Modal --}}
-    <div wire:ignore.self class="modal fade text-left" id="EditTrainingModal" tabindex="-1" role="dialog"
+    <div wire:ignore.self data-bs-backdrop="static" class="modal fade text-left" id="EditTrainingModal" tabindex="-1" role="dialog"
         aria-labelledby="myModalLabel33" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h4 class="modal-title" id="myModalLabel33">Update Training</h4>
-                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                        <i data-feather="x"></i>
-                    </button>
                 </div>
                 <form wire:submit.prevent="update">
                     <div class="modal-body">
@@ -2012,15 +1955,12 @@
     </div>
 
     {{-- Edit Score Equivalent Modal --}}
-    <div wire:ignore.self class="modal fade text-left" id="EditScoreEqModal" tabindex="-1" role="dialog"
+    <div wire:ignore.self data-bs-backdrop="static" class="modal fade text-left" id="EditScoreEqModal" tabindex="-1" role="dialog"
         aria-labelledby="myModalLabel33" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h4 class="modal-title" id="myModalLabel33">Update Score Equivalent</h4>
-                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                        <i data-feather="x"></i>
-                    </button>
                 </div>
                 <form wire:submit.prevent="save">
                     <div class="modal-body">

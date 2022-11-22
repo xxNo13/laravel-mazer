@@ -19,12 +19,14 @@
         <div class="card">
             <div class="card-header hstack">
                 <h4 class="card-title my-auto">{{ Auth::user()->office->office }}, {{ Auth::user()->office->building }}</h4>
-                <div class="ms-auto my-auto form-group position-relative has-icon-right">
-                    <input type="text" class="form-control" placeholder="Search.." wire:model="search">
-                    <div class="form-control-icon">
-                        <i class="bi bi-search"></i>
+                <div class="ms-auto hstack gap-3">
+                    <div class="my-auto form-group position-relative has-icon-right">
+                        <input type="text" class="form-control" placeholder="Search.." wire:model="search">
+                        <div class="form-control-icon">
+                            <i class="bi bi-search"></i>
+                        </div>
                     </div>
-                    <a href="/print/rankings?userType=staff" target="_blank" class="ms-auto btn icon btn-primary" title="Print IPCR">
+                    <a href="/print/rankings?userType=staff" target="_blank" class="ms-auto btn icon btn-primary" title="Print Ranking IPCR">
                         <i class="bi bi-printer"></i>
                     </a>
                 </div>

@@ -19,10 +19,11 @@
     @if (session()->has('message'))
         <div x-data="{ show: true }" x-init="setTimeout(() => show = false, 3000)" x-show="show"
             class="toastify on  toastify-right toastify-bottom" aria-live="polite"
-            style="background: #41bbdd; transform: translate(0px, 0px); bottom: 15px;">
+            style="background: rgb(79, 190, 135); transform: translate(0px, 0px); bottom: 15px;">
             {{ session('message') }}
         </div>
     @endif
+    
 
     <section class="section pt-3">
         @foreach ($functs as $funct)
@@ -111,54 +112,56 @@
                         @endswitch
                     @endif
                 </h4>
-                @if ((!$approval || ($approval->superior1_status == 2 || $approval->superior2_status == 2)) &&
-                ($duration && $duration->start_date <= date('Y-m-d') && $duration->end_date >= date('Y-m-d')))
-                    @if (Auth::user()->account_types->contains(1))
-                        <button type="button" class="ms-auto btn btn-outline-secondary" data-bs-toggle="modal"
-                            data-bs-target="#AddIPCROSTModal" title="Add Output/Suboutput/Target">
-                            Add OST
-                        </button>
-                    @endif
-                    @if ($approveFaculty)
-                        @if ($targ)
-                            <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal"
-                                data-bs-target="#ResetIPCRModal" title="Configure Output/Suboutput/Target">
-                                Reset IPCR
-                            </button>
-                            @if (!$percentage)
-                                <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal"
-                                    data-bs-target="#AddPercentageModal" title="Add Percentage" wire:click="percent">
-                                    Add Percentage
-                                </button>
-                            @else
-                                <button type="button" class="btn btn-outline-success" data-bs-toggle="modal"
-                                    data-bs-target="#EditPercentageModal" title="Edit Percentage" wire:click="percent('{{ 'edit' }}')">
-                                    Edit Percentage
-                                </button>
-                                <button type="button" class="btn btn-outline-info" data-bs-toggle="modal"
-                                    data-bs-target="#SubmitISOModal" title="Save IPCR" wire:click="submit">
-                                    Submit
-                                </button>
-                            @endif
-                        @else
-                            <button type="button" class="btn btn-outline-secondary" wire:click="configure"
-                                title="Configure Output/Suboutput/Target">
-                                Add IPCR
+                <div class="ms-auto hstack gap-3">
+                    @if ((!$approval || ($approval->superior1_status == 2 || $approval->superior2_status == 2)) &&
+                    ($duration && $duration->start_date <= date('Y-m-d') && $duration->end_date >= date('Y-m-d')))
+                        @if (Auth::user()->account_types->contains(1))
+                            <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal"
+                                data-bs-target="#AddIPCROSTModal" title="Add Output/Suboutput/Target">
+                                Add OST
                             </button>
                         @endif
+                        @if ($approveFaculty)
+                            @if ($targ)
+                                <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal"
+                                    data-bs-target="#ResetIPCRModal" title="Configure Output/Suboutput/Target">
+                                    Reset IPCR
+                                </button>
+                                @if (!$percentage)
+                                    <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal"
+                                        data-bs-target="#AddPercentageModal" title="Add Percentage" wire:click="percent">
+                                        Add Percentage
+                                    </button>
+                                @else
+                                    <button type="button" class="btn btn-outline-success" data-bs-toggle="modal"
+                                        data-bs-target="#EditPercentageModal" title="Edit Percentage" wire:click="percent('{{ 'edit' }}')">
+                                        Edit Percentage
+                                    </button>
+                                    <button type="button" class="btn btn-outline-info" data-bs-toggle="modal"
+                                        data-bs-target="#SubmitISOModal" title="Save IPCR" wire:click="submit">
+                                        Submit
+                                    </button>
+                                @endif
+                            @else
+                                <button type="button" class="btn btn-outline-secondary" wire:click="configure"
+                                    title="Configure Output/Suboutput/Target">
+                                    Add IPCR
+                                </button>
+                            @endif
+                        @endif
+                    @elseif (($approval && $approval->superior1_status == 1 && $approval->superior2_status == 1) && 
+                    (!$assess || ($assess->superior1_status == 2 || $assess->superior2_status == 2)) &&
+                    ($duration && $duration->start_date <= date('Y-m-d') && $duration->end_date >= date('Y-m-d')))
+                        <button type="button" class="btn btn-outline-info" data-bs-toggle="modal"
+                            data-bs-target="#AssessISOModal" title="Save IPCR" wire:click="submit">
+                            Submit
+                        </button>
+                    @elseif (($approval && $approval->superior1_status == 1 && $approval->superior2_status == 1) && ($assess && $assess->superior1_status == 1 && $assess->superior2_status == 1))
+                        <a href="/print/{{ 'ipcr' }}?userType=faculty" target="_blank" class="ms-auto btn icon btn-primary" title="Print IPCR">
+                            <i class="bi bi-printer"></i>
+                        </a>
                     @endif
-                @elseif (($approval && $approval->superior1_status == 1 && $approval->superior2_status == 1) && 
-                (!$assess || ($assess->superior1_status == 2 || $assess->superior2_status == 2)) &&
-                ($duration && $duration->start_date <= date('Y-m-d') && $duration->end_date >= date('Y-m-d')))
-                    <button type="button" class="ms-auto btn btn-outline-info" data-bs-toggle="modal"
-                        data-bs-target="#AssessISOModal" title="Save IPCR" wire:click="submit">
-                        Submit
-                    </button>
-                @elseif (($approval && $approval->superior1_status == 1 && $approval->superior2_status == 1) && ($assess && $assess->superior1_status == 1 && $assess->superior2_status == 1))
-                    <a href="/print/{{ 'ipcr' }}?userType=faculty" target="_blank" class="ms-auto btn icon btn-primary" title="Print IPCR">
-                        <i class="bi bi-printer"></i>
-                    </a>
-                @endif
+                </div>
             </div>
             @if ($funct->subFuncts)
                 @foreach ($funct->subFuncts as $subFunct)

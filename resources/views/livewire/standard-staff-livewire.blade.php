@@ -19,7 +19,7 @@
     @if (session()->has('message'))
         <div x-data="{ show: true }" x-init="setTimeout(() => show = false, 3000)" x-show="show"
             class="toastify on  toastify-right toastify-bottom" aria-live="polite"
-            style="background: #41bbdd; transform: translate(0px, 0px); bottom: 15px;">
+            style="background: rgb(79, 190, 135); transform: translate(0px, 0px); bottom: 15px;">
             {{ session('message') }}
         </div>
     @endif
